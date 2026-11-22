@@ -61,3 +61,14 @@ Historical M-CAND-005..011 describe MAIN's **earlier** source-limited intake; M-
 | M-CAND-014 | [Actual Stella boot snapshots](https://github.com/Odourman/mellanrum/actions/runs/45064977006) | four actual emulator PNG captures from same head | BOOT_SMOKE_PASS, NOT 15-room replay |
 | M-CAND-015 | [PACHINKO independent diagnostics instructions](MAIN_TO_PACHINKO_STRESS_TEST_2026-11-22.md) | Issue #6; no result attached yet | DIAGNOSTIC_HANDOFF_READY |
 | M-CAND-016 | [Independent verification brief](MAIN_TO_VERIFICATION_PR4_2026-11-22.md) | Issue #5 | VERIFICATION_PENDING |
+
+## Pachinko diagnostic outputs – 2026-11-22
+
+| ID | Källa | Hash eller identifierare | Status |
+|---|---|---|---|
+| M-CAND-017 | [User-uploaded Pachinko report](PACHINKO_STRESS_TEST_REPORT_2026-11-22.md) | Ursprunglig MD SHA256 `9d09d6358d54a3dbd08a3bd7114124772fd425b92e05019ab4ef250c509cf22a`; 2 400 modellkörningar och 150 ZIP-payload-poster **rapporterade** | USER_REPORT_RECEIVED; FULL_EVIDENCE_ZIP_NOT_PRESENT |
+| M-CAND-018 | [Pachinko Stella workflow run 45069826844](https://github.com/Odourman/mellanrum/actions/runs/45069826844) | Diagnostic commit `e6e8f3047d2006418fee0e93a01fb918b7d6e186`; only added workflow vs frozen product | CI_SUCCESS / PRODUCT_CODE_UNCHANGED |
+| M-CAND-019 | [Stella diagnostic artifact 14772668727](https://github.com/Odourman/mellanrum/actions/runs/45069826844/artifacts/14772668727) | Archive SHA256 `bc3e21cb2d981b257d9f9a9d28f0f99592ea56993102dc42d15da5d32c41437f`, 13 PNG (12 distinct), 52 logged taps, 15/15 manifest, ROM SHA verified | MAIN_CHECKED_STELLA_DIAGNOSTIC_ONLY |
+| M-CAND-020 | [MAIN's Pachinko intake](MAIN_PACHINKO_INTAKE_2026-11-22.md) | Source classifications and independent test priorities | MAIN_REVIEW / NO_RELEASE_PASS |
+
+Older registry entries `M-CAND-012..016` were duplicated in historical append-only sections; do not interpret repeated IDs as separate sources or assume highest repeated section changes provenance authority.
