@@ -1,6 +1,6 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-22 (after ROM DEVELOPMENT full-game candidate handoff).
+**Updated:** 2026-11-22 (after ROM DEVELOPMENT candidate and Pachinko diagnostic handoff).
 **Phase:** **V1 candidate / G1: INDEPENDENT_VERIFICATION_PENDING**.
 **Implementation:** 15-room Atari 2600 / NTSC / standard 4K **candidate exists on PR #4 only**, branch `romdev/fullgame-20261122`, head `8bdecde79a6bc1ecb804484d5d257f4f1a99b052`. **PR open + Draft + unmerged.** Main branch does not yet contain the game.
 **Release:** **NOT APPROVED**. Independent gameplay, visual, sound and hardware testing is not complete.
@@ -12,6 +12,16 @@
 - **MAIN independently downloaded and hashed the native Actions ROM bytes**: SHA-256 `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed`; size 4,096; reset vector `$F000`; Stella reported NTSC / 4K.
 - [Current-head Stella boot smoke](https://github.com/Odourman/mellanrum/actions/runs/45064977006): `SUCCESS`; extracted and examined four nonblank 320×228 original Stella PNG captures of title and gameplay. This supports a genuine Stella boot/title/snapshot smoke only; **not gameplay verification of all rooms or pixel/raster/sound fidelity**.
 - Development source integrity (GRAPHICS 116/116 manifest, 25 8×8 mask records, 15 original rooms, 20/20 Python, 15/15 original room solutions) is documented in [developer source provenance](https://github.com/Odourman/mellanrum/blob/romdev/fullgame-20261122/docs/PROVENANCE.md). That original ZIP validation was **performed by ROM DEVELOPMENT and reported to MAIN**, not independently repeated by MAIN.
+
+## PACHINKO stress test received – 2026-11-22
+
+[Full Pachinko report](PACHINKO_STRESS_TEST_REPORT_2026-11-22.md) · [MAIN's measured intake and caveats](MAIN_PACHINKO_INTAKE_2026-11-22.md) · [diagnostic issue #6](https://github.com/Odourman/mellanrum/issues/6).
+
+**Reported by PACHINKO:** 2,400 source-guided model runs / 69,747 completed owl ticks / 36,067 observed states / 44,438 transitions; zero modeled ROM/reference mismatches; 152 adversarial modeled cases; 17,600 short modeled frames plus 19,080 long FRI SKOG frames; no newly confirmed product defect. The full 150-entry result ZIP with 149 payload hashes is **not present in MAIN** and those totals are *not* a new MAIN independent reproduction.
+
+**MAIN checked directly:** [Stella diagnostic workflow 45069826844](https://github.com/Odourman/mellanrum/actions/runs/45069826844) is `SUCCESS`, diagnostic commit `e6e8f3047d2006418fee0e93a01fb918b7d6e186`; compare with frozen product `8bdecde...` changed **only one workflow file**. Downloaded artifact `14772668727`, SHA `bc3e21cb2d981b257d9f9a9d28f0f99592ea56993102dc42d15da5d32c41437f`: exactly 4 KiB ROM with expected hash `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed`, 13 original PNG / 12 distinct, 52 logged taps, 15/15 artifact SHA manifest entries, ZIP CRC valid. This is genuine but **coarsely timed** Stella observation, not 15 real joystick wins, TIA timing certification or subjective audio.
+
+**Disposition:** `DIAGNOSTIC_PARTIAL_WITH_EVIDENCE`; `NO_NEW_CONFIRMED_BUG_WITHIN_EXECUTED_SCOPE`; `INDEPENDENT_VERIFICATION_PENDING`. Keep PR #4 Draft/open; no merge/release. Verification Issue #5 has been updated with these findings. Artistically intended single-tree coda and full graphical fidelity still require their own review.
 
 ## MAIN verdict / next action
 
@@ -29,4 +39,4 @@ Verification should use immutable commit and ROM SHA, rebuild DASM cleanly, repl
 
 Project identity: [GitHub](https://github.com/Odourman/mellanrum) and [Drive folder](https://drive.google.com/drive/folders/1rO3ZTTBgyZZhqOx1WCxevM6sE3CrvUcl). User's full-game authorization was passed to ROM DEVELOPMENT in [full-game order](ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md). GAMEPLAN baseline V5.1 and `GITTERSKOG / BILDMELLANRUM` visual direction are implementation targets. Historic G0 source access limitations are documented in [V5.1 review](MAIN_V5_1_REVIEW_2026-11-22.md) and [Graphics intake](MAIN_GRAPHICS_V5_1_INTAKE_2026-11-22.md); the later developer's own source-validation does not make MAIN's earlier claims of inability false.
 
-**Evidence status:** `DASM_BUILD_PASS`, `MAIN_ROM_HASH_MATCH`, `DEVELOPER_MODEL_PASS`, `STELLA_BOOT_SCREENSHOTS_SEEN`, `FULL_REAL_EMULATOR_GAMEPLAY_NOT_RUN`, `AUDIO_LISTEN_NOT_RUN`, `HARDWARE_NOT_RUN`, `PAL_NOT_IMPLEMENTED`, `INDEPENDENT_VERIFICATION_NOT_RUN`. Main has not merged or released any ROM.
+**Evidence status:** `DASM_BUILD_PASS`, `MAIN_ROM_HASH_MATCH`, `DEVELOPER_MODEL_PASS`, `PACHINKO_REPORTED_MODEL_PARITY_PASS`, `PACHINKO_STELLA_DIAGNOSTIC_ARTIFACT_CHECKED`, `PACHINKO_PARTIAL_WITH_EVIDENCE`, `FULL_REAL_EMULATOR_GAMEPLAY_NOT_RUN`, `AUDIO_LISTEN_NOT_RUN`, `HARDWARE_NOT_RUN`, `PAL_NOT_IMPLEMENTED`, `INDEPENDENT_VERIFICATION_NOT_RUN`. Main has not merged or released any ROM.
