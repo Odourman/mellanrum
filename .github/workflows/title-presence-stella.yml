@@ -21,6 +21,9 @@ jobs:
           mkdir -p build
           dasm rom/src/main.asm -f3 -obuild/mellanrum_ntsc.bin -lbuild/mellanrum_ntsc.lst -sbuild/mellanrum_ntsc.sym
           python3 scripts/check_rom.py build/mellanrum_ntsc.bin
+          cp build/mellanrum_ntsc.bin build/native_dasm.bin
+          python3 scripts/assemble_check.py rom/src/main.asm -o build/mellanrum_ntsc.bin
+          cmp build/native_dasm.bin build/mellanrum_ntsc.bin
           python3 scripts/check_title_presence.py
       - name: Observe title + all three III intrusion rooms in genuine Stella images
         shell: bash
