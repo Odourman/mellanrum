@@ -1,9 +1,19 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-22 (MAIN verified final Issue #9 A/B build and authentic Stella artifact; frozen for Pachinko 2.0).
-**Phase:** **A/B FINAL DEVELOPER CANDIDATE VERIFIED AT ARTIFACT LEVEL / PACHINKO 2.0 FULL-SYSTEM EXECUTION ORDER ISSUED / INDEPENDENT_VERIFICATION_PENDING**.
+**Updated:** 2026-11-22 (MAIN inspected PACHINKO 2.0 original Gopher+Stella+TIA-audio archives and opened ROM DEV raster diagnosis #12).
+**Phase:** **PACHINKO_2_0_REAL_GAMEPLAY_PARTIAL_PASS / Gopher_REAL_TIA_RASTER_261_FAIL_UNDER_CROSS_EMULATOR_DIAGNOSIS / INDEPENDENT_VERIFICATION_PENDING / RELEASE_BLOCKED**.
 **Implementation:** Final current NTSC 4096-byte 4K ROM candidate lives only on open Draft PR #4, evidence HEAD **`49eb168b17d0254d06cf50d87c60e8fb6016db6e`**, game-code commit **`6cb86247c668162b180e5d77377098941b9803b3`**, native DASM ROM SHA256 **`e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974`**. MAIN independently checked actual ROM bytes from GitHub Actions artifacts. Not merged/released. Previous `a953...` visual revision and `ec791...` baseline are superseded.
-**Release:** **NOT APPROVED**. Independent gameplay, visual, sound and hardware testing is not complete.
+**Release:** **NOT APPROVED**. Gopher native raster gate FAILED 261 vs required 262; independent Stella beam check and remaining systems/arts/audio/hardware Verification not complete.
+
+## PACHINKO 2.0 genuine emulator intake – 2026-11-22
+
+[MAIN's complete raw-artifact review](MAIN_PACHINKO_2_0_E9EA_INTERIM_INTAKE_2026-11-22.md), exact frozen original ROM SHA `e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974` at unchanged Draft PR #4 HEAD `49eb168b17d0254d06cf50d87c60e8fb6016db6e`.
+
+- **Verified Gopher2600 real-controller 15/15 campaign twice**: [Actions 45077617532](https://github.com/Odourman/mellanrum/actions/runs/45077617532), artifacts 14776331457 and 14776331656, both ZIP CRC good; each 11,548 emulated frames, 166/166 actual read-only RAM mode/room/beat checkpoints, all 15 win states and coda→title, 15 original room PNGs. Gopher raw snapshots include pre-validation `result.json=INCONCLUSIVE` and post-validation `campaign_real_result.json=PASS`; label both stages, not false conflict in final manifest.
+- **Verified separate Stella/libretro real-controller 15/15 campaign three times**: [Actions 45078424709](https://github.com/Odourman/mellanrum/actions/runs/45078424709), artifact 14776451289 ZIP CRC good and 189/189 SHA manifest matches; each 11,420 emulated frames, deterministic all 15 room wins+coda, sampled Presence state III-03/04/05, 86 original first-run PNGs and emulator WAV. This is automated source-informed bot gameplay, not a human playtest. Replayed controller FIRE count metadata `0` is a diagnostic-counter anomaly for PACHINKO to explain; actual replay used controller event trace.
+- **Real raster FAIL:** Gopher `TV FRAME total: 261` across 119/119 stable frames ×2 and at 166 Gopher campaign checkpoints. 262-line target not met in native Gopher observations. Stella **has not reported native TIA scanline totals** and therefore cannot confirm/refute Gopher's reading; model 262 cannot supersede actual native 261. Provisional P1; [Issue #11](https://github.com/Odourman/mellanrum/issues/11) evidence; [ROM DEVELOPMENT separate diagnostic-only Issue #12](https://github.com/Odourman/mellanrum/issues/12) must isolate cross-emulator and known-good 262 reference before ROM patch proposal. **No product code edits authorized.**
+- **Real TIA WAV capture now partially evidenced:** [Gopher Actions 45078436099](https://github.com/Odourman/mellanrum/actions/runs/45078436099) artifact 14776068795 has 2 actual nonzero audio WAV tracks and quantitative results, ZIP CRC good; Stella campaign archive also contains emulator audio. Human listening, per-event AV accuracy, and original-hardware tests remain NOT_RUN.
+- **Full stress matrix remains outstanding:** all 1500 real seeded sessions and long 10k/room+50k FRI queued/in progress at latest checked GitHub run, not yet all validated by MAIN. Gopher replayed game state invariants beyond mode/room/beat incomplete; independent Verification Issue #5 NOT_RUN. No PACHINKO result is a release PASS. Maintain PACHINKO diagnostic PR #10 separated and original product PR #4 Draft/unmerged.
 
 ## FINAL A/B candidate: verified intake, exact Pachinko target — 2026-11-22
 
