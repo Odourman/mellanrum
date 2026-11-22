@@ -14,15 +14,20 @@ for label in labels:
     images[label]=[Image.open(f).convert('RGB') for f in files]
     assert all(x.width>=160 and x.height>=192 for x in images[label])
 print('EMULATOR_PNG_FILES_PRESENT',sum(len(x) for x in images.values()))
-# Differences of >= 4 pixels in relevant centrally positioned forest segment show
-# that the actual Stella TIA image changed across the visual gate.
-# Do not choose exact region before examining emulation screenshots manually.
+# Actual TIA framebuffer evidence, not just PNG file existence.
+# Compare snapshots of ONE fixed room and logical beat. In the variants only
+# soundStep's 24-on/40-off visual gate advances; owl, stone, collisions and
+# stored PF/cursor geometry are held stable by an explicitly marked Reset stub.
+# This verifies that the actual emulator raster visibly changes with the gate.
 for id in ['III03','III04','III05']:
-    im=images[id+'_active']
-    diffcount=[]
-    for a in im[1:]:
-        box=(a.width//3,a.height//4,2*a.width//3,3*a.height//4)
-        diff=ImageChops.difference(im[0].crop(box),a.crop(box))
-        diffcount.append(int(bool(diff.getbbox())))
-    print('EMULATOR_PNG_VARIATION',id,'distinct_regions',sum(diffcount),'of',len(diffcount),'(may include animation or shadow)')
-print('EMULATOR_CAPTURE_SOURCE_PASS: PNG frames truly from Stella; NOT independent visual proof')
+    for state,minimum in [('active',500),('warning',200)]:
+        im=images[id+'_'+state]
+        box=(im[0].width//3,im[0].height//4,2*im[0].width//3,3*im[0].height//4)
+        diffs=[]
+        for a in im[1:]:
+            diff=ImageChops.difference(im[0].crop(box),a.crop(box))
+            count=sum(any(px) for px in diff.getdata())
+            diffs.append(count)
+        assert max(diffs,default=0)>=minimum,(id,state,diffs)
+        print('STELLA_REAL_PF_GLIMPSE_PASS',id,state,'changed_pixels_at_least',max(diffs))
+print('EMULATOR_CAPTURE_PASS: real-Stella selected room/tick ON-OFF frames; NOT full product joystick replay or artistic certification')

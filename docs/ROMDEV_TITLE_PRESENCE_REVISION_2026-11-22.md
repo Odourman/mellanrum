@@ -28,8 +28,8 @@
 
 ## Status and decision
 
-- Developer source/model checks: expected PASS, record actual GitHub Actions run after upload.
-- Native DASM and ROM SHA: verify in Actions; do not assume local subset assembler result is native until checked.
-- Stella screenshots and aesthetic compliance: compare **real** screenshots from original executable, visible/hidden III-03/04/05, and menu selection before claiming done.
+- Developer source/model checks: PASS, see `ISSUE8_TEST_MATRIX_2026-11-22.md`; [native test Actions 45072844664](https://github.com/Odourman/mellanrum/actions/runs/45072844664).
+- Native DASM and ROM SHA: PASS, 4096 bytes SHA256 `a9531d5bbbff033711fbe54f8688b8e0259640e0a9a284c8ab585eea415c0bd5`, downloaded Actions artifact and byte-compared to local candidate.
+- Stella screenshots: PASS for observable title/menu and perceptible on/off negative-space gap in III-03/04/05 using declared instrumented room/tick variants; see [Stella Actions 45072837947](https://github.com/Odourman/mellanrum/actions/runs/45072837947). MAIN art acceptance remains pending.
 - PAL/physical Atari, audio listening, full frame-indexed fifteen-room emulator replay: **NOT_RUN / not claimed**.
 - No merge/release; return immutable commit, SHA, code, PNG artifact references to MAIN for its acceptance gate.
