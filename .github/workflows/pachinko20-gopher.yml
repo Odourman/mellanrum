@@ -1,0 +1,68 @@
+name: PACHINKO 2.0 - independent Gopher2600 headless true TV scanline probe
+on:
+  push:
+    branches: [pachinko/ab-e9ea-full-system-20261122]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-gopher-262-raster:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify frozen E9EA 4K ROM and Gopher release source identity
+        run: |
+          set -euo pipefail
+          echo "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  rom/bin/mellanrum_ntsc.bin" | sha256sum -c -
+          mkdir -p build/pachinko20/gopher
+          cat > build/pachinko20/gopher/source.txt <<'TXT'
+          Gopher2600 v0.57.2 official Linux AMD64 release, JetSetIlly/Gopher2600
+          https://github.com/JetSetIlly/Gopher2600/releases/tag/v0.57.2
+          TXT
+          curl -fL --retry 3 -o build/pachinko20/gopher/gopher2600_linux_amd64 https://github.com/JetSetIlly/Gopher2600/releases/download/v0.57.2/gopher2600_linux_amd64
+          chmod +x build/pachinko20/gopher/gopher2600_linux_amd64
+          sha256sum build/pachinko20/gopher/gopher2600_linux_amd64 > build/pachinko20/gopher/gopher.sha256
+          ldd build/pachinko20/gopher/gopher2600_linux_amd64 | tee build/pachinko20/gopher/ldd.txt || true
+          timeout 15 build/pachinko20/gopher/gopher2600_linux_amd64 VERSION > build/pachinko20/gopher/version.txt 2>&1
+      - name: ACTUAL CPU/TIA Gopher2600 headless debugger frame+scanline samples
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('build/pachinko20/gopher/commands.txt')
+          commands=['TV SPEC','CPU']
+          for i in range(100):commands.extend(['STEP FRAME','TV FRAME'])
+          commands+=['TV','CPU','QUIT']
+          p.write_text('\n'.join(commands)+'\n')
+          PY
+          timeout 110 build/pachinko20/gopher/gopher2600_linux_amd64 HEADLESS rom/bin/mellanrum_ntsc.bin < build/pachinko20/gopher/commands.txt > build/pachinko20/gopher/actual_headless_transcript.log 2>&1 || {
+            x=$?
+            echo "GOPHER_HEADLESS_PROCESS_EXIT=$x" | tee build/pachinko20/gopher/exit.txt
+          }
+          python3 - <<'PY'
+          import re,json,pathlib,collections
+          p=pathlib.Path('build/pachinko20/gopher')
+          text=(p/'actual_headless_transcript.log').read_text(errors='replace')
+          samples=[int(x) for x in re.findall(r'top:\s*\d+,\s*bottom:\s*\d+,\s*total:\s*(\d+)',text)]
+          print('GOPHER_TOTAL_SAMPLES',len(samples),'COUNTS',collections.Counter(samples))
+          status='PASS' if len(samples)>=80 and all(x==262 for x in samples[5:]) else 'INCONCLUSIVE'
+          report={'status':status,'sample_count':len(samples),'samples':samples,'counts':dict(collections.Counter(samples)),'startup_first_5_excluded_for_262_gate':True,'real_emulator':'Gopher2600 v0.57.2 official release','evidence_class':'INDEPENDENT_TIA_6507_HEADLESS_REAL_FRAME_DEBUGGER','product_commit':'49eb168b17d0254d06cf50d87c60e8fb6016db6e','rom_sha256':'e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974','note':'headless idle/title frames only; 15-room active game raster separately not verified'}
+          (p/'result.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report))
+          assert status=='PASS'
+          PY
+      - name: Preserve native commands, source, logs and SHA256 even on failure
+        if: always()
+        run: |
+          mkdir -p build/pachinko20/gopher
+          (cd build/pachinko20/gopher && find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko20-real-Gopher2600-headless-TIA-scanline-probe
+          path: build/pachinko20/gopher/
+          if-no-files-found: warn
+          retention-days: 45
