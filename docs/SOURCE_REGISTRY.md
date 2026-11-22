@@ -94,3 +94,5 @@ No new ROM SHA is yet available. Do not use the old `ec791333...` ROM identity t
 | M-SRC-008 | [Main to ROM DEV A/B order](MAIN_TO_ROMDEV_AB_HARDWARE_ONLY_2026-11-22.md) | [Issue #9](https://github.com/Odourman/mellanrum/issues/9), source decision MEL-037 | IMPLEMENTATION_AUTHORIZED / NOT_YET_BUILT |
 
 Previous `M-CAND-012..020` are historical and/or duplicated append-only IDs. Do not treat old SHA evidence as if it validates the later `a953...` ROM or future post-A/B changes.
+
+| M-SRC-009 | [Post-Issue8 PACHINKO Stage0 and final SHA gate](MAIN_TO_PACHINKO_2_0_POST_ISSUE8_STAGE0_FINAL_GATE_2026-11-22.md) | Current 4K native developer visual SHA `a953...` only Stage0; full suite after A/B Issue #9 yields new SHA | AUTHORIZED_STAGE0_TEST_INFRASTRUCTURE / FINAL_TEST_WAITING_FOR_NEW_ROM |
