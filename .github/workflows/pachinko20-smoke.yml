@@ -1,0 +1,97 @@
+name: PACHINKO 2.0 - frozen e9ea native build and REAL libretro Stella frame qualification
+on:
+  push:
+    branches: [pachinko/ab-e9ea-full-system-20261122]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  identity-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Frozen product path guard
+        run: |
+          set -euo pipefail
+          git diff --name-only 49eb168b17d0254d06cf50d87c60e8fb6016db6e HEAD | tee /tmp/pachinko_file_diff
+          if grep -Ev '^(pachinko20/|.github/workflows/pachinko20-)' /tmp/pachinko_file_diff; then
+            echo 'FAIL: an unauthorized production path was changed'
+            exit 1
+          fi
+          echo "PASS: no production files altered"
+      - name: Native DASM and immutable SHA256
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y dasm
+          mkdir -p build/pachinko20_identity
+          dasm rom/src/main.asm -f3 -obuild/pachinko20_identity/mellanrum_ntsc.bin -lbuild/pachinko20_identity/native.lst -sbuild/pachinko20_identity/native.sym
+          test "$(wc -c < build/pachinko20_identity/mellanrum_ntsc.bin)" -eq 4096
+          echo "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  build/pachinko20_identity/mellanrum_ntsc.bin" | sha256sum -c -
+          cmp build/pachinko20_identity/mellanrum_ntsc.bin rom/bin/mellanrum_ntsc.bin
+          python3 -m py_compile pachinko20/core_harness.py
+          (cd build/pachinko20_identity && sha256sum * > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko20-identity-build-native-e9ea
+          path: build/pachinko20_identity/
+          if-no-files-found: warn
+          retention-days: 30
+  real-stella-frame-qualification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Acquire exact SHA native production ROM
+        run: |
+          set -euo pipefail
+          echo "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  rom/bin/mellanrum_ntsc.bin" | sha256sum -c -
+          mkdir -p build/pachinko20/cores
+          uname -a > build/pachinko20/host.txt
+      - name: Fetch libretro Stella real emulator and record core identity
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y curl unzip libstdc++6
+          url="https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip"
+          echo "$url" > build/pachinko20/cores/core_url.txt
+          curl -fL --retry 3 --retry-delay 2 -o build/pachinko20/cores/stella_core.zip "$url"
+          unzip -j build/pachinko20/cores/stella_core.zip -d build/pachinko20/cores/
+          test -s build/pachinko20/cores/stella_libretro.so
+          (cd build/pachinko20/cores && sha256sum stella_libretro.so stella_core.zip > SHA256SUMS)
+          ldd build/pachinko20/cores/stella_libretro.so | tee build/pachinko20/cores/ldd.txt
+      - name: REAL frame-indexed emulation A/B mode, video frames and actual emulator TIA WAV
+        run: |
+          set -euo pipefail
+          python3 pachinko20/core_harness.py --core build/pachinko20/cores/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/pachinko20/A --frames 440 --seed 42 --left A --profile RAIN --snap-every 100 --audio-frames 440 | tee build/pachinko20/A_console.txt
+          python3 pachinko20/core_harness.py --core build/pachinko20/cores/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/pachinko20/B --frames 440 --seed 42 --left B --profile RAIN --snap-every 100 --audio-frames 440 | tee build/pachinko20/B_console.txt
+          python3 - <<'PY'
+          import json,pathlib,wave,hashlib
+          root=pathlib.Path("build/pachinko20")
+          a=json.loads((root/"A"/"result.json").read_text());b=json.loads((root/"B"/"result.json").read_text())
+          for r in (a,b):
+            assert r["status"]=="PASS" and r["emulated_frames"]==440
+            assert r["core"]["rom_sha256"]=="e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974"
+          for side in ("A","B"):
+            with wave.open(str(root/side/"tia_audio.wav")) as w:
+              print(side,"ACTUAL_CORE_AUDIO",w.getnframes(),w.getframerate(),w.getnchannels(),w.getsampwidth())
+              assert w.getnframes()>1000
+          (root/"qualify.json").write_text(json.dumps({"status":"PASS","scope":"frame-exact Stella libretro A+B qualification only","full_campaign":"NOT_RUN","all_15_rooms":"NOT_RUN","raster_scanline_counter":"NOT_RUN","human_audio":"NOT_RUN","A":a,"B":b},indent=2))
+          print("VISUAL_SHA_A",a["screens"][-1]["sha256"],"VISUAL_SHA_B",b["screens"][-1]["sha256"])
+          PY
+          (cd build/pachinko20 && find A B -type f -print0 | sort -z | xargs -0 sha256sum > ARTIFACT_SHA256SUMS)
+      - name: Preserve raw evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pachinko20-real-libretro-stella-A-B-qualification
+          path: build/pachinko20/
+          if-no-files-found: warn
+          retention-days: 30
