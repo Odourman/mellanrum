@@ -38,6 +38,8 @@ jobs:
           python3 scripts/check_playfield.py
           python3 scripts/check_input.py
           python3 scripts/check_frame_budget.py
+      - name: Title exact MELLANRUM and Presence no-physics-change developer tests
+        run: python3 scripts/check_title_presence.py
       - name: Frame-level CPU/RIOT/WSYNC development trace
         run: |
           python3 scripts/cpu_trace.py > build/cpu_trace.txt

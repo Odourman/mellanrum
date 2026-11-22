@@ -119,22 +119,27 @@ CursorSpriteLo:
         dc.b <CursorIdle,<CursorAck,<CursorDenied,<CursorIntercept
 CursorSpriteHi:
         dc.b >CursorIdle,>CursorAck,>CursorDenied,>CursorIntercept
-TitleMEL:
-        dc.b $00,$00,$00,$00,$AE,$01,$00,$E8,$01,$00,$EC,$01,$00,$A8,$01,$00
-        dc.b $AE,$07,$00,$00,$00
-TitleLAN:
-        dc.b $00,$00,$00,$00,$84,$05,$00,$8A,$07,$00,$8E,$07,$00,$8A,$07,$00
-        dc.b $EA,$05,$00,$00,$00
-TitleRUM:
-        dc.b $00,$00,$00,$00,$CA,$05,$00,$AA,$07,$00,$CA,$07,$00,$AA,$05,$00
-        dc.b $AE,$05,$00,$00,$00
-TitleKAM:
-        dc.b $00,$00,$00,$00,$A4,$05,$00,$AA,$07,$00,$CE,$07,$00,$AA,$05,$00
-        dc.b $AA,$05,$00,$00,$00
-TitleFRI:
-        dc.b $00,$00,$00,$00,$EC,$07,$00,$8A,$02,$00,$CC,$02,$00,$8A,$02,$00
-        dc.b $8A,$07,$00,$00,$00
-TitleWordLo:
-        dc.b <TitleMEL,<TitleLAN,<TitleRUM,<TitleKAM,<TitleFRI
-TitleWordHi:
-        dc.b >TitleMEL,>TitleLAN,>TitleRUM,>TitleKAM,>TitleFRI
+TitleLeftPF0:
+        dc.b $00,$40,$C0,$C0,$40,$40,$00
+TitleRightPF0:
+        dc.b $00,$40,$D0,$D0,$D0,$50,$00
+TitleLeftPF1:
+        dc.b $00,$BA,$A2,$B2,$A2,$BB,$00
+TitleRightPF1:
+        dc.b $00,$B2,$AA,$B2,$AA,$AB,$00
+TitleLeftPF2:
+        dc.b $00,$84,$44,$C4,$44,$5D,$00
+TitleRightPF2:
+        dc.b $00,$15,$1D,$1D,$15,$15,$00
+TitleMenuLeftPF2:
+        dc.b $18,$3C,$7E
+TitleMenuRightPF2:
+        dc.b $42,$5A,$42
+ShadowCrownOr:
+        dc.b $00,$00,$73,$35,$13,$00,$00,$00
+ShadowCrownAnd:
+        dc.b $FF,$FF,$7F,$5F,$3F,$FF,$FF,$FF
+ShadowStemOr:
+        dc.b $00,$00,$11,$51,$10,$20,$00,$00
+ShadowStemAnd:
+        dc.b $FF,$FF,$1F,$5F,$1F,$3F,$FF,$FF

@@ -94,6 +94,7 @@ mapPtr      ds 2
 pfPtr       ds 2
 moveTemp    ds 1
 soundStep   ds 1
+shadowOn    ds 1        ; render-only: 0 normal / 1 warning / 2 active
 
         SEG code
         ORG $F000
@@ -142,6 +143,7 @@ Frame:
         jsr ReadInput
         jsr GameFrame
         jsr SetColorsSound
+        jsr SetShadowVisibility
         jsr PlaceObjects
 WaitVBlank:
         lda INTIM
@@ -1067,6 +1069,30 @@ Silence:
         sta AUDV1
         rts
 
+ ; Render-only silhouette gate, 24 frames on / 40 frames off (~0.4 s glimpses).
+ ; Active intrusion and early warning have different PF behavior; no collision writes.
+SetShadowVisibility:
+        lda #0
+        sta shadowOn
+        lda mode
+        cmp #1
+        bne ShadowGateDone
+        lda presence
+        cmp #1
+        beq ShadowGateTime
+        cmp #2
+        bne ShadowGateDone
+ShadowGateTime:
+        sta shadowOn
+        lda soundStep
+        and #$3F
+        cmp #24
+        bcc ShadowGateDone
+        lda #0
+        sta shadowOn
+ShadowGateDone:
+        rts
+
 ; NTSC display: 16 top status lines, 8*20 gameplay rows, 16 bottom lines.
 ; Crowns are 6 lines, stems 14; P0/P1 use safe lower-band raster slots.
 RenderPlay:
@@ -1122,6 +1148,12 @@ NextRow:
         sta PF1
         iny
         lda pfbuf,y
+        ldx shadowOn
+        beq NoCrownShadow
+        ldx rowIndex
+        ora ShadowCrownOr,x
+        and ShadowCrownAnd,x
+NoCrownShadow:
         sta PF2
         lda #0
         sta GRP0
@@ -1172,6 +1204,26 @@ CrownLast3:
         sta WSYNC
         dex
         bne CrownLast3
+        ; Precompute BL/M0 gating on the final crown scanline, before stem.
+        ; Render-only scratch. Frees CPU for the fleeting PF void mask.
+        lda #0
+        sta candidateX
+        sta candidateY
+        lda rowIndex
+        cmp stoneY
+        bne StoneGatingReady
+        lda #2
+        sta candidateX
+StoneGatingReady:
+        lda rowIndex
+        cmp exitY
+        bne ExitGatingReady
+        lda mode
+        cmp #4
+        beq ExitGatingReady
+        lda #2
+        sta candidateY
+ExitGatingReady:
         ; stem first line: register change + BL/M0 gating
         sta WSYNC
         ldy pfIndex
@@ -1185,22 +1237,18 @@ CrownLast3:
         sta PF1
         iny
         lda pfbuf,y
+        ldx shadowOn
+        cpx #2              ; warning: incomplete crown only, no full void
+        bne NoStemShadow
+        ldx rowIndex
+        ora ShadowStemOr,x
+        and ShadowStemAnd,x
+NoStemShadow:
         sta PF2
-        lda rowIndex
-        cmp stoneY
-        bne NoStoneRow
-        lda #2
+        lda candidateX
         sta ENABL
-NoStoneRow:
-        lda rowIndex
-        cmp exitY
-        bne NoExitRow
-        lda mode
-        cmp #4
-        beq NoExitRow
-        lda #2
+        lda candidateY
         sta ENAM0
-NoExitRow:
         ldx #13
 Stem13:
         sta WSYNC
@@ -1245,12 +1293,14 @@ Bottom16:
         bne Bottom16
         rts
 
-; Title text is a deliberately vertical typographic split: MEL / LAN / RUM,
-; fourth word indicates KAM (campaign) or FRI (goal-less). Mirror is intentional.
+; Only legible title word: MELLANRUM. 40 PF bits, 9 letters in one line.
+; Unmirrored 20+20 PF scanline rewrite; no other text.
+; Two abstract modes below: left rooted triangle = campaign, right open fork = FRI SKOG.
+; Bright half selects mode, dim half is inactive. SELECT/FIRE logic unchanged.
+; Visible lines: 32 + 56 + 24 + 24 + 56 = exact 192.
 DrawTitle:
-        lda #1
-        sta CTRLPF
         lda #0
+        sta CTRLPF           ; no mirroring, distinct L/R PF halves
         sta GRP0
         sta GRP1
         sta ENABL
@@ -1258,70 +1308,99 @@ DrawTitle:
         sta PF0
         sta PF1
         sta PF2
-        ldx #8
-TitleTop8:
+        ldx #32
+TitleTop:
         sta WSYNC
         dex
-        bne TitleTop8
-        lda #0
-        sta pfIndex
-TitleNextWord:
-        ldx pfIndex
-        cpx #3
-        bne PickTitleWord
-        lda menu
-        beq PickTitleWord
-        ldx #4
-PickTitleWord:
-        lda TitleWordLo,x
-        sta pfPtr
-        lda TitleWordHi,x
-        sta pfPtr+1
+        bne TitleTop
         ldy #0
-        lda #7
-        sta rowIndex
-TitleGlyphRow:
-        sta WSYNC
-        lda (pfPtr),y
-        sta PF0
-        iny
-        lda (pfPtr),y
-        sta PF1
-        iny
-        lda (pfPtr),y
-        sta PF2
-        iny
-        ldx #4
-TitleHold4:
-        sta WSYNC
-        dex
-        bne TitleHold4
-        dec rowIndex
-        bne TitleGlyphRow
-        inc pfIndex
-        lda pfIndex
-        cmp #4
-        beq TitleFinish
-        lda #0
-        sta PF0
-        sta PF1
-        sta PF2
-        ldx #12
-TitleGap12:
-        sta WSYNC
-        dex
-        bne TitleGap12
-        jmp TitleNextWord
-TitleFinish:
-        lda #0
-        sta PF0
-        sta PF1
-        sta PF2
         ldx #8
-TitleBottom8:
+TitleGlyphLine:
+        sta WSYNC
+        lda TitleLeftPF0,y
+        sta PF0
+        lda TitleLeftPF1,y
+        sta PF1
+        lda TitleLeftPF2,y
+        sta PF2
+        nop
+        nop
+        nop
+        nop
+        lda TitleRightPF0,y
+        sta PF0
+        lda TitleRightPF1,y
+        sta PF1
+        lda TitleRightPF2,y
+        sta PF2
+        dex
+        bne TitleGlyphLine
+        iny
+        cpy #7
+        beq TitleGlyphDone
+        ldx #8
+        jmp TitleGlyphLine
+TitleGlyphDone:
+        lda #0
+        sta PF0
+        sta PF1
+        sta PF2
+        ldx #23
+TitleGap:
         sta WSYNC
         dex
-        bne TitleBottom8
+        bne TitleGap
+        ; Text-free menu: brighter tree triangle vs open branches.
+        lda menu
+        bne TitleFreeSelected
+        lda #$B6
+        sta sprite0Ptr     ; left selected
+        lda #$34
+        sta sprite1Ptr     ; right inactive
+        jmp TitleMenuReady
+TitleFreeSelected:
+        lda #$34
+        sta sprite0Ptr
+        lda #$B6
+        sta sprite1Ptr
+TitleMenuReady:
+        ldy #0
+        ldx #8
+TitleMenuLine:
+        sta WSYNC
+        lda sprite0Ptr
+        sta COLUPF
+        lda TitleMenuLeftPF2,y
+        sta PF2
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        lda sprite1Ptr
+        sta COLUPF
+        lda TitleMenuRightPF2,y
+        sta PF2
+        dex
+        bne TitleMenuLine
+        iny
+        cpy #3
+        beq TitleMenuDone
+        ldx #8
+        jmp TitleMenuLine
+TitleMenuDone:
+        lda #0
+        sta PF0
+        sta PF1
+        sta PF2
+        ldx #56
+TitleBottom:
+        sta WSYNC
+        dex
+        bne TitleBottom
         rts
 
         include "rom/src/data.inc"

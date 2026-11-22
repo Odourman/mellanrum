@@ -76,14 +76,30 @@ def main():
         'U':['101','101','101','101','111'],'K':['101','101','110','101','101'],
         'F':['111','100','110','100','100'],'I':['111','010','010','010','111'],
     }
-    for word in ['MEL','LAN','RUM','KAM','FRI']:
-        pf=[]
-        for y in range(7):
-            mid=''.join((font[c][y-1] if 1<=y<=5 else '000')+'0' for c in word)
-            bits='0000'+mid+'0000'
-            pf+=pfpack(bits)
-        byte('Title'+word,pf)
-    labeladdr('TitleWord',['TitleMEL','TitleLAN','TitleRUM','TitleKAM','TitleFRI'])
+    # One uninterrupted 9-character word across the FULL 40 PF pixels. A right-half
+    # TIA PF rewrite on every glyph scanline is required; CTRLPF=0 repeats by default.
+    # 3x5 source font x 9 chars + one zero spacer each + 2px left/right margin.
+    word='MELLANRUM'
+    left=[[],[],[]];right=[[],[],[]]
+    for y in range(7):
+        bits='00'+''.join((font[c][y-1] if 1<=y<=5 else '000')+'0' for c in word)+'00'
+        assert len(bits)==40
+        l=pfpack(bits[:20]);r=pfpack(bits[20:])
+        for idx in range(3):left[idx].append(l[idx]);right[idx].append(r[idx])
+    for i in range(3): byte(f'TitleLeftPF{i}',left[i]);byte(f'TitleRightPF{i}',right[i])
+    # Two NO-TEXT symbols: a tree-like triangle on the left and two open stems
+    # on the right. Selected mode is the brighter half, chosen by SELECT.
+    left_icons=['00011000','00111100','01111110']
+    right_icons=['01000010','01011010','01000010']
+    # Only PF2 is needed at the two distant icon positions (x12..19 / x32..39).
+    byte('TitleMenuLeftPF2',[pfpack('000000000000'+i)[2] for i in left_icons])
+    byte('TitleMenuRightPF2',[pfpack('000000000000'+i)[2] for i in right_icons])
+    # A negative central notch, outlined only by transitory conifer branches.
+    # Physically drawn PF OR+AND masks never enter the collision map or pfbuf.
+    byte('ShadowCrownOr', [0,0,0x73,0x35,0x13,0,0,0])
+    byte('ShadowCrownAnd',[0xFF,0xFF,0x7F,0x5F,0x3F,0xFF,0xFF,0xFF])
+    byte('ShadowStemOr',  [0,0,0x11,0x51,0x10,0x20,0,0])
+    byte('ShadowStemAnd', [0xFF,0xFF,0x1F,0x5F,0x1F,0x3F,0xFF,0xFF])
     result='\n'.join(out)+'\n'
     path=pathlib.Path(args.output)
     if args.check:
