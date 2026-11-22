@@ -1,7 +1,7 @@
 name: PACHINKO 2.0 E9EA genuine TIA WAV capture and objective metrics
 on:
   push:
-    branches: [pachinko/final-e9ea-20261122]
+    branches: [pachinko/p2-audio-retry-e9ea]
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,6 +34,12 @@ jobs:
           assert old in s
           s=s.replace(old,'rate := int64(plt.mode.RefreshRate)\n\tif rate <= 0 { rate = 60 } // Xvfb video monitor refresh fallback, GUI only\n\tplt.frameDuration = time.Duration(1000000000/rate) * time.Nanosecond')
           p.write_text(s)
+          p=Path('gui/sdlimgui/platform.go')
+          ss=p.read_text()
+          old_dpi='_, dpi, _, err := sdl.GetDisplayDPI(0)\n\treturn dpi * dpiScale, err'
+          assert old_dpi in ss
+          ss=ss.replace(old_dpi,'_, dpi, _, err := sdl.GetDisplayDPI(0)\n\tif err != nil || dpi <= 0 { return 96, nil } // virtual X display font DPI\n\treturn dpi * dpiScale, err')
+          p.write_text(ss)
           PY
           go build -o ../gopher2600_wav_gui .
           cd ../../..
