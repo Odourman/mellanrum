@@ -1,0 +1,106 @@
+name: PACHINKO 2.0 - REAL Stella 15-room 1500 seeded + 10k per room + 50k FRI
+on:
+  push:
+    branches: [pachinko/ab-e9ea-full-system-20261122]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-stella-per-room-seeded:
+    name: REAL_STELLA_room_${{ matrix.room }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        room: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Confirm frozen e9ea ROM and install native DASM
+        run: |
+          set -euo pipefail
+          echo "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  rom/bin/mellanrum_ntsc.bin" | sha256sum -c -
+          sudo apt-get update
+          sudo apt-get install -y dasm curl unzip
+          mkdir -p build/pachinko20
+          dasm rom/src/main.asm -f3 -obuild/pachinko20/rom.bin -sbuild/pachinko20/symbols.sym
+          cmp build/pachinko20/rom.bin rom/bin/mellanrum_ntsc.bin
+          curl -fL --retry 3 -o /tmp/stella.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -j /tmp/stella.zip -d build/pachinko20/
+          echo "2130ed1153cef66ef3f34bf9063f675f1f3342bc18320eb9ae5101743e3042df  build/pachinko20/stella_libretro.so" | sha256sum -c -
+      - name: Qualify AUTHENTIC joystick-reached 15-room prefix, no savestate injection
+        run: |
+          set -euo pipefail
+          python3 pachinko20/route_driver.py --core build/pachinko20/stella_libretro.so --rom build/pachinko20/rom.bin --sym build/pachinko20/symbols.sym --rooms reference/rooms.json --out build/pachinko20/prefix --frames 16000 > build/pachinko20/route_stdout.txt
+          python3 - <<'PY'
+          import json
+          d=json.load(open('build/pachinko20/prefix/result.json'))
+          assert d['status']=='PASS' and d['win_rooms']==list(range(15))
+          print('REAL_PREFIX_15_ROOM_PASS',d['emulated_frames'])
+          PY
+      - name: 100 REAL Stella sessions from controller-reached room checkpoint + 10k actual frames
+        run: |
+          set -euo pipefail
+          python3 pachinko20/seeded_matrix.py --core build/pachinko20/stella_libretro.so --rom build/pachinko20/rom.bin --sym build/pachinko20/symbols.sym --prefix build/pachinko20/prefix/controller_frame_events.json --room ${{ matrix.room }} --seeds 100 --frames 900 --long-frames 10000 --out build/pachinko20/room_${{ matrix.room }} | tee build/pachinko20/seed_stdout.txt
+      - name: SHA256 manifests even on FAIL
+        if: always()
+        run: |
+          mkdir -p build/pachinko20
+          (cd build/pachinko20 && find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko20-real-stella-room-${{ matrix.room }}
+          path: build/pachinko20/
+          if-no-files-found: warn
+          retention-days: 45
+  real-stella-fri-50000:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Real libretro Stella 50k FRI frames and TRUE TIA WAV
+        run: |
+          set -euo pipefail
+          echo "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  rom/bin/mellanrum_ntsc.bin" | sha256sum -c -
+          sudo apt-get update
+          sudo apt-get install -y curl unzip
+          mkdir -p build/pachinko20/cores
+          curl -fL --retry 3 -o /tmp/stella.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -j /tmp/stella.zip -d build/pachinko20/cores/
+          echo "2130ed1153cef66ef3f34bf9063f675f1f3342bc18320eb9ae5101743e3042df  build/pachinko20/cores/stella_libretro.so" | sha256sum -c -
+          python3 pachinko20/core_harness.py --core build/pachinko20/cores/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/pachinko20/FRI_50000 --frames 50000 --profile BOG --left B --seed 1902600 --snap-every 10000 --sample-every 1000 --audio-frames 3600 > build/pachinko20/FRI_stdout.txt
+          python3 - <<'PY'
+          import json,pathlib,wave
+          p=pathlib.Path('build/pachinko20/FRI_50000')
+          d=json.loads((p/'result.json').read_text())
+          assert d['emulated_frames']==50000 and d['video_callbacks']==50000
+          lines=[json.loads(x) for x in (p/'read_only_ram.jsonl').read_text().splitlines()]
+          # Physical byte RAM $B8 mode index 0x38. Only post-title frames require FRI.
+          for row in lines:
+            if row['frame']>25:
+              mode=bytes.fromhex(row['raw_ram_hex'])[0x38]
+              assert mode==4,(row['frame'],mode)
+          with wave.open(str(p/'tia_audio.wav')) as w:
+            assert w.getnframes()>50000
+            print('FRI_REAL_TIA_WAV_SAMPLES',w.getnframes(),w.getframerate())
+          (p/'full_50k_validation.json').write_text(json.dumps({'status':'PASS','actual_emulated_frames':50000,'mode_4_observed_on_read_only_ram_samples':len(lines),'actual_scanline_262':'NOT_RUN','human_audio_review':'NOT_RUN'},indent=2))
+          print('FRI_REAL_50K_FRAME_STABILITY_PASS')
+          PY
+      - name: SHA256 manifest
+        if: always()
+        run: |
+          mkdir -p build/pachinko20
+          (cd build/pachinko20 && find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko20-real-stella-FRI-50000-real-TIA-WAV
+          path: build/pachinko20/
+          if-no-files-found: warn
+          retention-days: 45
