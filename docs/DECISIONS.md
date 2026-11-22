@@ -75,3 +75,13 @@ Historical ROM_NOT_AUTHORIZED entries referred to work **before** the later full
 | MEL-027 | 2026-11-22 | Pachinko genomför bred flödes-/edge-case-stress, men fattar inga independent Verification- eller releasebeslut | SEPARATE_DIAGNOSTIC_ROLE | Användarens inriktning, Issue #6; independent Verification Issue #5 |
 
 **Historisk korrigering:** de första FAIL-körningarna (t.ex. `bb700a8`, run 45064295977, bytejämförelse vid byte 2911) är äldre än nuvarande lyckade `8bdecde`-CI. De får inte felaktigt förvandlas till nuvarande FAIL eller döljas ur historiken.
+
+## PACHINKO rapport mottagen – 2026-11-22
+
+| ID | Datum | Beslut eller fråga | Status | Källa / avgränsning |
+|---|---|---|---|---|
+| MEL-029 | 2026-11-22 | PACHINKO har avslutat en omfattande diagnostisk delkampanj mot oförändrad PR #4 SHA `8bdecde...`: rapporterade 2 400 modellexekveringar / 69 747 tick / noll ROM–modell-avvikelser / 152 adversariella fall | PACHINKO_DIAGNOSTIC_PARTIAL_WITH_EVIDENCE | [Pachinko report](PACHINKO_STRESS_TEST_REPORT_2026-11-22.md); fulla 150-posters bevis-ZIP finns inte hos MAIN, därför inte MAIN_REPRODUCED |
+| MEL-030 | 2026-11-22 | GitHub diagnostic Stella-körning 45069826844 på diagnostik-HEAD `e6e8f304...` SUCCESS; diff mot produkt bara en workflow, MAIN verifierade 13 PNG, 52 taps, SHA och manifest för faktiska artifact 14772668727 | STELLA_DIAGNOSTIC_OBSERVED / NOT_FULL_GAMEPLAY | [MAIN Pachinko intake](MAIN_PACHINKO_INTAKE_2026-11-22.md), ROM hash `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed` |
+| MEL-031 | 2026-11-22 | PACHINKO:s 0 nya verifierade fel innebär **inte** release-godkännande; prioritera oberoende full 15-rums Stella-/joystickreplay, TIA-raster, ljud, originalarkivets bevis, grafik och coda | RELEASE_BLOCKED / INDEPENDENT_VERIFICATION_PENDING | [Independent Verification Issue #5](https://github.com/Odourman/mellanrum/issues/5), PR #4 fortsatt Draft/open |
+
+**Historik:** MEL-024..MEL-027 förekommer två gånger i äldre avsnitt med närliggande betydelser. Dessa rader ska renummereras i en separat arkivstädning, inte tolkas som självständiga nya auktoritetsbeslut. Ingen historisk källa eller status skrivs över i tysthet.
