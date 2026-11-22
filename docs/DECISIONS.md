@@ -41,3 +41,14 @@ Vid ett nytt beslut: skriv `MEL-011` osv. Ändra inte historiska rader i tysthet
 | MEL-019 | 2026-11-22 | Ett enda produktionsmandat innebär inte falska PASS eller att utvecklaren blir sin egen oberoende verifierare | PROCESS_BOUNDARY | ROM DEVELOPMENT ska själv testa och dokumentera; separat VERIFICATION bedömer dess resultat |
 
 **Tolkning av tidigare MEL-010/MEL-016:** de historiska raderna gällde avsaknad av dåtidens ROM-startorder. Användaren har nu beslutat om en *framtida*, villkorad **fullproduktionsorder** efter GRAPHICS-intag. Ingen implementation har påbörjats i detta MAIN-steg och ingen faktisk ROM-order har ännu skickats. I den framtida prompten är däremot hela spelet i scope, utan behov av MAIN-mikrotillstånd mellan interna arbetsfaser.
+
+## GRAPHICS-handoff och fullspelsorder, 2026-11-22
+
+| ID | Datum | Beslut eller fråga | Status | Källa / avgränsning |
+|---|---|---|---|---|
+| MEL-020 | 2026-11-22 | GRAPHICS V5.1 huvudriktning `GITTERSKOG / BILDMELLANRUM` mottagen och accepterad som visuellt produktionsmål | VISUAL_DIRECTION_ACCEPTED_FOR_IMPLEMENTATION | Användarens GRAPHICS-handoff, MAIN:s granskning av 34-sidig avhandling; ZIP-data ännu inte egen bytevalidering |
+| MEL-021 | 2026-11-22 | 25 masker, 15 rum, 48 HUD-kombinationer, 20/20 tester och 15/15 rumslösningar är ännu endast rapporterade av GRAPHICS | GRAPHICS_REPORTED / MAIN_NOT_REPRODUCED | `docs/MAIN_GRAPHICS_V5_1_INTAKE_2026-11-22.md`; avhandlingens avsnitt M nämner även 23 genererade masker |
+| MEL-022 | 2026-11-22 | Användarens uttryckliga kommande enda fullproduktionsuppdrag är nu formulerat och publicerat till ROM DEVELOPMENT | FULL_GAME_ORDER_READY_FOR_HANDOFF | `docs/ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md`. Ingen kodexekvering eller ROM-produktion startad av MAIN |
+| MEL-023 | 2026-11-22 | Independent Verification förblir separat från ROM DEVELOPMENT:s utvecklartester | PROCESS_BOUNDARY_CONFIRMED | Användarens instruktion och GRAPHICS V5.1-handoff |
+
+**Tolkning:** Ett publicerat uppdragsdokument ger ROM DEVELOPMENT ett användarauktoriserat sammanhållet mandat **när uppdraget överlämnas**, utan efterföljande mikrogates. Det innebär inte att MAIN har utfört utveckling eller att källa/grafikpaket är bytevaliderade.
