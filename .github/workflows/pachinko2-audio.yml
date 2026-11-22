@@ -1,0 +1,53 @@
+name: PACHINKO 2.0 E9EA genuine TIA WAV capture and objective metrics
+on:
+  push:
+    branches: [pachinko/final-e9ea-20261122]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  genuine-TIA-WAV:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native emulator/build/video/audio dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev libgl1-mesa-dri xvfb xdotool dasm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+      - name: Frozen product identity, pinned genuine Gopher2600 + GUI-only Xvfb monitor-refresh guard
+        run: |
+          mkdir -p build/pachinko/audio_build
+          dasm rom/src/main.asm -f3 -obuild/pachinko/audio_build/native.bin
+          python3 pachinko2/check_identity.py build/pachinko/audio_build/native.bin
+          git clone --quiet https://github.com/JetSetIlly/Gopher2600.git build/pachinko/audio_build/upstream
+          cd build/pachinko/audio_build/upstream
+          git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('gui/sdlimgui/platform.go')
+          s=p.read_text()
+          old='plt.frameDuration = time.Duration(1000000000/int64(plt.mode.RefreshRate)) * time.Nanosecond'
+          assert old in s
+          s=s.replace(old,'rate := int64(plt.mode.RefreshRate)\n\tif rate <= 0 { rate = 60 } // Xvfb video monitor refresh fallback, GUI only\n\tplt.frameDuration = time.Duration(1000000000/rate) * time.Nanosecond')
+          p.write_text(s)
+          PY
+          go build -o ../gopher2600_wav_gui .
+          cd ../../..
+      - name: Actual TIA sound from Gopher2600 PLAY -wav, GUI on software X display
+        run: |
+          chmod +x pachinko2/capture_real_audio.sh
+          xvfb-run -a --server-args='-screen 0 1280x960x24' bash pachinko2/capture_real_audio.sh
+          python3 pachinko2/analyze_audio.py build/pachinko/real-audio
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko2-real-emulator-TIA-WAV-and-audio-metrics
+          path: build/pachinko/real-audio/
+          retention-days: 30
+      - name: Mark absence of measured PCM signal as INCONCLUSIVE not audio PASS
+        run: |
+          python3 -c "import json,sys;d=json.load(open('build/pachinko/real-audio/metrics.json'));print('REAL_WAV_STATUS',d['audio_capture_status'],d['real_wavs']);sys.exit(0 if d['audio_capture_status']=='PASS' else 1)"

@@ -1,0 +1,86 @@
+name: PACHINKO 2.0 E9EA large REAL emulator seeded room matrix
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  toolchain:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y git gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev dasm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+      - name: Pinned Gopher2600 from upstream release source
+        run: |
+          git clone --quiet https://github.com/JetSetIlly/Gopher2600.git gopher-src
+          (cd gopher-src && git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4 && go build -o ../gopher2600 .)
+          test "$(cd gopher-src && git rev-parse HEAD)" = 74c544203378c1448a33c29bc8b4586079b050f4
+          sha256sum gopher2600 > gopher2600.SHA256SUMS
+          dasm rom/src/main.asm -f3 -obuild-DASM.bin
+          python3 pachinko2/check_identity.py build-DASM.bin
+          cmp build-DASM.bin rom/bin/mellanrum_ntsc.bin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pachinko2-real-stress-pinned-gopher-toolchain
+          path: |
+            gopher2600
+            gopher2600.SHA256SUMS
+          retention-days: 30
+  true-room-stress:
+    runs-on: ubuntu-24.04
+    needs: toolchain
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        room: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Gopher2600 audio and display dynamic runtime libraries
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64
+      - uses: actions/download-artifact@v4
+        with:
+          name: pachinko2-real-stress-pinned-gopher-toolchain
+          path: build/gopher
+      - run: chmod +x build/gopher/gopher2600
+      - name: 100 seeded REAL 6507/TIA sessions after authentic joystick title->target-room route; 10K real consecutive idle frames
+        run: |
+          python3 pachinko2/stress_reachable.py --emulator build/gopher/gopher2600 --rom rom/bin/mellanrum_ntsc.bin --rooms reference/rooms.json --room ${{ matrix.room }} --seeds 100 --long-frames 10000 --out build/pachinko/stress/room${{ matrix.room }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko2-REAL-room${{ matrix.room }}-100seeds-10kframes
+          path: build/pachinko/stress/room${{ matrix.room }}/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Require actual emulator completion and correct target room for every observed seed
+        run: |
+          python3 -c "import json,sys;d=json.load(open('build/pachinko/stress/room${{ matrix.room }}/result.json'));print(d);sys.exit(0 if d['status']=='PASS' and d['sessions_executed_in_genuine_Gopher2600']==100 and d['long_run_executed']==10000 else 1)"
+  free-50k-real:
+    runs-on: ubuntu-24.04
+    needs: toolchain
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64
+      - uses: actions/download-artifact@v4
+        with:
+          name: pachinko2-real-stress-pinned-gopher-toolchain
+          path: build/gopher
+      - run: chmod +x build/gopher/gopher2600
+      - name: 50,000 genuine consecutive emulated frames of FRI SKOG, mode4 sampled each thousand
+        run: python3 pachinko2/free_long.py --emulator build/gopher/gopher2600 --rom rom/bin/mellanrum_ntsc.bin --out build/pachinko/free-50k --frames 50000
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko2-REAL-FRI-SKOG-50000-consecutive-frames
+          path: build/pachinko/free-50k/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Assert actual emulator mode latch and 50K completed frames
+        run: |
+          python3 -c "import json,sys;d=json.load(open('build/pachinko/free-50k/results.json'));print(d);sys.exit(0 if d['status']=='PASS' and d['actual_frames_completed']==50000 else 1)"
