@@ -52,3 +52,15 @@ Vid ett nytt beslut: skriv `MEL-011` osv. Ändra inte historiska rader i tysthet
 | MEL-023 | 2026-11-22 | Independent Verification förblir separat från ROM DEVELOPMENT:s utvecklartester | PROCESS_BOUNDARY_CONFIRMED | Användarens instruktion och GRAPHICS V5.1-handoff |
 
 **Tolkning:** Ett publicerat uppdragsdokument ger ROM DEVELOPMENT ett användarauktoriserat sammanhållet mandat **när uppdraget överlämnas**, utan efterföljande mikrogates. Det innebär inte att MAIN har utfört utveckling eller att källa/grafikpaket är bytevaliderade.
+
+## ROM DEVELOPMENT PR #4 handoff / independent verification gate, 2026-11-22
+
+| ID | Datum | Beslut eller fråga | Status | Källa / avgränsning |
+|---|---|---|---|---|
+| MEL-024 | 2026-11-22 | Full-game candidate accepted **for independent verification only**: Draft PR #4, exact head `8bdecde79a6bc1ecb804484d5d257f4f1a99b052` | CANDIDATE_REVIEWED / NOT_MERGED | User's ROM DEVELOPMENT handoff; MAIN inspected PR and CI logs |
+| MEL-025 | 2026-11-22 | Real native DASM builds 4,096 B standard NTSC 4K ROM; SHA-256 `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed` independently matched against downloaded current-head CI artifact | BUILD_PASS / MAIN_HASH_MATCH | CI run `45064977045`; no independent gameplay implied |
+| MEL-026 | 2026-11-22 | Stella boot smoke at exact PR head has four nonblank captured PNGs of title/gameplay; full 15-room real emulator run not established | STELLA_BOOT_SMOKE_PASS / GAMEPLAY_NOT_RUN | CI run `45064977006`, artifact `14769984347`, MAIN directly inspected images |
+| MEL-027 | 2026-11-22 | Independent Verification required before merge or release; scope documented in Issue #5 and Verification handoff | VERIFICATION_PENDING / RELEASE_BLOCKED | `docs/MAIN_TO_VERIFICATION_PR4_2026-11-22.md`; no independent PASS yet |
+| MEL-028 | 2026-11-22 | Simplified mirrored title and coda, omitted optional PF Presence seam/M1 mark and reduced animation explicitly require artistic conformance review | OPEN_ART_CONFORMANCE | Developer report; these deviations not necessarily full-graphics-accept |
+
+Historical ROM_NOT_AUTHORIZED entries referred to work **before** the later full-game order. That later user authorization was actually exercised by ROM DEVELOPMENT; the current gate concerns independent validation and release, **not a need for another implementation micro-authorization**.
