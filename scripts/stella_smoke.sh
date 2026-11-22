@@ -9,10 +9,20 @@ stella -rominfo build/mellanrum_ntsc.bin > build/stella/rominfo.txt 2>&1 || true
 stella -video software -fullscreen 0 -tia.zoom 3 -sssingle 0 -ss1x 1 -snapsavedir "${PWD}/build/stella" build/mellanrum_ntsc.bin > build/stella/stella.log 2>&1 &
 PID=$!
 trap 'kill "$PID" 2>/dev/null || true' EXIT
-sleep 4
-WIN=$(xdotool search --onlyvisible --name 'Stella' | head -1 || true)
+# The SDL/X window may be delayed on shared CI runners. Retry discovery.
+WIN=""
+for attempt in $(seq 1 20); do
+  WIN=$(xdotool search --onlyvisible --pid "$PID" | head -1 || true)
+  if [[ -z "$WIN" ]]; then WIN=$(xdotool search --onlyvisible --class '[Ss]tella' | head -1 || true); fi
+  if [[ -z "$WIN" ]]; then WIN=$(xdotool search --onlyvisible --name '[Ss]tella' | head -1 || true); fi
+  if [[ -n "$WIN" ]]; then break; fi
+  if ! kill -0 "$PID" 2>/dev/null; then break; fi
+  sleep 1
+done
 if [[ -z "$WIN" ]]; then
-  echo 'STELLA_SMOKE_FAIL: no visible emulator window'; cat build/stella/stella.log; exit 1
+  echo 'STELLA_SMOKE_FAIL: no visible emulator window'
+  cat build/stella/stella.log
+  exit 1
 fi
 xdotool windowfocus --sync "$WIN"
 xdotool key --clearmodifiers F12
