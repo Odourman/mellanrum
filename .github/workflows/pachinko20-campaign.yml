@@ -1,0 +1,77 @@
+name: PACHINKO 2.0 - REAL Stella frame-exact 15-room full campaign x2
+on:
+  push:
+    branches: [pachinko/ab-e9ea-full-system-20261122]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-controller-full-campaign:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Freeze exact product source, no production edits
+        run: |
+          set -euo pipefail
+          git diff --name-only 49eb168b17d0254d06cf50d87c60e8fb6016db6e HEAD | tee /tmp/diff
+          if grep -Ev '^(pachinko20/|.github/workflows/pachinko20-)' /tmp/diff; then exit 8; fi
+          echo "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  rom/bin/mellanrum_ntsc.bin" | sha256sum -c -
+      - name: Native DASM exact binary and 128B state map
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y dasm curl unzip
+          mkdir -p build/pachinko20/campaign
+          dasm rom/src/main.asm -f3 -obuild/pachinko20/mellanrum_ntsc.bin -lbuild/pachinko20/native.lst -sbuild/pachinko20/native.sym
+          cmp build/pachinko20/mellanrum_ntsc.bin rom/bin/mellanrum_ntsc.bin
+          echo "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  build/pachinko20/mellanrum_ntsc.bin" | sha256sum -c -
+          curl -fL --retry 3 -o /tmp/stella_libretro.so.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -j /tmp/stella_libretro.so.zip -d build/pachinko20/
+          echo "2130ed1153cef66ef3f34bf9063f675f1f3342bc18320eb9ae5101743e3042df  build/pachinko20/stella_libretro.so" | sha256sum -c -
+          python3 -m py_compile pachinko20/core_harness.py pachinko20/route_driver.py
+      - name: Authentic title -> 15 rooms -> 8s coda -> title, input-driven run #1
+        run: |
+          python3 pachinko20/route_driver.py --core build/pachinko20/stella_libretro.so --rom build/pachinko20/mellanrum_ntsc.bin --sym build/pachinko20/native.sym --rooms reference/rooms.json --out build/pachinko20/campaign/first --frames 16000 --audio-frames 16000 --screens | tee build/pachinko20/campaign/first.log
+      - name: Complete replay of run #1 inputs in real Stella; no solution logic
+        run: |
+          python3 pachinko20/route_driver.py --core build/pachinko20/stella_libretro.so --rom build/pachinko20/mellanrum_ntsc.bin --sym build/pachinko20/native.sym --rooms reference/rooms.json --out build/pachinko20/campaign/replay --frames 16000 --replay build/pachinko20/campaign/first/controller_frame_events.json --screens | tee build/pachinko20/campaign/replay.log
+      - name: Independently rerun source-informed real joystick solution from fresh power on
+        run: |
+          python3 pachinko20/route_driver.py --core build/pachinko20/stella_libretro.so --rom build/pachinko20/mellanrum_ntsc.bin --sym build/pachinko20/native.sym --rooms reference/rooms.json --out build/pachinko20/campaign/fresh --frames 16000 | tee build/pachinko20/campaign/fresh.log
+      - name: Compare exact real-RAM timeline, positions, coda and Presence
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          p=pathlib.Path('build/pachinko20/campaign')
+          runs=[json.loads((p/n/'result.json').read_text()) for n in ['first','replay','fresh']]
+          for r in runs:
+            assert r['status']=='PASS',r
+            assert r['win_rooms']==list(range(15)),r
+            assert r['back_to_title_frame'] is not None,r
+            assert r['video_callbacks']==r['emulated_frames'],r
+          assert runs[0]['win_frames']==runs[1]['win_frames']==runs[2]['win_frames']
+          for n in ['replay','fresh']:
+            assert (p/n/'timeline.jsonl').read_bytes()==(p/'first'/'timeline.jsonl').read_bytes(),n
+          pres=runs[0]['presence_by_last_three_rooms']
+          for i in (12,13,14):assert 2 in pres.get(str(i),[]),pres
+          (p/'comparison.json').write_text(json.dumps({'status':'PASS','evidence':'REAL_STELLA_FRAMEEXACT_2_REPLAYS','identical_win_frames':runs[0]['win_frames'],'screenshots':runs[0]['screen_count'],'presence':pres,'emulated_frames_per_run':[r['emulated_frames'] for r in runs],'full_campaign_not_human_playtest':True,'tia_scanline_audit':'NOT_RUN','human_audio_review':'NOT_RUN'},indent=2))
+          print('FULL_15_ROOM_REAL_EMULATOR_TRIPLE_REPLAY_PASS',json.dumps(runs[0]['win_frames']))
+          PY
+      - name: Bundle manifest, including native WAV and original PNGs
+        if: always()
+        run: |
+          set -euo pipefail
+          (cd build/pachinko20 && find campaign -type f -print0 | sort -z | xargs -0 sha256sum > ARTIFACT_SHA256SUMS.txt)
+          git rev-parse HEAD > build/pachinko20/diagnostic_branch_HEAD.txt
+          echo 49eb168b17d0254d06cf50d87c60e8fb6016db6e > build/pachinko20/frozen_product_commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko20-REAL-controller-full15-triple-replay-presence-coda
+          path: build/pachinko20/
+          if-no-files-found: warn
+          retention-days: 45
