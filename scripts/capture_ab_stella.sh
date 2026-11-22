@@ -39,14 +39,20 @@ run_case() {
   event SELECT_TITLE F1
   event TITLE_UP Up;event TITLE_DOWN Down;event TITLE_LEFT Left;event TITLE_RIGHT Right
   capture title_after_select_joystick
-  event FIRE_DOWN_NOT_SELECT space
+  echo -e "$id\tFIRE_DOWN_NOT_SELECT\tspace HELD 0.40s\t$(( $(date +%s)-start ))" >> build/ab/input_events.tsv
+  xdotool keydown --clearmodifiers space
+  sleep 0.40
+  xdotool keyup --clearmodifiers space
   sleep 2;capture running_initial
   if [[ "$alt" == A ]]; then event LEFT_CHANGED_MIDGAME F5;else event LEFT_CHANGED_MIDGAME F6;fi
   if [[ "$right" == A ]]; then event RIGHT_CHANGED_MIDGAME F8;else event RIGHT_CHANGED_MIDGAME F7;fi
   capture running_after_difficulty_change
   event RESET F2
   sleep 0.8;capture title_after_reset
-  event FIRE_AFTER_RESET space
+  echo -e "$id\tFIRE_AFTER_RESET\tspace HELD 0.40s\t$(( $(date +%s)-start ))" >> build/ab/input_events.tsv
+  xdotool keydown --clearmodifiers space
+  sleep 0.40
+  xdotool keyup --clearmodifiers space
   sleep 2;capture running_after_reset
   kill "$pid" 2>/dev/null || true
   wait "$pid" 2>/dev/null || true
