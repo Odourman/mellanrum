@@ -51,3 +51,13 @@ Slutleveransen anger 25 maskvärden men ett avsnitt anger 23; 20/20 Python och 1
 | M-CAND-016 | [Independent Verification handoff](https://github.com/Odourman/mellanrum/blob/main/docs/MAIN_TO_VERIFICATION_PR4_2026-11-22.md) | exact scope, source/ROM IDs, tests, stop criteria | READY_FOR_SEPARATE_VERIFICATION |
 
 Historical M-CAND-005..011 describe MAIN's **earlier** source-limited intake; M-CAND-015 records later developer-supplied evidence without silently changing those historical claims.
+
+## ROM V5.1 runtime candidate 2026-11-22
+
+| ID | Källa | SHA/typ | Status |
+|---|---|---|---|
+| M-CAND-012 | [PR #4 immutable head](https://github.com/Odourman/mellanrum/tree/8bdecde79a6bc1ecb804484d5d257f4f1a99b052) | commit `8bdecde79a6bc1ecb804484d5d257f4f1a99b052` | DRAFT / DEVELOPER_BUILD_PASS |
+| M-CAND-013 | [Native DASM build artifact](https://github.com/Odourman/mellanrum/actions/runs/45064977045) | 4096-byte ROM SHA256 `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed` | BUILD_PASS, GAMEPLAY_NOT_FULLY_VERIFIED |
+| M-CAND-014 | [Actual Stella boot snapshots](https://github.com/Odourman/mellanrum/actions/runs/45064977006) | four actual emulator PNG captures from same head | BOOT_SMOKE_PASS, NOT 15-room replay |
+| M-CAND-015 | [PACHINKO independent diagnostics instructions](MAIN_TO_PACHINKO_STRESS_TEST_2026-11-22.md) | Issue #6; no result attached yet | DIAGNOSTIC_HANDOFF_READY |
+| M-CAND-016 | [Independent verification brief](MAIN_TO_VERIFICATION_PR4_2026-11-22.md) | Issue #5 | VERIFICATION_PENDING |
