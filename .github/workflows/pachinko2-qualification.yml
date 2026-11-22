@@ -81,3 +81,57 @@ jobs:
           path: build/pachinko/qualification/
           if-no-files-found: warn
           retention-days: 30
+
+  raster-real:
+    runs-on: ubuntu-24.04
+    needs: [identity-build, emulator-build]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned emulator runtime
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64
+      - uses: actions/download-artifact@v4
+        with:
+          name: pachinko2-gopher2600-pinned-emulator
+          path: build/gopher
+      - run: chmod +x build/gopher/gopher2600
+      - name: Measure actual TIA frame scanlines in two independent trials
+        run: python3 pachinko2/real_raster.py --emulator build/gopher/gopher2600 --rom rom/bin/mellanrum_ntsc.bin --out build/pachinko/raster --frames 120 --repeat 2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko2-real-gopher-raster-two-reproductions
+          path: build/pachinko/raster/
+          retention-days: 30
+      - name: Fail raster acceptance when genuine emulator measures wrong scanlines
+        run: python3 -c "import pathlib,json,sys;rs=[json.loads(p.read_text()) for p in pathlib.Path('build/pachinko/raster').glob('run_*/result.json')]; print('RASTER_CASE_STATUSES',[(r['id'],r['status']) for r in rs]);sys.exit(0 if len(rs)==2 and all(r['status']=='PASS' for r in rs) else 1)"
+  campaign-real:
+    runs-on: ubuntu-24.04
+    needs: [identity-build, emulator-build]
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        attempt: [1, 2]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned emulator runtime
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64
+      - uses: actions/download-artifact@v4
+        with:
+          name: pachinko2-gopher2600-pinned-emulator
+          path: build/gopher
+      - run: chmod +x build/gopher/gopher2600
+      - name: Real input-driven title-15 rooms-coda campaign replay (not model teleport)
+        run: |
+          python3 pachinko2/campaign_attempt.py --emulator build/gopher/gopher2600 --rom rom/bin/mellanrum_ntsc.bin --rooms reference/rooms.json --out build/pachinko/campaign/attempt${{ matrix.attempt }} --attempt ${{ matrix.attempt }}
+          python3 pachinko2/analyze_campaign.py --dir build/pachinko/campaign/attempt${{ matrix.attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko2-real-campaign-attempt-${{ matrix.attempt }}
+          path: build/pachinko/campaign/attempt${{ matrix.attempt }}/
+          retention-days: 30
+      - name: Assert 15 actual room wins and normal coda/title transition
+        run: |
+          python3 -c "import json,sys;d=json.load(open('build/pachinko/campaign/attempt${{ matrix.attempt }}/campaign_real_result.json'));print('REAL_CAMPAIGN_GATE',d['status'],d['room_wins_demonstrated'],d['first_blocked_room']);sys.exit(0 if d['status']=='PASS' and d['room_wins_demonstrated']==15 else 1)"
