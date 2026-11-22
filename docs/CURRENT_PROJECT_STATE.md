@@ -1,8 +1,8 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-22 (after user-authorized title/Presence revision and Pachinko 2.0 order).
-**Phase:** **V1 4K candidate baseline / user-authorized scoped revision pending / Pachinko 2.0 full-system CI planned**.
-**Implementation:** 15-room Atari 2600 / NTSC / standard 4K **candidate exists on PR #4 only**, branch `romdev/fullgame-20261122`, head `8bdecde79a6bc1ecb804484d5d257f4f1a99b052`. **PR open + Draft + unmerged.** Main branch does not yet contain the game.
+**Updated:** 2026-11-22 (MAIN independently inspected Issue #8 delivery; A/B separate order #9 now issued).
+**Phase:** **TITLE+PRESENCE DEVELOPER CANDIDATE RECEIVED / HARDWARE A/B IMPLEMENTATION ORDER OPEN / PACHINKO 2.0 FINAL FREEZE PENDING**.
+**Implementation:** Updated 15-room 4K NTSC product candidate exists on Draft PR #4, head `eea14339010306de635a8c6238e242b76b28cc64`; `main` contains coordination docs, not merged game. Native ROM SHA256 `a9531d5bbbff033711fbe54f8688b8e0259640e0a9a284c8ab585eea415c0bd5` (4096 bytes), verified from GitHub Actions by MAIN. **Further A/B-only UI/input change is ordered but not implemented; this SHA is not final for full Pachinko.**
 **Release:** **NOT APPROVED**. Independent gameplay, visual, sound and hardware testing is not complete.
 
 ## Nästa auktoriserade designbeslut, uppskjutet ROM-arbete – A/B-konsolreglage
@@ -10,6 +10,16 @@
 - **USER-APPROVED control design, NOT YET IMPLEMENTED:** vänstra fysiska Difficulty-reglaget används **exklusivt** för val av spelläge; **A = Kampanj (standard)** och **B = FRI SKOG**. Joystick och SELECT får inte byta spelläge; FIRE startar den hårdvaruvalda varianten, titelskärmen visar enbart `MELLANRUM`.
 - **Mekanisk begränsning:** ROM kan läsa Difficulty A/B, men kan inte flytta det fysiska reglaget till A. "Standard Kampanj" betyder normalt läge när A är inställt; om användaren har reglaget på B aktiveras B vid nästa start. Under pågående spel ska A/B inte tvinga ett oavsiktligt lägesbyte.
 - **WAIT:** användaren vill att ROM DEVELOPMENT först slutför befintlig Issue #8 (titel och Närvaro). MAIN ska ge ett separat nytt ändringsuppdrag efter leveransen och därefter uppdatera PACHINKO 2.0 till den resulterande SHA. Detta dokument ger ingen auktorisation att utöka pågående kodscope.
+
+## Developer title + Presence delivery (Issue #8), MAIN intake
+
+[MAIN technical/artistic intake](MAIN_ROMDEV_ISSUE8_INTAKE_2026-11-22.md) · [Developer original matrix at exact commit](https://github.com/Odourman/mellanrum/blob/eea14339010306de635a8c6238e242b76b28cc64/docs/ISSUE8_TEST_MATRIX_2026-11-22.md) · [Stella Actions](https://github.com/Odourman/mellanrum/actions/runs/45073465951).
+
+- PR #4 is Draft/open/unmerged at `eea14339010306de635a8c6238e242b76b28cc64`. Main downloaded native DASM developer artifact `14773519887`; archive CRC verified, ROM 4096 bytes, SHA256 `a9531d5bbbff033711fbe54f8688b8e0259640e0a9a284c8ab585eea415c0bd5`. Intermediate `d1005a...` and old `ec791...` are superseded product candidates, never retarget old Pachinko runs.
+- Main downloaded actual Stella evidence artifact `14774191179`; title now reads exactly **MELLANRUM** on one line, with nonverbal mode icons. Geometric partial Presence is visibly rendered in III-03/04/05 through **instrumented Reset-only test-variant ROMs** (not native 15-room production ROM route). No physics changed reported by ROMDEV; MAIN has not independently audited all source/oracle.
+- Actual emulator playthrough 15/15, full beam cycles, audible review, PAL, hardware and independent Verification remain NOT_RUN/PENDING. Issue #8 implementation developer reception **is not** independent release approval.
+- **New post-#8 order** [hardware A/B issue #9](https://github.com/Odourman/mellanrum/issues/9): LEFT Difficulty A=Campaign (recommended normal), B=FRI SKOG; only console physical A/B selects; joystick and SELECT must not change mode, FIRE starts switch selection. The previous text-free **selectable icons must no longer form a navigable menu**. Read the hardware SWCHB bit 6, preserve running mode while A/B toggles; mechanical default A cannot be software-forced. [Full directive](MAIN_TO_ROMDEV_AB_HARDWARE_ONLY_2026-11-22.md).
+- **PACHINKO 2.0** diagnostic infrastructure may start now; full-game final system stress must freeze **the next immutable A/B ROM SHA after #9**, and independent Verification must use the same next SHA. No release/PR merge authorization given.
 
 ## Nya användarbeslut: titel, Närvaron och fullständig Pachinko 2.0-testning (2026-11-22)
 
