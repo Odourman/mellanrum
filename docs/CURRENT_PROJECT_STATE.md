@@ -5,6 +5,13 @@
 **Implementation:** Final current NTSC 4096-byte 4K ROM candidate lives only on open Draft PR #4, evidence HEAD **`49eb168b17d0254d06cf50d87c60e8fb6016db6e`**, game-code commit **`6cb86247c668162b180e5d77377098941b9803b3`**, native DASM ROM SHA256 **`e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974`**. MAIN independently checked actual ROM bytes from GitHub Actions artifacts. Not merged/released. Previous `a953...` visual revision and `ec791...` baseline are superseded.
 **Release:** **NOT APPROVED**. Gopher native raster gate FAILED 261 vs required 262; independent Stella beam check and remaining systems/arts/audio/hardware Verification not complete.
 
+## Nästa grafiska steg: separata förstudier utfärdade 2026-11-23
+
+- [GRAPHICS: rödorange sigill och 3 alternativa par, palett, pixelmasker, BL-uggla/M0-markör](https://github.com/Odourman/mellanrum/issues/13): **DESIGN STUDY ONLY / PENDING DELIVERABLE**.
+- [ROM DEVELOPMENT: självständig TIA-objekt-/färg-/rastergenomförbarhet av PF/BL/P0/P1/M0](https://github.com/Odourman/mellanrum/issues/14): **TECHNICAL FEASIBILITY ONLY / PENDING DELIVERABLE**. Disposable distinct-SHA diagnostic PoC allowed in own branch; production ROM source NOT authorized for modification.
+- MAIN ska granska konkreta 8×8-symbolpar, TIA-palett, kontrast, markör och den avsiktligt kamouflerade BL-ugglan i alla tre akter, samt teknisk cykel/4K-risk, **innan** användaren väljer konstverk och eventuell ny implementation auktoriseras.
+- Alternativa verkliga positionsbyten mellan stone/exit är ännu OPEN och skulle kräva nya rumslösningar. Befintlig PACHINKO SHA `e9ea87d3...`, utredning #12 och independent Verification fortsätter utan ändrad produktkod.
+
 ## Kommande symbolestetik: godkänd designriktning, ej implementerad (2026-11-23)
 
 Användaren har valt **rödorange som gemensam färg för de två egna, mystiska tecknen och spelarens markör**; ugglan får vara avsiktligt svår att upptäcka och ska om möjligt dela skogens/trädens färg. Stenen/utgången föreslås bli två olika tecken utan utlagd betydelse. Nuvarande tekniska kandidat PF=träd, BL=uggla, P0/P1=tecken, M0=markör är **inte tekniskt verifierad eller godkänd för ROM-implementation**. Markören M0 skulle dela P0:s rödorange färg. Rödorange är användarens precisering och ersätter tidigare formulering enbart 'orange'; exakt NTSC-färgkod är ännu inte vald. Utvärdera sprite-silhuetter, återstående TIA-färgkopplingar, objektkollisioner, fulla 15-rums-kampanjens läsbarhet och rasterbudget innan tekniskt beslut.
