@@ -82,3 +82,15 @@ Older registry entries `M-CAND-012..016` were duplicated in historical append-on
 | M-REF-005 | [Prior diagnostic workflow](https://github.com/Odourman/mellanrum/blob/e6e8f3047d2006418fee0e93a01fb918b7d6e186/.github/workflows/pachinko-stella-diagnostic.yml) | Product baseline `8bdecde...`, 52 wall-clock taps, 13 Stella screenshots, dummy audio | HISTORICAL_STELLA_DIAGNOSTIC, NOT 15-ROOM/FRAME-EXACT/AUDIO |
 
 No new ROM SHA is yet available. Do not use the old `ec791333...` ROM identity to assert new title/silhouette implementation. Gopher2600 and Stella APIs are tools to verify against installed versions rather than conjectural guarantees.
+
+## Latest native candidate after title+Presence – 2026-11-22
+
+| ID | Källa | Identifierare/evidens | Status |
+|---|---|---|---|
+| M-CAND-021 | [Draft PR #4 head](https://github.com/Odourman/mellanrum/commit/eea14339010306de635a8c6238e242b76b28cc64) | `eea14339010306de635a8c6238e242b76b28cc64`; source code `6f6319be31985ea9009b7c21988f2977f1509e46` | DEVELOPER_TITLE_PRESENCE_REVISION / NOT_MERGED |
+| M-CAND-022 | [DASM native CI artifact 14773519887](https://github.com/Odourman/mellanrum/actions/runs/45072844664/artifacts/14773519887) | 4096-byte NTSC ROM, SHA256 `a9531d5bbbff033711fbe54f8688b8e0259640e0a9a284c8ab585eea415c0bd5`; MAIN bytes checked, ZIP CRC good | MAIN_ROM_HASH_CHECK_PASS / NOT_FULL_GAMEPLAY |
+| M-CAND-023 | [Stella visual artifact 14774191179](https://github.com/Odourman/mellanrum/actions/runs/45073465951/artifacts/14774191179) | 193 ZIP entries; includes genuine product-ROM title captures and **instrumented variant** Presence captures III-03/04/05 | TITLE_REAL_STELLA_OBSERVED / PRESENCE_TEST_VARIANT_ONLY |
+| M-CAND-024 | [MAIN Issue #8 intake](MAIN_ROMDEV_ISSUE8_INTAKE_2026-11-22.md) | Evidensgränser, developer SHA/visual acceptance, new AB dependency | MAIN_REVIEWED / PACHINKO_FINAL_PENDING |
+| M-SRC-008 | [Main to ROM DEV A/B order](MAIN_TO_ROMDEV_AB_HARDWARE_ONLY_2026-11-22.md) | [Issue #9](https://github.com/Odourman/mellanrum/issues/9), source decision MEL-037 | IMPLEMENTATION_AUTHORIZED / NOT_YET_BUILT |
+
+Previous `M-CAND-012..020` are historical and/or duplicated append-only IDs. Do not treat old SHA evidence as if it validates the later `a953...` ROM or future post-A/B changes.
