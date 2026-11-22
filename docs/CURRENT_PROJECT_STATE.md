@@ -1,42 +1,32 @@
 # Mellanrum: aktuellt projektläge
 
-**Senast uppdaterad:** 2026-11-22  
-**Fas:** G0-källintag och GRAPHICS V5.1 överlämnad. Fullständig ROM-order formulerad och redo att lämnas till ROM DEVELOPMENT; ingen ROM har påbörjats av MAIN.  
-**Implementationsstatus:** INGEN ROM-kod eller spelbar ROM. **Uppdragsstatus:** En fullproduktionsorder i ett svep är dokumenterad efter mottagen GRAPHICS-överlämning.  
-**Verifieringsstatus:** CI_STATIC_PASS för projektkontroller i [run #3](https://github.com/Odourman/mellanrum/actions/runs/45059313938); ROM_BUILD_NOT_RUN för DASM-build samt NOT_RUN för Stella, Gopher2600, fysisk konsol, spelbarhet, ljud och rastertiming.
+**Updated:** 2026-11-22 (after ROM DEVELOPMENT full-game candidate handoff).
+**Phase:** **V1 candidate / G1: INDEPENDENT_VERIFICATION_PENDING**.
+**Implementation:** 15-room Atari 2600 / NTSC / standard 4K **candidate exists on PR #4 only**, branch `romdev/fullgame-20261122`, head `8bdecde79a6bc1ecb804484d5d257f4f1a99b052`. **PR open + Draft + unmerged.** Main branch does not yet contain the game.
+**Release:** **NOT APPROVED**. Independent gameplay, visual, sound and hardware testing is not complete.
 
-## Bekräftad projektidentitet
-- Namn: **Mellanrum** (beslutat av användaren).
-- Plattformsmål: **Atari 2600**.
-- GitHub: https://github.com/Odourman/mellanrum
-- Google Drive: https://drive.google.com/drive/folders/1rO3ZTTBgyZZhqOx1WCxevM6sE3CrvUcl
-- GitHub Actions: bootstrap-workflow tillförd och körd. [Run #2, commit f7cde196](https://github.com/Odourman/mellanrum/actions/runs/45059253560): `project-checks` **SUCCESS**, `rom-build` slutförd med explicit `ROM_BUILD_NOT_RUN`; DASM-installation, assemblering och artefaktpublicering SKIPPED eftersom ROM-källa saknas.
-- MAIN-roll: samordning, spårbarhet, uppdrag, mottagning, granskning – inte automatiskt utveckling eller oberoende Verification.
+## What was actually checked by MAIN
 
-## Designkällans ställning
-Användaren har överlämnat ett nytt V5.1-förslag till MAIN. Den indexerade filen `MELLANRUM_V5_1_SKOGEN_SOM_LYSSNAR_KRITISKT_REVIDERAD_AVHANDLING.md` har gått att läsa i Library och granska som text. **Det efterfrågade V5.1-ZIP-paketet med `LAS_MIG_FORST.md`, Python-skript och testresultat har däremot inte varit åtkomligt i denna konversation.** Inga original- eller kodhashar har därför verifierats och 15/15-modellresultatet är endast källans *påstående*, inte MAIN:s reproducerade test.
+- [PR #4](https://github.com/Odourman/mellanrum/pull/4): 31 changed files, entire V5.1 game logic candidate, original game maps/data, 6507 assembler, tests, CI workflows, reports.
+- [Current-head native DASM CI](https://github.com/Odourman/mellanrum/actions/runs/45064977045): `SUCCESS` at exact head. Job logs show 4096-byte ROM, native DASM byte equality to independent developer subset assembler, V5.1 Python tests 20/20 and ROM-model comparisons 15/15 plus 225 random runs / 4352 ticks and developer raster checks.
+- **MAIN independently downloaded and hashed the native Actions ROM bytes**: SHA-256 `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed`; size 4,096; reset vector `$F000`; Stella reported NTSC / 4K.
+- [Current-head Stella boot smoke](https://github.com/Odourman/mellanrum/actions/runs/45064977006): `SUCCESS`; extracted and examined four nonblank 320×228 original Stella PNG captures of title and gameplay. This supports a genuine Stella boot/title/snapshot smoke only; **not gameplay verification of all rooms or pixel/raster/sound fidelity**.
+- Development source integrity (GRAPHICS 116/116 manifest, 25 8×8 mask records, 15 original rooms, 20/20 Python, 15/15 original room solutions) is documented in [developer source provenance](https://github.com/Odourman/mellanrum/blob/romdev/fullgame-20261122/docs/PROVENANCE.md). That original ZIP validation was **performed by ROM DEVELOPMENT and reported to MAIN**, not independently repeated by MAIN.
 
-**Bedömning:** V5.1 är en betydligt starkare och välstrukturerad designkandidat än föregående V5. Formell acceptans avvaktar källpaket/regelpreciseringar. Granskning: [MAIN V5.1 review](MAIN_V5_1_REVIEW_2026-11-22.md). Tre materiella motiv, tre akter, femton rum och Närvarons tvåtick-fönster är *föreslagna regler* i väntan på beslut. Ingen gameplay-ROM får startas.
+## MAIN verdict / next action
 
-## Aktuell uppdatering 2026-11-22: GRAPHICS och fullspelet
-- GRAPHICS slutrapport har granskats via den läsbara 34-sidiga grafikavhandlingen. Riktningen **GITTERSKOG / BILDMELLANRUM** accepteras som visuellt implementeringsmål.
-- Fullständig handoff: [MAIN GRAPHICS V5.1 intake](MAIN_GRAPHICS_V5_1_INTAKE_2026-11-22.md).
-- En **komplett fullspelsorder** är färdig: [ROM DEVELOPMENT FULL GAME ORDER](ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md). Användaren har begärt ett enda sammanhållet mandat och stor självständig teknisk/konstnärlig problemlösning.
-- GRAPHICS:s och V5.1:s ZIP-filer återfanns i Project/Library, men kan inte öppnas som råbyte i MAIN-sessionen. Källgranskning och 20/20/15/15-test måste reproduceras i ROM DEVELOPMENT:s första interna moment. Grafikhäftets 25 vs 23 bitmapuppgift ska redas ut mot faktiska datatabeller.
-- **Ingen ROM byggd, ingen emulator eller independent Verification körd.**
+**Accepted for independent Verification only.** Request is recorded in [Issue #5](https://github.com/Odourman/mellanrum/issues/5), with [exact scope and acceptance matrix](MAIN_TO_VERIFICATION_PR4_2026-11-22.md). The [development issue #2](https://github.com/Odourman/mellanrum/issues/2) and [PR #4](https://github.com/Odourman/mellanrum/pull/4) remain open as applicable.
 
-## Gjort
-- GitHub-repot inventerat som tomt vid projektstart.
-- Drive-projektmapp skapad.
-- Projektstyrning och statisk CI/valfritt assemblersteg initierade. Det första faktiska projektkontrollsjobbet är grönkört, utan ROM.
+Verification should use immutable commit and ROM SHA, rebuild DASM cleanly, replay all 15 rooms using actual frame-level joystick input in a real Atari emulator, check input/echo/phase/Presence, TIA registers and long-run 262-line budget, watch title/intermediate/coda assets and both audio channels. PAL and real hardware are `NOT_IMPLEMENTED/NOT_RUN` unless independently tested.
 
-## Nästa grind: G0-DESIGN-INTAKE
-1. Ta in det faktiska V5.1-ZIP-paketet inklusive `LAS_MIG_FORST.md`, `reference/engine.py`, `reference/solve.py`, testfiler, JSON-vittnen, kartor och bildoriginal.
-2. Ange källa, datum, filhash, verifiera abstrakta tester och status för föreslagna regler; följ granskningens öppna punkter.
-3. Bestäm vad som kräver normativ precisering: FIRE-edge-kö, tickprioritet, videonegativ utan kollisionsändring och RAM-/stackrisk; håll ljudprototyp separat från verifierad ROM.
-4. **Fullspelsuppdraget har nu formulerats** i [ROM DEVELOPMENT FULL GAME ORDER](ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md). Nästa genomförande är överlämning till ROM DEVELOPMENT tillsammans med original-ZIP:erna, första interna källkontroll och därefter hela spelimplementeringen. Inga mikrogates under ROM-teamets arbete; oberoende Verification hålls separat.
+## Deliberate developer design divergences that require review
 
-**Befintlig nästa arbetsorder:** [GitHub Issue #1 – G0 designintag](https://github.com/Odourman/mellanrum/issues/1). Ingen automatiskt påbörjad kodning i MAIN-chatten; den framtida fullspelsordern skickas som en uttrycklig handoff efter GRAPHICS-underlaget.
+- 4 KiB standard cartridge versus original 16 KiB F6 *provisional technical hypothesis*.
+- Simplified mirrored abbreviated title, coda still uses ordinary forest rather than planned single-tree reduction, omitted optional Presence local PF seam and M1 chisel, reduced animation and transitions, FRI SKOG uses four source Act III geometries.
+- These do not automatically invalidate model behavior but **must not silently be called full GRAPHICS visual conformance**. Evaluate with GRAPHICS/user if important.
 
-## Statusetiketter
-`NOT_RUN` betyder att provet inte genomförts. `SOURCE_ONLY` gäller dokumentstudier. `CI_STATIC_PASS` endast det CI verkligen kontrollerat. `BUILD_PASS` endast korrekt assembler-/binärkontroll. Ingen får skriva "fungerar i Stella" utan emulatorevidens.
+## Authority and historical decisions
+
+Project identity: [GitHub](https://github.com/Odourman/mellanrum) and [Drive folder](https://drive.google.com/drive/folders/1rO3ZTTBgyZZhqOx1WCxevM6sE3CrvUcl). User's full-game authorization was passed to ROM DEVELOPMENT in [full-game order](ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md). GAMEPLAN baseline V5.1 and `GITTERSKOG / BILDMELLANRUM` visual direction are implementation targets. Historic G0 source access limitations are documented in [V5.1 review](MAIN_V5_1_REVIEW_2026-11-22.md) and [Graphics intake](MAIN_GRAPHICS_V5_1_INTAKE_2026-11-22.md); the later developer's own source-validation does not make MAIN's earlier claims of inability false.
+
+**Evidence status:** `DASM_BUILD_PASS`, `MAIN_ROM_HASH_MATCH`, `DEVELOPER_MODEL_PASS`, `STELLA_BOOT_SCREENSHOTS_SEEN`, `FULL_REAL_EMULATOR_GAMEPLAY_NOT_RUN`, `AUDIO_LISTEN_NOT_RUN`, `HARDWARE_NOT_RUN`, `PAL_NOT_IMPLEMENTED`, `INDEPENDENT_VERIFICATION_NOT_RUN`. Main has not merged or released any ROM.
