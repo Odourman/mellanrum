@@ -72,3 +72,13 @@ Historical M-CAND-005..011 describe MAIN's **earlier** source-limited intake; M-
 | M-CAND-020 | [MAIN's Pachinko intake](MAIN_PACHINKO_INTAKE_2026-11-22.md) | Source classifications and independent test priorities | MAIN_REVIEW / NO_RELEASE_PASS |
 
 Older registry entries `M-CAND-012..016` were duplicated in historical append-only sections; do not interpret repeated IDs as separate sources or assume highest repeated section changes provenance authority.
+
+## User-authorized revisions and Pachinko 2.0 scope – 2026-11-22
+
+| ID | Källa | Bindande identifierare | Status |
+|---|---|---|---|
+| M-SRC-006 | [ROM DEVELOPMENT scope: title and fleeting Presence](MAIN_TO_ROMDEV_TITLE_AND_PRESENCE_2026-11-22.md) | User-approved design delta, [Issue #8](https://github.com/Odourman/mellanrum/issues/8) | USER_APPROVED / IMPLEMENTATION_PENDING |
+| M-SRC-007 | [PACHINKO 2.0 full test order](MAIN_TO_PACHINKO_2_0_FULL_COVERAGE_2026-11-22.md) | Planned tests for **next** immutable ROM SHA, [Issue #7](https://github.com/Odourman/mellanrum/issues/7) | TEST_INFRASTRUCTURE_AUTHORIZED / NOT_EXECUTED |
+| M-REF-005 | [Prior diagnostic workflow](https://github.com/Odourman/mellanrum/blob/e6e8f3047d2006418fee0e93a01fb918b7d6e186/.github/workflows/pachinko-stella-diagnostic.yml) | Product baseline `8bdecde...`, 52 wall-clock taps, 13 Stella screenshots, dummy audio | HISTORICAL_STELLA_DIAGNOSTIC, NOT 15-ROOM/FRAME-EXACT/AUDIO |
+
+No new ROM SHA is yet available. Do not use the old `ec791333...` ROM identity to assert new title/silhouette implementation. Gopher2600 and Stella APIs are tools to verify against installed versions rather than conjectural guarantees.
