@@ -5,6 +5,12 @@
 **Implementation:** Final current NTSC 4096-byte 4K ROM candidate lives only on open Draft PR #4, evidence HEAD **`49eb168b17d0254d06cf50d87c60e8fb6016db6e`**, game-code commit **`6cb86247c668162b180e5d77377098941b9803b3`**, native DASM ROM SHA256 **`e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974`**. MAIN independently checked actual ROM bytes from GitHub Actions artifacts. Not merged/released. Previous `a953...` visual revision and `ec791...` baseline are superseded.
 **Release:** **NOT APPROVED**. Gopher native raster gate FAILED 261 vs required 262; independent Stella beam check and remaining systems/arts/audio/hardware Verification not complete.
 
+## Senaste användarprecisering MEL-045 (2026-11-23)
+
+**De två mystiska tecknen ska ersätta både STEN och UTGÅNG visuellt.** Deras och markörens färg är **rödorange**. **Ugglans färg är öppen**, inte nödvändigtvis samma som trädens; det tidigare BL/PF-kamouflaget var bara en teknisk idé. Teknisk arkitektur jämförs nu utan påtvingad ugglefärg: P0/P1 fulla tecken + BL-uggla; P0/P1 fulla tecken + M1-uggla; alternativ som behåller stor P0-uggla och kombinerar PF/GRP/färgtrick måste prövas mot verkliga samtidigheter. Samtliga 30 trick i användarens uppladdade Let Me Out!-avhandling och original 30-tricksbilaga har granskats rådgivande, inte emulatortestats för Mellanrum. Se [beslut MEL-045](DECISIONS.md) och [tekniskt Issue #14](https://github.com/Odourman/mellanrum/issues/14).
+
+**Ingen förändring av PR #4 eller fryst E9EA-produktions-ROM.**
+
 ## Nästa grafiska steg: separata förstudier utfärdade 2026-11-23
 
 - [GRAPHICS: rödorange sigill och 3 alternativa par, palett, pixelmasker, BL-uggla/M0-markör](https://github.com/Odourman/mellanrum/issues/13): **DESIGN STUDY ONLY / PENDING DELIVERABLE**.
