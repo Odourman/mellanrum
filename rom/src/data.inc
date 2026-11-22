@@ -131,13 +131,6 @@ TitleLeftPF2:
         dc.b $00,$84,$44,$C4,$44,$5D,$00
 TitleRightPF2:
         dc.b $00,$15,$1D,$1D,$15,$15,$00
-TitleMenuLeftPF2:
-        dc.b $18,$3C,$7E
-TitleMenuRightPF2:
-        dc.b $42,$5A,$42
-TitleMenuY:
-        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$01,$01,$01,$01,$01,$01,$01,$01
-        dc.b $02,$02,$02,$02,$02,$02,$02,$02
 ShadowCrownOr:
         dc.b $00,$00,$33,$15,$13,$00,$00,$00
 ShadowCrownAnd:

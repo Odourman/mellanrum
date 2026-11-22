@@ -7,9 +7,9 @@ rom=str(ROOT/'build/mellanrum_ntsc.bin');sym=str(ROOT/'build/mellanrum_ntsc.sym'
 def progress(c,n):c.run_to_frame(c.frames+n,instr_cap=3000000)
 def reset():
  c=load(rom,sym);progress(c,5);assert c.ram('mode')==0;return c
-c=reset(); c.input_swchb=0xfd;progress(c,4);assert c.ram('menu')==1
-progress(c,4);assert c.ram('menu')==1, 'held SELECT repeated'
-c.input_swchb=0xff;progress(c,3);c.input_fire=True;progress(c,4)
+c=reset(); c.input_swchb=0xbd;progress(c,4);assert c.ram('mode')==0, 'SELECT changed mode on title'
+progress(c,4);assert c.ram('mode')==0, 'held SELECT changed mode on title'
+c.input_swchb=0xbf;progress(c,3);c.input_fire=True;progress(c,4)
 assert c.ram('mode')==4,('FRI SKOG missing',c.ram('mode'))
 assert 10<=c.ram('room')<=13, 'deterministically seeded original Act III room missing'
 c.input_fire=False;progress(c,3)
@@ -30,4 +30,4 @@ progress(c,110);assert c.ram('pending')==0 and c.ram('usedFire')==0
 # Held FIRE must not automatically schedule new action
 before=c.ram('mapRows')+3;got=c.read(before)
 progress(c,90); assert c.read(before)==got, 'held fire unexpectedly repeated'
-print('INPUT_FRAME_SEMANTICS_PASS: title SELECT edge, FRI seed, FIRE start, joystick repeat, SELECT room restart, RESET title, one-shot FIRE')
+print('INPUT_FRAME_SEMANTICS_PASS: title SELECT no-op, left B FRI seed, FIRE start, joystick repeat, SELECT same-room restart, RESET title, one-shot FIRE')

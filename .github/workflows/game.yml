@@ -37,6 +37,7 @@ jobs:
         run: |
           python3 scripts/check_playfield.py
           python3 scripts/check_input.py
+          python3 scripts/check_hardware_ab.py
           python3 scripts/check_frame_budget.py
       - name: Title exact MELLANRUM and Presence no-physics-change developer tests
         run: python3 scripts/check_title_presence.py

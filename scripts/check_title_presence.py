@@ -13,7 +13,8 @@ asm=(ROOT/'rom/src/main.asm').read_text()
 data=(ROOT/'rom/src/data.inc').read_text()
 assert 'TitleMEL:' not in data and 'TitleKAM:' not in data and 'TitleFRI:' not in data
 assert 'TitleLeftPF0' in asm and 'TitleRightPF2' in asm
-assert "lda menu" in asm and "TitleFreeSelected" in asm
+assert "lda SWCHB" in asm and "and #$40" in asm and "bne StartCampaign" in asm
+assert "TitleFreeSelected" not in asm and "TitleMenuLeftPF2" not in data and "TitleMenuRightPF2" not in data
 
 def tab(name):
     m=re.search(r'^'+re.escape(name)+r':\s*\n((?:\s+dc\.b [^\n]+\n)+)',data,re.M)
@@ -32,18 +33,18 @@ for y in range(7):
     got=bits([tab('TitleLeftPF'+str(i))[y] for i in range(3)])+bits([tab('TitleRightPF'+str(i))[y] for i in range(3)])
     want='00'+''.join((src_font[ch][y-1] if 1<=y<=5 else '000')+'0' for ch in 'MELLANRUM')+'00'
     assert got==want,(y,got,want)
-assert len(tab('TitleMenuLeftPF2'))==3 and len(tab('TitleMenuRightPF2'))==3
+assert all(k not in data for k in ('TitleMenuLeftPF2:', 'TitleMenuRightPF2:', 'TitleMenuY:'))
 assert not any(k in data for k in ('TitleWordLo:', 'TitleWordHi:','TitleKAM:','TitleFRI:'))
 
 # Console SELECT is covered by check_input.py; check video title in real CPU model.
 c=load(str(ROOT/'build/mellanrum_ntsc.bin'),str(ROOT/'build/mellanrum_ntsc.sym'))
 c.run_to_frame(4)
 assert all(t==19912 for t,_,_ in c.frame_samples[1:]),c.frame_samples
-assert c.ram('menu')==0
-c.input_swchb=0xfd;c.run_to_frame(6);assert c.ram('menu')==1
-c.input_swchb=0xff;c.run_to_frame(8);assert c.ram('menu')==1
+assert c.ram('mode')==0
+c.input_swchb=0xfd;c.run_to_frame(6);assert c.ram('mode')==0
+c.input_swchb=0xbf;c.run_to_frame(8);assert c.ram('mode')==0
 assert c.frame_samples[-1][0]==19912
-print('TITLE_EXACT_WORD_PASS: 9 connected glyphs, no other textual words, SELECT preserved; 262 scanlines developer CPU')
+print('TITLE_EXACT_WORD_PASS: 9 connected glyphs, no other textual words or mode icons, SELECT no-op in title; 262 scanlines developer CPU')
 
 # Shadow is gated by the precise original state machine. Cases include all three active rooms.
 for room,warn,active1,after in [(12,1,2,4),(13,0,1,3),(14,2,3,5)]:

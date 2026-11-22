@@ -87,14 +87,7 @@ def main():
         l=pfpack(bits[:20]);r=pfpack(bits[20:])
         for idx in range(3):left[idx].append(l[idx]);right[idx].append(r[idx])
     for i in range(3): byte(f'TitleLeftPF{i}',left[i]);byte(f'TitleRightPF{i}',right[i])
-    # Two NO-TEXT symbols: a tree-like triangle on the left and two open stems
-    # on the right. Selected mode is the brighter half, chosen by SELECT.
-    left_icons=['00011000','00111100','01111110']
-    right_icons=['01000010','01011010','01000010']
-    # Only PF2 is needed at the two distant icon positions (x12..19 / x32..39).
-    byte('TitleMenuLeftPF2',[pfpack('000000000000'+i)[2] for i in left_icons])
-    byte('TitleMenuRightPF2',[pfpack('000000000000'+i)[2] for i in right_icons])
-    byte('TitleMenuY',[i for i in range(3) for _ in range(8)])
+    # No hardware-mode UI is drawn: the console LEFT A/B switch alone selects mode.
     # A negative central notch, outlined only by transitory conifer branches.
     # Physically drawn PF OR+AND masks never enter the collision map or pfbuf.
     byte('ShadowCrownOr', [0,0,0x33,0x15,0x13,0,0,0])

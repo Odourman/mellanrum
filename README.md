@@ -9,8 +9,9 @@ This is a complete 15-room _implementation candidate_ grounded in the original V
 Three acts of five rooms: mirror editing; echoes and delayed reversals; XOR collision phase and an intermittent intent-stealing Presence. The owl is autonomous and moves each 72 NTSC frames. The cursor, not the owl, is directly controlled. There are no lives, scores, weapons, or conventional enemies. The image uses the three material motifs of trees, owl and stone; Presence has no separate physical entity.
 
 - **Joystick:** move cursor. Immediate first move, about 200 ms before repeat, 100 ms subsequent repeat. Direction order when diagonal: up, left, down, right.
-- **FIRE:** edge-activated. When the cursor is on an editable tree, flip its mirrored pair; on the stone, reverse stone polarity. Max one accepted action each owl tick. Other cells give a denied cursor shape.
-- **SELECT:** title menu switches KAMPANJ / FRI SKOG; in the game resets current room completely.
+- **FIRE:** på titeln startar vald fysisk A/B-inställning och låser spelläget fram till RESET eller titelretur. I spelet är FIRE edge-activated. When the cursor is on an editable tree, flip its mirrored pair; on the stone, reverse stone polarity. Max one accepted action each owl tick. Other cells give a denied cursor shape.
+- **VÄNSTER Difficulty A/B:** fysisk vänster konsolomkopplare avgör spelläge, **A = kampanj (rekommenderat standardläge)**, **B = FRI SKOG**. Välj innan FIRE på titeln. Du måste ställa den fysiska omkopplaren på A för kampanj; ROM kan inte flytta den. I Stella används F5 (vänster A) och F6 (vänster B). Höger Difficulty påverkar inte spelläge.
+- **SELECT:** på titeln ingen funktion; inne i spelet startar SELECT om aktuellt rum men byter aldrig spelläge.
 - **RESET:** return to title.
 - **KAMPANJ:** all original I-01 through III-05 in order. When owl finds exit, wait for FIRE to continue after a 48-frame stillness. After the last room, an 8-second coda then title.
 - **FRI SKOG:** goal-free version of an original Act III geometry, selected by a deterministic seed from title-frame count. Press RESET to leave.
@@ -60,3 +61,7 @@ See [Developer report](docs/DEVELOPER_TEST_REPORT.md) and [Source integrity](doc
 ## Independent Verification
 
 Verification is a separate role and has not approved this build. Developer checks do not substitute for independent review.
+
+## A/B hardware-control revision, Issue #9
+
+Title remains exactly **MELLANRUM** without mode-selection icons. Only LEFT Difficulty A/B determines mode at title FIRE. Joystick directions, SELECT and RIGHT Difficulty are never mode selectors. Switching A/B midgame cannot affect the already-latched mode. See `docs/ISSUE9_AB_HARDWARE_REPORT.md` and GitHub Actions results for the new ROM SHA. The superseded Issue #8 ROM hash is not this candidate.
