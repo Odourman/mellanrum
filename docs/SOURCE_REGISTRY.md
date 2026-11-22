@@ -108,3 +108,14 @@ Previous `M-CAND-012..020` are historical and/or duplicated append-only IDs. Do 
 | M-SRC-010 | [MAIN final Pachinko 2.0 order](MAIN_TO_PACHINKO_2_0_FINAL_AB_E9EA_FULL_TEST_2026-11-22.md) | applies **only** to `e9ea87d3...` A/B ROM + all 15 rooms, image, sound, TIA, stress; independent Verification separate | FULL_DIAGNOSTIC_EXECUTION_AUTHORIZED / NOT_RUN |
 
 Pre-AB `a953...` and original `ec791...` remain historical checks and are NOT a substitute for testing M-CAND-025/026. Prior Stage0 `WAIT` gate is satisfied only by the frozen current developer identity; do not reuse current SHA for future modified game source.
+
+## PACHINKO 2.0 verified interim evidence / MAIN audit – 2026-11-22
+
+| ID | Källa | Identity / limits | Status |
+|---|---|---|---|
+| M-CAND-029 | [MAIN full original-artifact Pachinko interim audit](MAIN_PACHINKO_2_0_E9EA_INTERIM_INTAKE_2026-11-22.md) | exact frozen E9EA native ROM; 2 Gopher campaign + 3 Stella/libretro campaign; scanned native logs and manifests | PARTIAL_REAL_EMULATOR_EVIDENCE / NOT_RELEASE |
+| M-CAND-030 | [Gopher Actions 45077617532](https://github.com/Odourman/mellanrum/actions/runs/45077617532) | real native HEADLESS two 11,548-frame complete 15-room paths, 166/166 RAM checkpoints each, artifacts 14776331457 / 14776331656 | REAL_CONTROLLERS_ROUTE_15x2_PASS / NO_FULL_MECHANICS_PASS |
+| M-CAND-031 | [Gopher native raster artifact 14775931750](https://github.com/Odourman/mellanrum/actions/runs/45077617532/artifacts/14775931750) | two native `TV FRAME` transcripts report 261 lines 119/119 each, plus campaign mode/room/beat logs | Gopher_NATIVE_RASTER_FAIL / STELLA_CROSS_CHECK_NEEDED |
+| M-CAND-032 | [Stella/libretro Actions 45078424709](https://github.com/Odourman/mellanrum/actions/runs/45078424709) | artifact 14776451289, 3×11,420-frame 15/15 automated full campaigns+coda, 86 first-run PNG, 189 SHA manifest rows matched; **no native scanline audit** | REAL_STELLA_ROUTE_PASS / RASTER_NOT_RUN |
+| M-CAND-033 | [Gopher native TIA audio 45078436099](https://github.com/Odourman/mellanrum/actions/runs/45078436099) | artifact 14776068795, two nonzero genuine TIA WAV with quantitative summaries, no human listening approval | GENUINE_WAV_CAPTURE_PASS / HUMAN_AUDIO_NOT_RUN |
+| M-SRC-011 | [ROM DEV cross-emulator scanline diagnosis Issue #12](https://github.com/Odourman/mellanrum/issues/12) | No production edits; reproduce 261 against known 262 controls and independent Stella true beam | DIAGNOSIS_ONLY_ORDER / NOT_IMPLEMENTATION |
