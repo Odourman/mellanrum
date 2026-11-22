@@ -36,7 +36,10 @@ run_case() {
   if [[ "$left" == A ]]; then event "LEFT_A" F5;else event "LEFT_B" F6;fi
   if [[ "$right" == A ]]; then event "RIGHT_A" F7;else event "RIGHT_B" F8;fi
   sleep 1;capture title
-  event SELECT_TITLE F1
+  echo -e "$id\tSELECT_TITLE\tF1 HELD 0.30s\t$(( $(date +%s)-start ))" >> build/ab/input_events.tsv
+  xdotool keydown --clearmodifiers F1
+  sleep 0.30
+  xdotool keyup --clearmodifiers F1
   event TITLE_UP Up;event TITLE_DOWN Down;event TITLE_LEFT Left;event TITLE_RIGHT Right
   capture title_after_select_joystick
   echo -e "$id\tFIRE_DOWN_NOT_SELECT\tspace HELD 0.40s\t$(( $(date +%s)-start ))" >> build/ab/input_events.tsv
@@ -47,7 +50,10 @@ run_case() {
   if [[ "$alt" == A ]]; then event LEFT_CHANGED_MIDGAME F5;else event LEFT_CHANGED_MIDGAME F6;fi
   if [[ "$right" == A ]]; then event RIGHT_CHANGED_MIDGAME F8;else event RIGHT_CHANGED_MIDGAME F7;fi
   capture running_after_difficulty_change
-  event RESET F2
+  echo -e "$id\tRESET\tF2 HELD 0.40s\t$(( $(date +%s)-start ))" >> build/ab/input_events.tsv
+  xdotool keydown --clearmodifiers F2
+  sleep 0.40
+  xdotool keyup --clearmodifiers F2
   sleep 0.8;capture title_after_reset
   echo -e "$id\tFIRE_AFTER_RESET\tspace HELD 0.40s\t$(( $(date +%s)-start ))" >> build/ab/input_events.tsv
   xdotool keydown --clearmodifiers space
