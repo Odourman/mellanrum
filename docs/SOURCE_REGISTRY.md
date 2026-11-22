@@ -96,3 +96,15 @@ No new ROM SHA is yet available. Do not use the old `ec791333...` ROM identity t
 Previous `M-CAND-012..020` are historical and/or duplicated append-only IDs. Do not treat old SHA evidence as if it validates the later `a953...` ROM or future post-A/B changes.
 
 | M-SRC-009 | [Post-Issue8 PACHINKO Stage0 and final SHA gate](MAIN_TO_PACHINKO_2_0_POST_ISSUE8_STAGE0_FINAL_GATE_2026-11-22.md) | Current 4K native developer visual SHA `a953...` only Stage0; full suite after A/B Issue #9 yields new SHA | AUTHORIZED_STAGE0_TEST_INFRASTRUCTURE / FINAL_TEST_WAITING_FOR_NEW_ROM |
+
+## 2026-11-22 post-A/B current candidate / test orders
+
+| ID | Källa | Immutable identifier / important evidence | Status |
+|---|---|---|---|
+| M-CAND-025 | [Draft PR #4 current A/B HEAD](https://github.com/Odourman/mellanrum/commit/49eb168b17d0254d06cf50d87c60e8fb6016db6e) | `49eb168b17d0254d06cf50d87c60e8fb6016db6e`; game code `6cb86247c668162b180e5d77377098941b9803b3` | CURRENT_FROZEN_DIAGNOSTIC_TARGET / DRAFT / NOT_MERGED |
+| M-CAND-026 | [Native DASM Actions artifact 14775257125](https://github.com/Odourman/mellanrum/actions/runs/45075716636/artifacts/14775257125) | 4096-byte NTSC standard 4K, ROM SHA256 `e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974` independently checked by MAIN; ZIP CRC good | MAIN_NATIVE_ROM_HASH_PASS / NOT_RELEASE |
+| M-CAND-027 | [Stella A/B real artifact 14774798060](https://github.com/Odourman/mellanrum/actions/runs/45075039996/artifacts/14774798060) | 12 original production-ROM PNG, wall-clock input log, same ROM exact hash, extracted ZIP CRC good | STELLA_AB_VISUAL_PASS / NOT_FRAME_EXACT / SWCHB_RAM_NOT_VERIFIED |
+| M-CAND-028 | [MAIN final A/B intake](MAIN_FINAL_AB_ROM_INTAKE_2026-11-22.md) | exact SHA, status evidence and remaining gates | MAIN_INTAKE_PASS / FULL_SYSTEM_NOT_RUN |
+| M-SRC-010 | [MAIN final Pachinko 2.0 order](MAIN_TO_PACHINKO_2_0_FINAL_AB_E9EA_FULL_TEST_2026-11-22.md) | applies **only** to `e9ea87d3...` A/B ROM + all 15 rooms, image, sound, TIA, stress; independent Verification separate | FULL_DIAGNOSTIC_EXECUTION_AUTHORIZED / NOT_RUN |
+
+Pre-AB `a953...` and original `ec791...` remain historical checks and are NOT a substitute for testing M-CAND-025/026. Prior Stage0 `WAIT` gate is satisfied only by the frozen current developer identity; do not reuse current SHA for future modified game source.
