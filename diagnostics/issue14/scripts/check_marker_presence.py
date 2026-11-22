@@ -13,8 +13,8 @@ for i in range(4):
  widths.append(max(xs)-min(xs)+1 if xs else 0)
 assert widths==[7,13,26,52],('marker widths',widths)
 raw=(out/'stdout.log').read_text(errors='replace')
-xs=[int(s,16) for s in re.findall(r'0x00cc \(RAM\) = 0x([0-9a-fA-F]{2})',raw)]
-ys=[int(s,16) for s in re.findall(r'0x00cd \(RAM\) = 0x([0-9a-fA-F]{2})',raw)]
+xs=[int(s,16) for s in re.findall(r'0x00cc (?:\([^)]*\) )?\(RAM\) = 0x([0-9a-fA-F]{2})',raw)]
+ys=[int(s,16) for s in re.findall(r'0x00cd (?:\([^)]*\) )?\(RAM\) = 0x([0-9a-fA-F]{2})',raw)]
 assert xs[-2:]==[8,5],xs[-2:]
 assert ys[-2:]==[3,0],ys[-2:]
 def changed(a,b):
