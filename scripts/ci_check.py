@@ -23,7 +23,7 @@ for filename in FILES:
     if not target.is_file() or target.stat().st_size == 0:
         errors.append(f"Missing or empty: {filename}")
 for filename, must_contain in {
-    "README.md": ["Mellanrum", "INDEPENDENT_VERIFICATION"],
+    "README.md": ["Mellanrum", "Verification"],
     "AGENTS.md": ["MAIN", "VERIFICATION", "Källhierarki"],
     "docs/CURRENT_PROJECT_STATE.md": ["NOT_RUN", "G0"],
     "docs/DECISIONS.md": ["MEL-001", "MEL-005"],
