@@ -1,9 +1,17 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-22 (after ROM DEVELOPMENT candidate and Pachinko diagnostic handoff).
-**Phase:** **V1 candidate / G1: INDEPENDENT_VERIFICATION_PENDING**.
+**Updated:** 2026-11-22 (after user-authorized title/Presence revision and Pachinko 2.0 order).
+**Phase:** **V1 4K candidate baseline / user-authorized scoped revision pending / Pachinko 2.0 full-system CI planned**.
 **Implementation:** 15-room Atari 2600 / NTSC / standard 4K **candidate exists on PR #4 only**, branch `romdev/fullgame-20261122`, head `8bdecde79a6bc1ecb804484d5d257f4f1a99b052`. **PR open + Draft + unmerged.** Main branch does not yet contain the game.
 **Release:** **NOT APPROVED**. Independent gameplay, visual, sound and hardware testing is not complete.
+
+## Nya användarbeslut: titel, Närvaron och fullständig Pachinko 2.0-testning (2026-11-22)
+
+- ROM DEVELOPMENT har **uttrycklig ny implementationsauktorisation** för att titeln ska visa exakt ett läsbart ord **MELLANRUM**, utan andra textord (men med valbar kampanj/FRI SKOG), och för att Närvaron ska skymtas tillfälligt som en **ofullständig oidentifierbar silhuett av negativt rum mellan träden**. Ingen traditionell monstersprite, egen AI, collision eller ändrad V5.1-tidsregel. [ROM order](MAIN_TO_ROMDEV_TITLE_AND_PRESENCE_2026-11-22.md) · [Issue #8](https://github.com/Odourman/mellanrum/issues/8).
+- PACHINKO 2.0 ska **bygga och köra GitHub Actions-driven komplett diagnostisk matris** för nästa verkliga ROM-SHA: verifierbart **frame-indexerad joystickreplay** (inte bara `xdotool sleep`), alla 15 rum i riktig emulator, grafik/TIA, riktiga WAV-filer och ljudanalyser, långkörning, slump-/edge-case-populationer, rapporter och reproducerbara SHA-bundna artefakter. [Full testorder](MAIN_TO_PACHINKO_2_0_FULL_COVERAGE_2026-11-22.md) · [Issue #7](https://github.com/Odourman/mellanrum/issues/7).
+- **Föregående Pachinko** hade 2 400 rapporterade modellkörningar och en verklig [Stella Actions-run](https://github.com/Odourman/mellanrum/actions/runs/45069826844), som installerade DASM/Stella/Xvfb/xdotool, körde 52 grovtidsstyrda knappar, fångade 13 PNG, men använde `SDL_AUDIODRIVER=dummy` och gjorde inte fullspel eller exakt frame-replay. Därför var det `PARTIAL_WITH_EVIDENCE`, inte en misslyckad åtgärd eller release-PASS.
+- **Viktigt tidsberoende:** PR #4 står ännu på gammal produkt-SHA `8bdecde79a6bc1ecb804484d5d257f4f1a99b052` och har inte mergats. Inga av nya användarändringar eller ny fullsystemsuite är utförda. Efter kodändring får utvecklaren ett **nytt** ROM-hash och Pachinko/Verification måste testa den nya kandidaten. Alla tidigare gröna tester gäller endast äldre ROM-bytes.
+- **Grenser:** PACHINKO får skriva testinfrastruktur och GitHub Actions-workflows i isolerad diagnostikgren, men inte produktionskoden eller oberoende slutbedömning. GitHub Actions kan kontrollera vågformsdata och automatiska pixel/cykelmått; mänsklig upplevelse och ljudlyssning kräver faktisk granskare och får inte bedömas automatiskt från CI.
 
 ## What was actually checked by MAIN
 
