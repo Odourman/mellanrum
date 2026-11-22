@@ -70,3 +70,32 @@ jobs:
           path: build/
           if-no-files-found: error
           retention-days: 14
+
+  dasm-toolchain-smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install DASM assembler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm
+      - name: Assemble 4K frame diagnostic (NOT gameplay)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/diagnostics
+          dasm rom/diagnostics/ntsc_frame_smoke.asm -f3 -obuild/diagnostics/ntsc_frame_smoke.bin -lbuild/diagnostics/ntsc_frame_smoke.lst -sbuild/diagnostics/ntsc_frame_smoke.sym
+          python3 scripts/check_rom.py build/diagnostics/ntsc_frame_smoke.bin
+          test "$(wc -c < build/diagnostics/ntsc_frame_smoke.bin)" -eq 4096
+          (cd build/diagnostics && sha256sum ntsc_frame_smoke.bin > SHA256SUMS)
+          echo "DASM_DIAGNOSTIC_BUILD_PASS if this step completed." >> "$GITHUB_STEP_SUMMARY"
+          echo "NO gameplay, 16K F6, emulator, 262-scanline runtime, or independent verification was performed." >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload diagnostic-only artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mell-ntsc-frame-smoke-not-gameplay
+          path: build/diagnostics/
+          if-no-files-found: error
+          retention-days: 14
