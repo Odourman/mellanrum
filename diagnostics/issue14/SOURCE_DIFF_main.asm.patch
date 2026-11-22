@@ -1,0 +1,230 @@
+--- rom/src/main.asm	2026-11-22 21:50:56.000000000 +0000
++++ issue14_diag/rom/src/main.asm	2026-11-22 23:42:33.684274431 +0000
+@@ -17,6 +17,7 @@
+ PF2     = $0F
+ RESP0   = $10
+ RESBL   = $14
++ENAM1   = $1E
+ AUDC0   = $15
+ AUDC1   = $16
+ AUDF0   = $17
+@@ -120,7 +121,10 @@
+         sta CTRLPF           ; reflect 20 PF left bits
+         lda #0
+         sta NUSIZ0
+-        sta NUSIZ1
++        lda #$04
++        sta NUSIZ1       ; DIAGNOSTIC wide two-copy P1 (64 color clocks)
++        lda #0
++        sta ENAM1        ; M1 must remain OFF (NUSIZ1 would ghost M1)
+         sta GRP0
+         sta GRP1
+         sta ENAM0
+@@ -164,6 +168,7 @@
+         lda INTIM
+         bne WaitOverscan
+         sta WSYNC
++        sta WSYNC         ; DIAGNOSTIC ONLY: +1 WSYNC isolate 261 -> 262
+         jmp Frame
+ 
+ ; Console RESET returns title. SELECT restarts active room, never selects a mode.
+@@ -923,6 +928,8 @@
+ PlaceObjects:
+         lda mode
+         beq NoObjects
++        lda #$04
++        sta NUSIZ1       ; two wide-separated P1 sprite copies
+         lda owlX
+         asl
+         asl
+@@ -930,35 +937,37 @@
+         asl
+         clc
+         adc #4
+-        ldx #0
+-        jsr PositionOne
+-        lda cursorX
+-        asl
+-        asl
+-        asl
+-        asl
+-        clc
+-        adc #4
+-        ldx #1
++        ldx #0           ; P0 is original full 9-byte OWL bitmap
+         jsr PositionOne
+-        lda exitX
++        lda stoneX
+         asl
+         asl
+         asl
+         asl
+         clc
+-        adc #11
+-        ldx #2
++        adc #7           ; logical stoneX 4 => x=71
++        ldx #1           ; P1 first symbol; second copy automatically x+64
+         jsr PositionOne
+-        lda stoneX
++        lda cursorX
+         asl
+         asl
+         asl
+         asl
+         clc
+-        adc #7
+-        ldx #4
++        adc #4
++        ldx #2           ; M0 is cursor, no separate P1 mark
+         jsr PositionOne
++        ; Diagnostic cursor widths communicate four original ackType values;
++        ; NUSIZ0 bits 4:5 set M0 hardware width, independent of gameplay state.
++        lda ackFrames
++        beq MarkerNormal
++        ldx ackType
++        jmp MarkerWidthSelected
++MarkerNormal:
++        ldx #0
++MarkerWidthSelected:
++        lda MarkerWidth,x
++        sta NUSIZ0
+         sta WSYNC
+         sta HMOVE
+ NoObjects:
+@@ -988,7 +997,7 @@
+         tax
+         lda PaletteBG,x
+         sta COLUBK
+-        lda PalettePF,x
++        lda #$B6          ; DIAGNOSTIC keep original pine green across all acts
+         sta COLUPF
+         lda PaletteOwl,x
+         sta COLUP0
+@@ -1170,54 +1179,53 @@
+         lda #>BlankSprite
+         sta sprite0Ptr+1
+ OwlRowChosen:
+-        ; crown third line: cursor sprite/feedback
++        ; crown third line: select first glyph from source stoneY.
+         sta WSYNC
+         lda rowIndex
+-        cmp cursorY
+-        bne NoCursorOnRow
+-        lda ackFrames
+-        beq NormalCursor
+-        ldx ackType
+-        jmp CursorSelected
+-NormalCursor:
+-        ldx #0
+-CursorSelected:
+-        lda CursorSpriteLo,x
++        cmp stoneY
++        bne NoSymbolAOnRow
++        lda #<GlyphA
+         sta sprite1Ptr
+-        lda CursorSpriteHi,x
++        lda #>GlyphA
+         sta sprite1Ptr+1
+-        jmp CursorRowChosen
+-NoCursorOnRow:
++        jmp SymbolAReady
++NoSymbolAOnRow:
+         lda #<BlankSprite
+         sta sprite1Ptr
+         lda #>BlankSprite
+         sta sprite1Ptr+1
+-CursorRowChosen:
+-        ldx #3
+-CrownLast3:
++SymbolAReady:
++        ; fourth crown line: choose independent glyph B for exitY.
+         sta WSYNC
+-        dex
+-        bne CrownLast3
+-        ; Precompute BL/M0 gating on the final crown scanline, before stem.
+-        ; Render-only scratch. Frees CPU for the fleeting PF void mask.
+-        lda #0
+-        sta candidateX
+-        sta candidateY
+-        lda rowIndex
+-        cmp stoneY
+-        bne StoneGatingReady
+-        lda #2
+-        sta candidateX
+-StoneGatingReady:
+         lda rowIndex
+         cmp exitY
+-        bne ExitGatingReady
++        bne NoSymbolBOnRow
+         lda mode
+-        cmp #4
+-        beq ExitGatingReady
++        cmp #4           ; FRI SKOG has no exit
++        beq NoSymbolBOnRow
++        lda #<GlyphB
++        sta pfPtr
++        lda #>GlyphB
++        sta pfPtr+1
++        jmp SymbolBReady
++NoSymbolBOnRow:
++        lda #<BlankSprite
++        sta pfPtr
++        lda #>BlankSprite
++        sta pfPtr+1
++SymbolBReady:
++        ; fifth crown line: prepare M0 cursor gate (not game state).
++        sta WSYNC
++        lda #0
++        sta candidateY
++        lda rowIndex
++        cmp cursorY
++        bne MarkerGateDone
+         lda #2
+         sta candidateY
+-ExitGatingReady:
++MarkerGateDone:
++        ; sixth crown line: BL not used, leave P0 owl and PF tree graphics.
++        sta WSYNC
+         ; stem first line: register change + BL/M0 gating
+         sta WSYNC
+         ldy pfIndex
+@@ -1239,7 +1247,7 @@
+         and ShadowStemAnd,x
+ NoStemShadow:
+         sta PF2
+-        lda candidateX
++        lda #0
+         sta ENABL
+         lda candidateY
+         sta ENAM0
+@@ -1250,9 +1258,29 @@
+         lda (sprite0Ptr),y
+         sta GRP0
+         lda (sprite1Ptr),y
+-        sta GRP1
++        sta GRP1          ; first P1 copy (glyph A)
++        cpx #1           ; last blank sprite row must update PF bookkeeping
++        beq StemLastFast  ; early, avoiding >76 cycles from post-loop bookkeeping
++        ; P1 glyph A fetches around beam c46-50; wait until after its right edge.
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        lda (pfPtr),y
++        sta GRP1          ; second P1 copy, before x=135 fetch at c68
+         dex
+         bne Stem13
++StemLastFast:
+         lda pfIndex
+         clc
+         adc #6

@@ -1,0 +1,15 @@
+--- rom/src/data.inc	2026-11-22 21:50:28.000000000 +0000
++++ issue14_diag/rom/src/data.inc	2026-11-22 23:42:33.684422629 +0000
+@@ -139,3 +139,12 @@
+         dc.b $00,$00,$11,$11,$10,$20,$00,$00
+ ShadowStemAnd:
+         dc.b $FF,$FF,$1F,$1F,$1F,$3F,$FF,$FF
++
++; ISSUE #14 DIAGNOSTIC ONLY; synthetic/noncanonical placeholder symbols!
++; Same probe bytes as MAIN #7087704443; not GRAPHICS Brytning/Kretsrest.
++GlyphA:
++        dc.b $00,$18,$24,$5A,$BD,$5A,$24,$18,$00
++GlyphB:
++        dc.b $00,$C3,$81,$A5,$BD,$A5,$81,$C3,$00
++MarkerWidth:
++        dc.b $00,$10,$20,$30 ; M0 widths: normal=1, ack=2, denied=4, intercept=8 pixels

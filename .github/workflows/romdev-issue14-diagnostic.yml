@@ -1,0 +1,117 @@
+name: ROMDEV Issue 14 isolated integrated P1 two-symbol owl kernel
+on:
+  push:
+    branches: ['romdev/issue14-p1-integrated-diagnostic']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-dasm:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install native DASM compiler
+      run: sudo apt-get update && sudo apt-get install -y dasm
+    - name: Check production stays E9EA and no product path changes
+      run: |
+        echo 'e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974  rom/bin/mellanrum_ntsc.bin' | sha256sum -c -
+        git diff --exit-code 49eb168b17d0254d06cf50d87c60e8fb6016db6e HEAD -- rom/ reference/ graphics/
+    - name: Compile genuine DASM disposable ROM with listing and symbols, cross-check local assembler
+      working-directory: diagnostics/issue14
+      run: |
+        mkdir -p build
+        dasm rom/src/main.asm -f3 -obuild/diag.bin -lbuild/diag.lst -sbuild/diag.sym
+        test "$(wc -c < build/diag.bin)" -eq 4096
+        python3 scripts/assemble_check.py rom/src/main.asm -o build/subset.bin
+        cmp build/diag.bin build/subset.bin
+        python3 scripts/cycle_budget.py
+        (cd build && sha256sum diag.bin diag.lst diag.sym subset.bin cycle_budget.json > SHA256SUMS)
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: issue14-native-DASM-disposable-4k-listing-symbols
+        path: diagnostics/issue14/build/
+        retention-days: 30
+        if-no-files-found: warn
+  gopher-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+    - run: sudo apt-get update && sudo apt-get install -y git gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.27.4'
+    - name: Build pinned upstream Gopher2600 from 2026-11-16 revision
+      run: |
+        git clone --quiet https://github.com/JetSetIlly/Gopher2600.git gopher-src
+        cd gopher-src
+        git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4
+        test "$(git rev-parse HEAD)" = 74c544203378c1448a33c29bc8b4586079b050f4
+        go build -o ../gopher2600 .
+    - uses: actions/upload-artifact@v4
+      with:
+        name: issue14-pinned-Gopher2600-emulator
+        path: gopher2600
+        retention-days: 30
+  real-gopher-pixels-raster:
+    runs-on: ubuntu-24.04
+    needs: [native-dasm,gopher-build]
+    timeout-minutes: 25
+    steps:
+    - uses: actions/checkout@v4
+    - run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64 python3-pil
+    - uses: actions/download-artifact@v4
+      with:
+        name: issue14-pinned-Gopher2600-emulator
+        path: diagnostics/tools
+    - uses: actions/download-artifact@v4
+      with:
+        name: issue14-native-DASM-disposable-4k-listing-symbols
+        path: diagnostics/issue14/build
+    - run: chmod +x diagnostics/tools/gopher2600
+    - name: Actual Gopher2600: 15 original PF rooms, same/different Y, moving marker, four feedback states, Presence
+      run: |
+        cd diagnostics/issue14
+        python3 scripts/probe_15.py
+        python3 scripts/pixel_audit.py
+        python3 - <<'PY'
+        import json, pathlib
+        d=json.loads(pathlib.Path('build/gopher_15/metadata.json').read_text())
+        n=d['scanline_counts']
+        assert n=={'262':25}, n
+        p=json.loads(pathlib.Path('build/gopher_15/pixel_audit.json').read_text())
+        assert p['status']=='PASS' and p['bits_checked']==2640 and p['bits_matched']==2640,p
+        print('GOPHER_INTEGRATED_PASS 2640/2640 original raster bits; 15 room screenshots; 25 frames at 262 lines')
+        PY
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: issue14-genuine-Gopher-15rooms-P0owl-P1glyphs-M0-cursor
+        path: diagnostics/issue14/build/gopher_15/
+        if-no-files-found: warn
+        retention-days: 30
+  real-stella-screens:
+    runs-on: ubuntu-24.04
+    needs: native-dasm
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v4
+    - run: sudo apt-get update && sudo apt-get install -y stella xvfb xdotool
+    - uses: actions/download-artifact@v4
+      with:
+        name: issue14-native-DASM-disposable-4k-listing-symbols
+        path: diagnostics/issue14/build
+    - name: Real native Stella actual display capture of source-derived woods and dual glyphs
+      run: |
+        cd diagnostics/issue14
+        xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash scripts/stella_diag.sh
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: issue14-genuine-Stella-P0-owl-P1-dual-glyph-screen
+        path: diagnostics/issue14/build/stella/
+        if-no-files-found: warn
+        retention-days: 30
