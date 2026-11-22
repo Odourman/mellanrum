@@ -1,0 +1,41 @@
+name: MELLANRUM optional real Stella SWCHB RAM debugger evidence
+on:
+  push:
+    branches: [main, 'romdev/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  actual-stella-riot-debugger:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install actual Stella debugger and DASM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm stella xvfb xdotool
+      - name: Compile exact production binary with DASM
+        run: |
+          mkdir -p build
+          dasm rom/src/main.asm -f3 -obuild/mellanrum_ntsc.bin -lbuild/mellanrum_ntsc.lst -sbuild/mellanrum_ntsc.sym
+          test "$(wc -c < build/mellanrum_ntsc.bin)" -eq 4096
+      - name: Observe real emulator RIOT SWCHB and mode RAM with built-in Stella debugger
+        continue-on-error: true
+        shell: bash
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash scripts/ab_debugger_probe.sh
+      - name: Upload unmodified emulator sessions even if the probe was inconclusive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mell-ab-genuine-stella-debugger-sessions
+          path: |
+            build/ab/debugger/
+            build/mellanrum_ntsc.bin
+            build/mellanrum_ntsc.sym
+            build/mellanrum_ntsc.lst
+          retention-days: 30
+          if-no-files-found: warn
