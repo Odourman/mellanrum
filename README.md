@@ -1,4 +1,4 @@
-# MELLANRUM: SKOGEN SOM LYSSNAR
+# Mellanrum: Skogen som lyssnar
 
 **Atari 2600 / NTSC / 4 KiB / 6507-DASM source**, implementation proposal from ROM DEVELOPMENT, 2026-11-22.
 
@@ -56,3 +56,7 @@ The native ROM target is a fixed 4,096-byte, standard 4K cart; no F6 bank switch
 - Gameplay input is latched from the video-frame polling point then processed before echo/phase/actor movement at the next logical beat. One pending event per beat; held FIRE never repeats.
 
 See [Developer report](docs/DEVELOPER_TEST_REPORT.md) and [Source integrity](docs/PROVENANCE.md).
+
+## Independent Verification
+
+Verification is a separate role and has not approved this build. Developer checks do not substitute for independent review.
