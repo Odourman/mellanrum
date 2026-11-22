@@ -1,0 +1,47 @@
+name: PACHINKO 2.0 E9EA 50K consecutive FRI real emulator recovery
+on:
+  push:
+    branches: [pachinko/final-e9ea-20261122]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gopher-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y git gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+      - run: |
+          git clone --quiet https://github.com/JetSetIlly/Gopher2600.git gopher-src
+          (cd gopher-src && git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4 && go build -o ../gopher2600 .)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pachinko2-free-only-pinned-gopher
+          path: gopher2600
+          retention-days: 30
+  free-50k-real:
+    runs-on: ubuntu-24.04
+    needs: gopher-source
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64
+      - uses: actions/download-artifact@v4
+        with:
+          name: pachinko2-free-only-pinned-gopher
+          path: build/gopher
+      - run: chmod +x build/gopher/gopher2600
+      - run: python3 pachinko2/free_long.py --emulator build/gopher/gopher2600 --rom rom/bin/mellanrum_ntsc.bin --out build/pachinko/free-50k --frames 50000
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko2-actual-FreeForest-50000-frames
+          path: build/pachinko/free-50k/
+          retention-days: 30
+      - name: Verify genuine emulator remained in FRI SKOG mode 4 for 50000 steps
+        run: |
+          python3 -c "import json,sys;d=json.load(open('build/pachinko/free-50k/results.json'));print(d);sys.exit(0 if d['status']=='PASS' and d['actual_frames_completed']==50000 else 1)"

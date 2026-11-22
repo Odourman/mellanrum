@@ -4,7 +4,7 @@ import argparse,hashlib,json,re,subprocess,collections,sys
 from pathlib import Path
 SHA='e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974'
 p=argparse.ArgumentParser();p.add_argument('--emulator',required=True);p.add_argument('--rom',required=True);p.add_argument('--out',required=True);p.add_argument('--frames',type=int,default=50000);args=p.parse_args()
-rom=Path(args.rom).resolve();em=Path(args.emulator).resolve();out=Path(args.out).resolve();out.mkdir(exist_ok=True)
+rom=Path(args.rom).resolve();em=Path(args.emulator).resolve();out=Path(args.out).resolve();out.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256(rom.read_bytes()).hexdigest()==SHA
 cmd=['VERSION','CARTRIDGE HASH','PERIPHERAL LEFT STICK','PANEL SET P0AM','PANEL SET P1PRO']
 cmd.extend(['STEP FRAME']*8);cmd+=['STICK LEFT FIRE'];cmd.extend(['STEP FRAME']*3);cmd+=['STICK LEFT NOFIRE']

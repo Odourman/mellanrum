@@ -1,7 +1,5 @@
 name: PACHINKO 2.0 E9EA large REAL emulator seeded room matrix
 on:
-  push:
-    branches: [pachinko/final-e9ea-20261122]
   workflow_dispatch:
 permissions:
   contents: read
