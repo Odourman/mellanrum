@@ -31,3 +31,13 @@ Vid ett nytt beslut: skriv `MEL-011` osv. Ändra inte historiska rader i tysthet
 | MEL-016 | 2026-11-22 | ROM-implementation förblir spärrad i detta uppdrag | NOT_AUTHORIZED | Uttrycklig användarinstruktion; MEL-010 oförändrat |
 
 **Viktigt:** V5.1 kan vara bättre än V5 och ändå sakna formell projektacceptans. Det gamla versionsförslaget är inte automatiskt raderat; besluten gäller endast det nämnda granskningsskedet. Själva grafiken, Python-källorna, testerna, manifestet och händelseordningen kan inte slutgranskas före det faktiska ZIP-intaget.
+
+## Produktionsinriktning efter GRAPHICS-överlämning, 2026-11-22
+
+| ID | Datum | Beslut eller fråga | Status | Källa / avgränsning |
+|---|---|---|---|---|
+| MEL-017 | 2026-11-22 | Efter att MAIN mottagit och granskat GRAPHICS-underlaget ska MAIN utfärda **en sammanhållen fullspelsorder** till ROM DEVELOPMENT, i stället för många separata implementeringsauktorisationer | USER_DIRECTED / FUTURE_CONDITIONAL | Användarens uttryckliga uppdrag 2026-11-22. Ingen sådan order skickad ännu |
+| MEL-018 | 2026-11-22 | ROM DEVELOPMENT ska få stort handlingsutrymme att improvisera kreativa och tekniska lösningar, utan att stanna för varje icke-kritisk osäkerhet | USER_DIRECTED / FOR_FUTURE_ORDER | Gäller inom målet att göra ett färdigt spel; bevara uttryckliga grundkrav och redovisa avvikelser |
+| MEL-019 | 2026-11-22 | Ett enda produktionsmandat innebär inte falska PASS eller att utvecklaren blir sin egen oberoende verifierare | PROCESS_BOUNDARY | ROM DEVELOPMENT ska själv testa och dokumentera; separat VERIFICATION bedömer dess resultat |
+
+**Tolkning av tidigare MEL-010/MEL-016:** de historiska raderna gällde avsaknad av dåtidens ROM-startorder. Användaren har nu beslutat om en *framtida*, villkorad **fullproduktionsorder** efter GRAPHICS-intag. Ingen implementation har påbörjats i detta MAIN-steg och ingen faktisk ROM-order har ännu skickats. I den framtida prompten är däremot hela spelet i scope, utan behov av MAIN-mikrotillstånd mellan interna arbetsfaser.
