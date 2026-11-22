@@ -1,6 +1,6 @@
 # ROM DEVELOPMENT / Developer-only verification / 2026-11-22
 
-**Status:** SOURCE/MODEL + strict-subset-6502 binary execution checks performed; true DASM CI result must be read in GitHub Actions. DO NOT label this independent verification or a certified game release.
+**Status:** SOURCE/MODEL + native DASM BUILD_PASS + strict-subset-6502 binary execution checks performed. Complete emulator and independent verification remain outstanding. DO NOT label this independent verification or a certified game release.
 
 ## Performed locally
 
@@ -15,7 +15,7 @@
 | PF dynamic regeneration | 20 editable mirrored tree groups, all 48 PF RAM bytes after each update equal independently generated 6+14 PF bands | DEVELOPER_BINARY_MODEL_PASS |
 | Joystick/console switches | Title SELECT once per press, start both menus, horizontal movement/repeat, per-room SELECT reset, RESET title, held FIRE one-shot | DEVELOPER_BINARY_MODEL_PASS |
 | CPU/RIOT/WSYNC budget | 945 sampled **gameplay frames** across all 15 rooms, 262 scanlines in custom cycle/WSYNC model; deepest stack pointer `$F7` | DEVELOPER_TIMING_MODEL_ONLY |
-| True DASM native assembly | NOT_RUN locally, requires CI on pull request | NOT_RUN |
+| True DASM native assembly | `rom-build` GitHub Action (run `45064122338`) completed successfully; 4,096-byte ROM retrieved and byte-identical with corrected subset assembler, SHA-256 `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed` | BUILD_PASS (assembler only) |
 | Stella, Gopher2600 pixel/raster captures | NOT_RUN | NOT_RUN |
 | Actual CRT/RetroN77/Atari 2600 hardware | NOT_RUN | NOT_RUN |
 | Two-channel audio subjective audition | NOT_RUN | NOT_RUN |
@@ -34,4 +34,4 @@
 8. Sprite P0/P1 and missiles occupy per-row 14-line band; exact per-scanline overlap, HMOVE bars, television overscan/safe margins and transient TIA resource conflicts need Stella/Gopher observation. CPU simulation cannot certify them.
 9. Some Python reference witness traces position the cursor instantly rather than exercising every joystick transition; frame-input tests are separate and no full 15-room **frame-exact joystick-human-route** reproduction was completed. Do not treat the abstract 15/15 result as that stronger test.
 
-**Release gate remains OPEN** until native DASM compilation succeeds, emulator image and real gameplay tests across 15 rooms pass, and independent verification is completed. The requested game logic is implemented but hardware release quality is not established by local model checks.
+**Release gate remains OPEN** until emulator image and real gameplay tests across 15 rooms pass, and independent verification is completed. The requested game logic is implemented and a real DASM ROM exists. Hardware release quality is not established by developer CPU model or DASM assembly alone.

@@ -2,7 +2,7 @@
 
 **Atari 2600 / NTSC / 4 KiB / 6507-DASM source**, implementation proposal from ROM DEVELOPMENT, 2026-11-22.
 
-This is a complete 15-room _implementation candidate_ grounded in the original V5.1 Python state machine and GRAPHICS V5.1 source data. Native DASM build and actual Stella/Gopher2600/physical-hardware verification must be separately evidenced. The 4 KiB file shipped in the local package was produced by a development-only strict subset assembler, **not by DASM**. GitHub Actions is configured to build with real DASM, compare exact output against that assembler, execute model/CPU tests, and publish the native ROM. Do not mistake a green source test for real hardware acceptance.
+This is a complete 15-room _implementation candidate_ grounded in the original V5.1 Python state machine and GRAPHICS V5.1 source data. Native DASM build has passed in GitHub Actions; actual Stella/Gopher2600/physical-hardware verification remains outstanding. The 4 KiB file shipped in the local package is **byte-for-byte identical to the real DASM-built ROM** obtained from GitHub Actions `rom-build` artifact, run `45064122338`. The independent Python subset assembler was corrected to match DASM's `$FF`-filled unused ROM bytes. This proves byte identity and assembler production, **not** emulated or physical hardware functionality. GitHub Actions also runs state/model/raster developer checks.
 
 ## Gameplay
 

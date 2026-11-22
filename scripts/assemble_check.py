@@ -133,7 +133,7 @@ def assemble(path, outfile, symfile=None, listing=None):
   if labels2==labels:break
   labels=labels2
  else:raise RuntimeError('Labels failed to stabilize')
- mem=bytearray(4096);used=set();fail=[];listing_lines=[]
+ mem=bytearray([0xFF]*4096);used=set();fail=[];listing_lines=[]
  for pc,n,command,operand,meta in steps:
   if pc<0xF000 or pc+n>0x10000:raise ValueError(f'ROM overrun {pc:x} n{n}: {meta}')
   if command=='dc.b': data=[calc(x,labels)&255 for x in operand.split(',')]
