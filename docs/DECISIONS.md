@@ -64,3 +64,14 @@ Vid ett nytt beslut: skriv `MEL-011` osv. Ändra inte historiska rader i tysthet
 | MEL-028 | 2026-11-22 | Simplified mirrored title and coda, omitted optional PF Presence seam/M1 mark and reduced animation explicitly require artistic conformance review | OPEN_ART_CONFORMANCE | Developer report; these deviations not necessarily full-graphics-accept |
 
 Historical ROM_NOT_AUTHORIZED entries referred to work **before** the later full-game order. That later user authorization was actually exercised by ROM DEVELOPMENT; the current gate concerns independent validation and release, **not a need for another implementation micro-authorization**.
+
+## ROM-kandidat, Pachinko och verifikationsgräns – 2026-11-22
+
+| ID | Datum | Beslut eller fråga | Status | Källa / avgränsning |
+|---|---|---|---|---|
+| MEL-024 | 2026-11-22 | ROM DEVELOPMENT har överlämnat 4K NTSC-kandidat, PR #4 head `8bdecde`, SHA `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed` | DEVELOPER_BUILD_PASS / DRAFT_PR | Verifierat i GitHub Actions run 45064977045, ej release eller merge |
+| MEL-025 | 2026-11-22 | Stella boot/screenshot smoke för samma head, fyra bilder, är godkänt endast som uppstartsevidens | STELLA_BOOT_SMOKE_PASS / FULL_GAMEPLAY_NOT_RUN | Run 45064977006 och fyra arkiverade PNG; ingen 15-rums manual replay |
+| MEL-026 | 2026-11-22 | MAIN utfärdar separat Pachinko-diagnostiskt stresstestuppdrag för oförändrad PR #4-kandidat | HANDOFF_READY / NOT_RUN | `docs/MAIN_TO_PACHINKO_STRESS_TEST_2026-11-22.md`, Issue #6; user begär 'be nu Pachinko chatten' |
+| MEL-027 | 2026-11-22 | Pachinko genomför bred flödes-/edge-case-stress, men fattar inga independent Verification- eller releasebeslut | SEPARATE_DIAGNOSTIC_ROLE | Användarens inriktning, Issue #6; independent Verification Issue #5 |
+
+**Historisk korrigering:** de första FAIL-körningarna (t.ex. `bb700a8`, run 45064295977, bytejämförelse vid byte 2911) är äldre än nuvarande lyckade `8bdecde`-CI. De får inte felaktigt förvandlas till nuvarande FAIL eller döljas ur historiken.
