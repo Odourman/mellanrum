@@ -1,0 +1,11 @@
+# MELLANRUM Issue #9, exact real Stella A/B visual records
+
+Exact full-game product code commit `6cb86247c668162b180e5d77377098941b9803b3` (subsequent commits modify test automation only, not ROM). New NTSC 4096-byte ROM SHA256 `e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974`.
+
+These 12 original 320x228 PNGs were saved by **Stella on Xvfb** using ordinary unmodified production ROM (not room/tick reset variants). GitHub Actions run `45075039996`, artifact `14774798060` passed. Two separate sessions: LEFT_A started with Stella `-ld A -rd A`, LEFT_B `-ld B -rd B`. Actual F5/F6 LEFT and F7/F8 RIGHT commands sent, then held F1 SELECT, all four joystick directions, FIRE for 0.4 s, changed LEFT/RIGHT difficulty while running, RESET for 0.4 s, next title FIRE. `input_events.tsv` is a time-*seconds* event log, not frame-exact replay. `STELLA_AB_CONTACT_SHEET.png` adds labels outside original 320x228 emulator images; every other PNG is unmodified from the Actions artifact.
+
+`LEFT_A_running_initial.png`: room I-01 / Campaign's green-on-dark display, sample `(100,20)=(0,39,88)`. `LEFT_B_running_initial.png`: Free Forest Act III white/blue display, `(100,20)=(210,210,209)`. Both still show same visuals after midgame difficulty change. After RESET+FIRE, former LEFT_A starts B Free Forest (white/blue) while former LEFT_B starts A Campaign (green). Title images are pixel-identical across LEFT A/B and after F1+directions, and contain only the word MELLANRUM. Screenshot test detects title-reset and new scene transitions. Exact raw image bytes and per-file SHA below.
+
+**Boundary:** Pixel-palette evidence plus CPU developer model demonstrates practical mode selection in real Stella; does *not* by itself certify direct debugger RAM variables or all possible frame-order corner cases. Real hardware RetroN77 / original Atari was NOT_RUN. Original ART/PRESENCE actual Stella evidence is stored at `evidence/issue8`, its source unchanged.
+
+**Built-in Stella debugger subtest:** Two automated attempts (`45075145159`, `45075291531`) did not preserve usable `print *SWCHB` and `print *$B8` transcripts; direct emulator RAM register values are NOT_VERIFIED. This does not invalidate the separate real gameplay screenshot tests but cannot be marked as debugger PASS. No handwaving from a green Actions result.

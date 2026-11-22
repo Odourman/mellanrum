@@ -64,4 +64,4 @@ Verification is a separate role and has not approved this build. Developer check
 
 ## A/B hardware-control revision, Issue #9
 
-Title remains exactly **MELLANRUM** without mode-selection icons. Only LEFT Difficulty A/B determines mode at title FIRE. Joystick directions, SELECT and RIGHT Difficulty are never mode selectors. Switching A/B midgame cannot affect the already-latched mode. See `docs/ISSUE9_AB_HARDWARE_REPORT.md` and GitHub Actions results for the new ROM SHA. The superseded Issue #8 ROM hash is not this candidate.
+Title remains exactly **MELLANRUM** without mode-selection icons. Only LEFT Difficulty A/B determines mode at title FIRE. Joystick directions, SELECT and RIGHT Difficulty are never mode selectors. Switching A/B midgame cannot affect the already-latched mode. See `docs/ISSUE9_AB_HARDWARE_REPORT.md` and GitHub Actions results for the new ROM SHA. The superseded Issue #8 ROM hash is not this candidate. On RetroN 77, the front **SKILL P1** button is documented as toggling player-1/left Difficulty A/B; this mapping was not physically tested with our ROM and updated firmware.
