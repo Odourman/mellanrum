@@ -28,3 +28,14 @@ Källfilens namn, titel eller senare datum räcker inte ensamt för att ge den h
 | M-CAND-007 | `reference/engine.py`, `reference/solve.py`, `reference/check_rooms.py`, `reference/validate_traces.py`, `reference/abstract_solution_results.json` | Beskrivna i avhandlingen men varken hämtade eller körda | NOT_RUN / WAITING_FOR_SOURCE |
 
 Använd aldrig slumpmässig liknämnd Drive-fil som ersättning för M-CAND-006. En Drive-sökning gav t.ex. `LAS_MIG_FORST.md` som handlar om **The Cabin**, alltså är den inte Mellanrums källa. Originalens byte och SHA måste verifieras när de finns.
+
+## GRAPHICS slutöverlämning 2026-11-22
+
+| ID | Källa | Kontrollerad åtkomst | Status |
+|---|---|---|---|
+| M-CAND-008 | Project/Library `MELLANRUM_GRAPHICS_V51_FINAL_TILL_MAIN_2026-11-22.zip` | Filpost och storlek 1 539 775 bytes identifierade; raw materialization misslyckades | GRAPHICS_REPORTED / ZIP_BYTES_NOT_VERIFIED_BY_MAIN |
+| M-CAND-009 | Project/Library `00_GRAFIKAVHANDLING_FULLSTANDIG.pdf` | 34 sidor läsbara som indexerat dokument | VISUAL_DIRECTION_REVIEWED |
+| M-CAND-010 | Project/Library `STARTTEXT_TILL_MAIN.txt` | Indexerad text läsbar | GRAPHICS_HANDOFF_READABLE |
+| M-CAND-011 | Project/Library `MELLANRUM_V5_1_KRITISKT_REVIDERAT_TILL_MAIN_2026-11-22.zip` | Filpost och storlek 570 796 bytes identifierade; raw materialization misslyckades | ORIGINAL_MODEL_ZIP_NOT_REPRODUCED_BY_MAIN |
+
+Slutleveransen anger 25 maskvärden men ett avsnitt anger 23; 20/20 Python och 15/15 rumslösningar är uppgifter från GRAPHICS, inte nya MAIN-test. Fullspelsorder: `docs/ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md`. Överlämningsgranskning: `docs/MAIN_GRAPHICS_V5_1_INTAKE_2026-11-22.md`. Registrera verkliga SHA från råpaketen när dessa kan läsas; hitta inte på hashvärden.
