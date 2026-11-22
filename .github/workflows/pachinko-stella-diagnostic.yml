@@ -1,0 +1,117 @@
+name: MELLANRUM Pachinko actual Stella diagnostic (isolated)
+
+on:
+  push:
+    branches: [pachinko/diagnostics-8bdecde-20261122]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stella-pachinko-diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify frozen target and install native tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "8bdecde79a6bc1ecb804484d5d257f4f1a99b052" || {
+            echo "Diagnostic branch contains workflow-only commit; checking product subtree unchanged."
+            git diff --name-only 8bdecde79a6bc1ecb804484d5d257f4f1a99b052 HEAD | tee /tmp/workflow_diff
+            test "$(cat /tmp/workflow_diff)" = ".github/workflows/pachinko-stella-diagnostic.yml"
+          }
+          sudo apt-get update
+          sudo apt-get install -y dasm stella xvfb xdotool
+          mkdir -p build/pachinko
+          dasm rom/src/main.asm -f3 -obuild/pachinko/mellanrum_ntsc.bin
+          echo "ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed  build/pachinko/mellanrum_ntsc.bin" | sha256sum -c -
+          stella -rominfo build/pachinko/mellanrum_ntsc.bin > build/pachinko/rominfo.txt 2>&1 || true
+          git rev-parse HEAD > build/pachinko/diagnostic_branch_commit.txt
+          printf "%s\n" "8bdecde79a6bc1ecb804484d5d257f4f1a99b052" > build/pachinko/frozen_product_commit.txt
+      - name: Real Stella controller inputs and screenshot journal
+        shell: bash
+        run: |
+          cat > /tmp/pachinko_actual_stella.sh <<'BASH'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          export SDL_AUDIODRIVER=dummy
+          export DISPLAY=:99
+          DIR="$PWD/build/pachinko"
+          stella -video software -fullscreen 0 -tia.zoom 3 -sssingle 0 -ss1x 1 -snapsavedir "$DIR" "$DIR/mellanrum_ntsc.bin" > "$DIR/stella.log" 2>&1 &
+          PID=$!
+          trap 'kill "$PID" 2>/dev/null || true' EXIT
+          WIN=''
+          for i in $(seq 1 25); do
+            WIN=$(xdotool search --onlyvisible --pid "$PID" | head -1 || true)
+            if [[ -z "$WIN" ]]; then WIN=$(xdotool search --onlyvisible --class '[Ss]tella' | head -1 || true); fi
+            if [[ -n "$WIN" ]]; then break; fi
+            if ! kill -0 "$PID" 2>/dev/null; then break; fi
+            sleep 1
+          done
+          test -n "$WIN" || { echo "STELLA_WINDOW_NOT_FOUND"; cat "$DIR/stella.log"; exit 1; }
+          xdotool windowfocus --sync "$WIN"
+          note() { printf '%s\t%s\n' "$(date -u +%FT%T.%3NZ)" "$1" >> "$DIR/input_events.tsv"; }
+          snap() { note "snapshot:F12:$1"; xdotool key --clearmodifiers F12; sleep .8; }
+          tap() { note "tap:$1:$2"; xdotool keydown --clearmodifiers "$1"; sleep "$2"; xdotool keyup --clearmodifiers "$1"; }
+          sleep 2
+          snap "initial_title"
+          tap space .30
+          sleep 2
+          snap "campaign_room1"
+          for i in $(seq 0 23); do
+            case $((i % 6)) in
+              0) tap Right .13 ;;
+              1) tap space .12 ;;
+              2) tap Up .14 ;;
+              3) tap Left .12 ;;
+              4) tap space .11 ;;
+              5) tap Down .16 ;;
+            esac
+            sleep .22
+            if ((i % 6 == 5)); then snap "campaign_rain_$i"; fi
+          done
+          tap F2 .12
+          sleep 2
+          snap "reset_title"
+          tap F1 .12
+          sleep .5
+          snap "selected_FRI_menu"
+          tap space .25
+          sleep 2
+          snap "fri_entry"
+          for i in $(seq 0 23); do
+            case $((i % 8)) in
+              0|1) tap Right .20 ;;
+              2) tap space .12 ;;
+              3|4) tap Down .15 ;;
+              5) tap Left .15 ;;
+              6) tap space .15 ;;
+              7) tap Up .15 ;;
+            esac
+            sleep .25
+            if ((i % 8 == 7)); then snap "fri_rain_$i"; fi
+          done
+          sleep 7
+          snap "fri_idle"
+          note "stella_alive"
+          kill -0 "$PID"
+          pngs=$(find "$DIR" -maxdepth 1 -type f -name '*.png' | wc -l)
+          echo "AUTHENTIC_STELLA_SCREENSHOTS=$pngs" | tee "$DIR/result.txt"
+          test "$pngs" -ge 8
+          (cd "$DIR" && sha256sum *.png *.bin input_events.tsv > SHA256SUMS.txt)
+          BASH
+          chmod +x /tmp/pachinko_actual_stella.sh
+          xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash /tmp/pachinko_actual_stella.sh
+      - name: Publish diagnostic-only original emulator evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pachinko-8bdecde-stella-blackbox-coarse-input
+          path: build/pachinko/
+          if-no-files-found: warn
+          retention-days: 30
