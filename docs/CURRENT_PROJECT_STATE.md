@@ -1,9 +1,19 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-22 (MAIN inspected PACHINKO 2.0 original Gopher+Stella+TIA-audio archives and opened ROM DEV raster diagnosis #12).
+**Updated:** 2026-11-22 (MAIN reconciled uploaded Pachinko diagnostic report, 8/15 stress shards CI-success, new Gopher 261 scanline sample, graphic art issue).
 **Phase:** **PACHINKO_2_0_REAL_GAMEPLAY_PARTIAL_PASS / Gopher_REAL_TIA_RASTER_261_FAIL_UNDER_CROSS_EMULATOR_DIAGNOSIS / INDEPENDENT_VERIFICATION_PENDING / RELEASE_BLOCKED**.
 **Implementation:** Final current NTSC 4096-byte 4K ROM candidate lives only on open Draft PR #4, evidence HEAD **`49eb168b17d0254d06cf50d87c60e8fb6016db6e`**, game-code commit **`6cb86247c668162b180e5d77377098941b9803b3`**, native DASM ROM SHA256 **`e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974`**. MAIN independently checked actual ROM bytes from GitHub Actions artifacts. Not merged/released. Previous `a953...` visual revision and `ec791...` baseline are superseded.
 **Release:** **NOT APPROVED**. Gopher native raster gate FAILED 261 vs required 262; independent Stella beam check and remaining systems/arts/audio/hardware Verification not complete.
+
+## MAIN accepted uploaded Pachinko diagnostic report, reconciled with later evidence (2026-11-22)
+
+Read [MAIN latest report reconciliation](MAIN_PACHINKO_UPLOAD_RECONCILIATION_2026-11-22.md) before reusing older snapshot numbers:
+- User-supplied PACHINKO 2.0 report is a historical partial snapshot (3x real Stella full campaigns, 500 seeded, and in that particular branch Gopher raster NOT_RUN). **Other inspected GitHub native Gopher runs already provide two more real complete campaigns** and genuine raster measurements.
+- Five total 15/15 real-emulator automated controller-driven complete campaigns are evidenced across actual Gopher and Stella, same frozen E9EA SHA; still NOT human gameplay or all-rule verification.
+- Seeded matrix CI now shows **8/15 room shards SUCCESS, 7 unfinished**, each purportedly 100 sessions; MAIN downloaded a representative `room_12` original artifact 14777065231 and checked actual result JSON and ZIP CRC, 100 seeded 900-frame genuine Stella savestate sessions + 10k long run; do not claim MAIN independently opened every other completed shard. The 50k FRI original artifact 14776206366 was opened, CRC good and frame/video counts validated.
+- **New additional real raster evidence**: official Gopher2600 v0.57.2 Actions 45078641799 collected 95 stable frames reporting `total:261` (1 partial boot =20), confirming older pinned Gopher raster 261 observations. Independent actual Stella beam/scanline count still NOT_RUN. ROM cause and known 262 reference control unresolved, [diagnostic-only ROMDEV Issue #12](https://github.com/Odourman/mellanrum/issues/12) open; **no production-code fixes authorized**.
+- Submitted room screenshots continue to show stone and exit as thin vertical marks, a separate **art/readability concern** requiring GRAPHICS options + user's subsequent art acceptance, not automatically an implementation directive.
+- Overall release `BLOCKED`; full 15 x 100 matrix, actual game-rule oracle, audio listening, independent Verification #5 and hardware NOT YET complete; PR #4 remains DRAFT, no merge/release.
 
 ## PACHINKO 2.0 genuine emulator intake – 2026-11-22
 
