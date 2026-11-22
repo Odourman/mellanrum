@@ -135,11 +135,14 @@ TitleMenuLeftPF2:
         dc.b $18,$3C,$7E
 TitleMenuRightPF2:
         dc.b $42,$5A,$42
+TitleMenuY:
+        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$01,$01,$01,$01,$01,$01,$01,$01
+        dc.b $02,$02,$02,$02,$02,$02,$02,$02
 ShadowCrownOr:
-        dc.b $00,$00,$73,$35,$13,$00,$00,$00
+        dc.b $00,$00,$33,$15,$13,$00,$00,$00
 ShadowCrownAnd:
-        dc.b $FF,$FF,$7F,$5F,$3F,$FF,$FF,$FF
+        dc.b $FF,$FF,$3F,$1F,$3F,$FF,$FF,$FF
 ShadowStemOr:
-        dc.b $00,$00,$11,$51,$10,$20,$00,$00
+        dc.b $00,$00,$11,$11,$10,$20,$00,$00
 ShadowStemAnd:
-        dc.b $FF,$FF,$1F,$5F,$1F,$3F,$FF,$FF
+        dc.b $FF,$FF,$1F,$1F,$1F,$3F,$FF,$FF

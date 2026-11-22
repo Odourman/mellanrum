@@ -1364,9 +1364,9 @@ TitleFreeSelected:
         lda #$B6
         sta sprite1Ptr
 TitleMenuReady:
-        ldy #0
-        ldx #8
+        ldx #0
 TitleMenuLine:
+        ldy TitleMenuY,x
         sta WSYNC
         lda sprite0Ptr
         sta COLUPF
@@ -1380,23 +1380,27 @@ TitleMenuLine:
         nop
         nop
         nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         lda sprite1Ptr
         sta COLUPF
         lda TitleMenuRightPF2,y
         sta PF2
-        dex
+        inx
+        cpx #24
         bne TitleMenuLine
-        iny
-        cpy #3
-        beq TitleMenuDone
-        ldx #8
-        jmp TitleMenuLine
 TitleMenuDone:
         lda #0
         sta PF0
         sta PF1
         sta PF2
-        ldx #56
+        ldx #55
 TitleBottom:
         sta WSYNC
         dex

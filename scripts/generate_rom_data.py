@@ -94,12 +94,13 @@ def main():
     # Only PF2 is needed at the two distant icon positions (x12..19 / x32..39).
     byte('TitleMenuLeftPF2',[pfpack('000000000000'+i)[2] for i in left_icons])
     byte('TitleMenuRightPF2',[pfpack('000000000000'+i)[2] for i in right_icons])
+    byte('TitleMenuY',[i for i in range(3) for _ in range(8)])
     # A negative central notch, outlined only by transitory conifer branches.
     # Physically drawn PF OR+AND masks never enter the collision map or pfbuf.
-    byte('ShadowCrownOr', [0,0,0x73,0x35,0x13,0,0,0])
-    byte('ShadowCrownAnd',[0xFF,0xFF,0x7F,0x5F,0x3F,0xFF,0xFF,0xFF])
-    byte('ShadowStemOr',  [0,0,0x11,0x51,0x10,0x20,0,0])
-    byte('ShadowStemAnd', [0xFF,0xFF,0x1F,0x5F,0x1F,0x3F,0xFF,0xFF])
+    byte('ShadowCrownOr', [0,0,0x33,0x15,0x13,0,0,0])
+    byte('ShadowCrownAnd',[0xFF,0xFF,0x3F,0x1F,0x3F,0xFF,0xFF,0xFF])
+    byte('ShadowStemOr',  [0,0,0x11,0x11,0x10,0x20,0,0])
+    byte('ShadowStemAnd', [0xFF,0xFF,0x1F,0x1F,0x1F,0x3F,0xFF,0xFF])
     result='\n'.join(out)+'\n'
     path=pathlib.Path(args.output)
     if args.check:
