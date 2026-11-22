@@ -24,6 +24,9 @@ for idx in range(4):
 # Real frame-indexed joystick cursor movement: move right one cell through ReadInput
 cmd += ['POKE 0x00cc 5','POKE 0x00cd 3','POKE 0x00d5 0','POKE 0x00d6 0','STICK LEFT RIGHT'];sf(24)
 cmd += ['STICK LEFT NORIGHT','TV FRAME','PEEK 0x00cc 0x00cd',f'SCREENSHOT {out/"marker_real_joystick_right.png"}']
+# Second axis: real hardware joystick UP and actual RAM cursor coordinate readout.
+cmd += ['POKE 0x00cc 5','POKE 0x00cd 3','STICK LEFT UP'];sf(24)
+cmd += ['STICK LEFT NOUP','TV FRAME','PEEK 0x00cc 0x00cd',f'SCREENSHOT {out/"marker_real_joystick_up.png"}']
 # Adversarial hardware object overlaps, separate from four feedback snapshots.
 for name,x in [('owl',1),('symbol_A',4),('symbol_B',8)]:
     cmd += [f'POKE 0x00cc {x}','POKE 0x00cd 3','POKE 0x00d5 20','POKE 0x00d6 3'];sf(2)
@@ -33,6 +36,11 @@ cmd+=['POKE 0x00db 2'];sf(2)
 cmd+=['TV FRAME',f'SCREENSHOT {out/"presence_active.png"}']
 cmd+=['POKE 0x00db 0'];sf(2)
 cmd+=['TV FRAME',f'SCREENSHOT {out/"presence_off.png"}']
+# A diagnostic phase toggle does not change room geometry; it uses existing game palette rules.
+cmd += ['POKE 0x00c4 1'];sf(2)
+cmd += ['TV FRAME',f'SCREENSHOT {out/"phase1.png"}']
+cmd += ['POKE 0x00c4 0'];sf(2)
+cmd += ['TV FRAME',f'SCREENSHOT {out/"phase0.png"}']
 cmd+=['QUIT']
 (out/'replay.txt').write_text('\n'.join(cmd)+'\n')
 with (out/'stdout.log').open('w') as f:proc=subprocess.run([str(emu),'HEADLESS',str(rom)],input='\n'.join(cmd)+'\n',stdout=f,stderr=subprocess.STDOUT,text=True,timeout=180)

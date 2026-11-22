@@ -16,6 +16,9 @@ for attempt in $(seq 1 30);do
 done
 if [[ -z "$WIN" ]];then echo STELLA_WINDOW_NOT_FOUND;cat build/stella/stella.log;exit 1;fi
 xdotool windowfocus --sync "$WIN"
+# LEFT Difficulty A to enter campaign, not FRI SKOG where exit glyph is deliberately hidden.
+xdotool key --clearmodifiers F5
+sleep 0.4
 xdotool key --clearmodifiers F12
 sleep 1
 # Hold FIRE for multiple 60Hz frames; there is no memory injection in Stella screenshots.

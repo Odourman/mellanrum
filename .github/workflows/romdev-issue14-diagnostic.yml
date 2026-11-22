@@ -77,14 +77,15 @@ jobs:
         cd diagnostics/issue14
         python3 scripts/probe_15.py
         python3 scripts/pixel_audit.py
+        python3 scripts/check_marker_presence.py
         python3 - <<'PY'
         import json, pathlib
         d=json.loads(pathlib.Path('build/gopher_15/metadata.json').read_text())
         n=d['scanline_counts']
-        assert n=={'262':25}, n
+        assert n=={'262':28}, n
         p=json.loads(pathlib.Path('build/gopher_15/pixel_audit.json').read_text())
         assert p['status']=='PASS' and p['bits_checked']==2640 and p['bits_matched']==2640,p
-        print('GOPHER_INTEGRATED_PASS 2640/2640 original raster bits; 15 room screenshots; 25 frames at 262 lines')
+        print('GOPHER_INTEGRATED_PASS 2640/2640 original raster bits; 15 room screenshots; 28 frames at 262 lines')
         PY
     - uses: actions/upload-artifact@v4
       if: always()
@@ -99,7 +100,7 @@ jobs:
     timeout-minutes: 15
     steps:
     - uses: actions/checkout@v4
-    - run: sudo apt-get update && sudo apt-get install -y stella xvfb xdotool
+    - run: sudo apt-get update && sudo apt-get install -y stella xvfb xdotool python3-pil
     - uses: actions/download-artifact@v4
       with:
         name: issue14-native-DASM-disposable-4k-listing-symbols
@@ -108,6 +109,10 @@ jobs:
       run: |
         cd diagnostics/issue14
         xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash scripts/stella_diag.sh
+    - name: Assert both P1 copies are genuinely visible in stock Stella campaign frame
+      run: |
+        cd diagnostics/issue14
+        python3 scripts/check_stella_pixels.py
     - uses: actions/upload-artifact@v4
       if: always()
       with:
