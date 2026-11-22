@@ -1,0 +1,72 @@
+name: Mellanrum - static checks and optional DASM build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mell-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  project-checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Verify project structure and authority markers
+        run: python3 scripts/ci_check.py
+      - name: Explicit evidence boundary
+        run: |
+          echo "CI_STATIC_PASS (if previous step passed)" >> "$GITHUB_STEP_SUMMARY"
+          echo "No emulator, TIA timing, RAM, audio, or gameplay test was performed." >> "$GITHUB_STEP_SUMMARY"
+
+  rom-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - id: rom_source
+        name: Detect authorized ROM entrypoint
+        shell: bash
+        run: |
+          if [[ -f rom/src/main.asm ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Explicit NOT_RUN without ROM source
+        if: steps.rom_source.outputs.available != 'true'
+        run: |
+          echo "ROM_BUILD_NOT_RUN: no rom/src/main.asm yet." >> "$GITHUB_STEP_SUMMARY"
+      - name: Install DASM
+        if: steps.rom_source.outputs.available == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm
+          dasm --version || true
+      - name: Assemble and validate artifact
+        if: steps.rom_source.outputs.available == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          dasm rom/src/main.asm -f3 -obuild/mellanrum_ntsc.bin -lbuild/mellanrum.lst -sbuild/mellanrum.sym
+          python3 scripts/check_rom.py build/mellanrum_ntsc.bin
+          (cd build && sha256sum mellanrum_ntsc.bin > SHA256SUMS)
+          echo "BUILD_ARTIFACT_CHECK_PASS; emulator, TIA and gameplay NOT_RUN." >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish assembler output (build-only, NOT verified gameplay)
+        if: steps.rom_source.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mell-build-only-not-emulator-verified
+          path: build/
+          if-no-files-found: error
+          retention-days: 14

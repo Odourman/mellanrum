@@ -1,0 +1,8 @@
+# Local build/evidence products
+/build/
+/*.bin
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.venv/
