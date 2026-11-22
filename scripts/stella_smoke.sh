@@ -17,13 +17,19 @@ fi
 xdotool windowfocus --sync "$WIN"
 xdotool key --clearmodifiers F12
 sleep 1
-xdotool key --clearmodifiers space
-sleep 4
-xdotool key --clearmodifiers F12
-sleep 1
+# Space might first dismiss a launcher or only be observed on a 60 Hz polling edge.
+# Three deliberate press/release cycles capture title, room entrance, and settled room.
+for press in 1 2 3; do
+  xdotool keydown --clearmodifiers space
+  sleep 0.35
+  xdotool keyup --clearmodifiers space
+  sleep 3
+  xdotool key --clearmodifiers F12
+  sleep 1
+done
 ls -lh build/stella
 PNGS=$(find build/stella -type f -name '*.png' | wc -l)
-if (( PNGS < 1 )); then
+if (( PNGS < 3 )); then
   echo 'STELLA_SMOKE_FAIL: no real Stella screenshot captured'
   cat build/stella/stella.log
   exit 1
