@@ -6,6 +6,7 @@ READ_NAMES=["mode","room","act","geom","owlX","owlY","owlDir","stoneX","stoneY",
 def symbols(path):
  t=pathlib.Path(path).read_text();d={}
  for n,h in re.findall(r"(?m)^([A-Za-z]\w*)\s*=\s*\$([0-9A-Fa-f]+)\s*$",t):d[n]=int(h,16)
+ for n,h in re.findall(r"(?m)^([A-Za-z]\w*)\s+([0-9A-Fa-f]{4})\s+\(",t):d[n]=int(h,16)
  for n in READ_NAMES+["mapRows","pfbuf"]:
   if n not in d:raise RuntimeError("missing_native_symbol: "+n)
   if not 0x80<=d[n]<0x100:raise RuntimeError("not_real_128B_ram: "+n)
