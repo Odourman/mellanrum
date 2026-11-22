@@ -5,6 +5,12 @@
 **Implementation:** 15-room Atari 2600 / NTSC / standard 4K **candidate exists on PR #4 only**, branch `romdev/fullgame-20261122`, head `8bdecde79a6bc1ecb804484d5d257f4f1a99b052`. **PR open + Draft + unmerged.** Main branch does not yet contain the game.
 **Release:** **NOT APPROVED**. Independent gameplay, visual, sound and hardware testing is not complete.
 
+## Nästa auktoriserade designbeslut, uppskjutet ROM-arbete – A/B-konsolreglage
+
+- **USER-APPROVED control design, NOT YET IMPLEMENTED:** vänstra fysiska Difficulty-reglaget används **exklusivt** för val av spelläge; **A = Kampanj (standard)** och **B = FRI SKOG**. Joystick och SELECT får inte byta spelläge; FIRE startar den hårdvaruvalda varianten, titelskärmen visar enbart `MELLANRUM`.
+- **Mekanisk begränsning:** ROM kan läsa Difficulty A/B, men kan inte flytta det fysiska reglaget till A. "Standard Kampanj" betyder normalt läge när A är inställt; om användaren har reglaget på B aktiveras B vid nästa start. Under pågående spel ska A/B inte tvinga ett oavsiktligt lägesbyte.
+- **WAIT:** användaren vill att ROM DEVELOPMENT först slutför befintlig Issue #8 (titel och Närvaro). MAIN ska ge ett separat nytt ändringsuppdrag efter leveransen och därefter uppdatera PACHINKO 2.0 till den resulterande SHA. Detta dokument ger ingen auktorisation att utöka pågående kodscope.
+
 ## Nya användarbeslut: titel, Närvaron och fullständig Pachinko 2.0-testning (2026-11-22)
 
 - ROM DEVELOPMENT har **uttrycklig ny implementationsauktorisation** för att titeln ska visa exakt ett läsbart ord **MELLANRUM**, utan andra textord (men med valbar kampanj/FRI SKOG), och för att Närvaron ska skymtas tillfälligt som en **ofullständig oidentifierbar silhuett av negativt rum mellan träden**. Ingen traditionell monstersprite, egen AI, collision eller ändrad V5.1-tidsregel. [ROM order](MAIN_TO_ROMDEV_TITLE_AND_PRESENCE_2026-11-22.md) · [Issue #8](https://github.com/Odourman/mellanrum/issues/8).
