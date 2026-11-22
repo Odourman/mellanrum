@@ -100,7 +100,7 @@ def mapping_for(desc):
   if d["port"]!=0 or d["device"]!=1:continue
   s=d["name"].lower().strip()
   for name in ["Fire","Select","Reset","Up","Down","Left","Right","Left Difficulty A","Left Difficulty B","Right Difficulty A","Right Difficulty B","Color","Black/White"]:
-   if s==name.lower() or s.startswith(name.lower()+" "):m[name]=d["id"]
+   if s==name.lower():m[name]=d["id"]
  return m
 def policy(profile,frame,seed,left):
  if frame<3:return {"Left Difficulty "+left}
