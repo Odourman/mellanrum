@@ -7,7 +7,7 @@
 
 ## Kommande symbolestetik: godkänd designriktning, ej implementerad (2026-11-23)
 
-Användaren har valt **orange som gemensam färg för de två egna, mystiska tecknen och spelarens markör**; ugglan får vara avsiktligt svår att upptäcka och ska om möjligt dela skogens/trädens färg. Stenen/utgången föreslås bli två olika tecken utan utlagd betydelse. Nuvarande tekniska kandidat PF=träd, BL=uggla, P0/P1=tecken, M0=markör är **inte tekniskt verifierad eller godkänd för ROM-implementation**. Markören M0 skulle dela P0:s orange färg. Utvärdera sprite-silhuetter, återstående TIA-färgkopplingar, objektkollisioner, fulla 15-rums-kampanjens läsbarhet och rasterbudget innan tekniskt beslut.
+Användaren har valt **rödorange som gemensam färg för de två egna, mystiska tecknen och spelarens markör**; ugglan får vara avsiktligt svår att upptäcka och ska om möjligt dela skogens/trädens färg. Stenen/utgången föreslås bli två olika tecken utan utlagd betydelse. Nuvarande tekniska kandidat PF=träd, BL=uggla, P0/P1=tecken, M0=markör är **inte tekniskt verifierad eller godkänd för ROM-implementation**. Markören M0 skulle dela P0:s rödorange färg. Rödorange är användarens precisering och ersätter tidigare formulering enbart 'orange'; exakt NTSC-färgkod är ännu inte vald. Utvärdera sprite-silhuetter, återstående TIA-färgkopplingar, objektkollisioner, fulla 15-rums-kampanjens läsbarhet och rasterbudget innan tekniskt beslut.
 
 [MEL-044 i beslutsregistret](DECISIONS.md). Ingen position-/funktionsväxling av tecknen är beslutad. Fryst PR #4/E9EA oförändrad; Pachinko 2.0, rasterdiagnos #12 och independent Verification går på befintlig binär tills ett separat implementationbeslut fattas.
 
