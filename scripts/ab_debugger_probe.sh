@@ -23,13 +23,13 @@ saveSes
 EOF
   (
     cd "$dir"
-    HOME="$dir/home" stella -debug -holdjoy0 F -video software -fullscreen 0 -ld "$left" -rd "$right" "$dir/${name}.bin" > "$dir/${name}.debug.log" 2>&1 &
+    HOME="$dir/home" stella -debug -dbg.res 1250x800 -holdjoy0 F -video software -fullscreen 0 -ld "$left" -rd "$right" "$dir/${name}.bin" > "$dir/${name}.debug.log" 2>&1 &
     PID=$!
-    sleep 10
+    sleep 16
     kill "$PID" 2>/dev/null || true
     wait "$PID" 2>/dev/null || true
   )
   find "$dir" -type f -printf '%p (%s)\n' > "$dir/files.txt"
   echo "STELLA_DEBUGGER_PROBE $name files=$(wc -l < "$dir/files.txt")"
 done
-find build/ab/debugger -type f -name '*.txt' -o -name '*.log' | sort
+find build/ab/debugger -type f \( -name '*.txt' -o -name '*.log' \) | sort
