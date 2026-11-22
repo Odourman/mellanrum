@@ -1,8 +1,8 @@
 # Mellanrum: aktuellt projektläge
 
 **Senast uppdaterad:** 2026-11-22  
-**Fas:** G0 – V5.1-designgranskning, fortfarande **inte accepterad** som canon.  
-**Implementationsstatus:** INGEN ROM-kod eller spelbar ROM. **Nästa avsedda ROM-order:** en fullproduktionsorder i ett svep, först efter mottaget GRAPHICS-underlag och färdigberedd käll-/designbrief.  
+**Fas:** G0-källintag och GRAPHICS V5.1 överlämnad. Fullständig ROM-order formulerad och redo att lämnas till ROM DEVELOPMENT; ingen ROM har påbörjats av MAIN.  
+**Implementationsstatus:** INGEN ROM-kod eller spelbar ROM. **Uppdragsstatus:** En fullproduktionsorder i ett svep är dokumenterad efter mottagen GRAPHICS-överlämning.  
 **Verifieringsstatus:** CI_STATIC_PASS för projektkontroller i [run #3](https://github.com/Odourman/mellanrum/actions/runs/45059313938); ROM_BUILD_NOT_RUN för DASM-build samt NOT_RUN för Stella, Gopher2600, fysisk konsol, spelbarhet, ljud och rastertiming.
 
 ## Bekräftad projektidentitet
@@ -18,6 +18,13 @@ Användaren har överlämnat ett nytt V5.1-förslag till MAIN. Den indexerade fi
 
 **Bedömning:** V5.1 är en betydligt starkare och välstrukturerad designkandidat än föregående V5. Formell acceptans avvaktar källpaket/regelpreciseringar. Granskning: [MAIN V5.1 review](MAIN_V5_1_REVIEW_2026-11-22.md). Tre materiella motiv, tre akter, femton rum och Närvarons tvåtick-fönster är *föreslagna regler* i väntan på beslut. Ingen gameplay-ROM får startas.
 
+## Aktuell uppdatering 2026-11-22: GRAPHICS och fullspelet
+- GRAPHICS slutrapport har granskats via den läsbara 34-sidiga grafikavhandlingen. Riktningen **GITTERSKOG / BILDMELLANRUM** accepteras som visuellt implementeringsmål.
+- Fullständig handoff: [MAIN GRAPHICS V5.1 intake](MAIN_GRAPHICS_V5_1_INTAKE_2026-11-22.md).
+- En **komplett fullspelsorder** är färdig: [ROM DEVELOPMENT FULL GAME ORDER](ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md). Användaren har begärt ett enda sammanhållet mandat och stor självständig teknisk/konstnärlig problemlösning.
+- GRAPHICS:s och V5.1:s ZIP-filer återfanns i Project/Library, men kan inte öppnas som råbyte i MAIN-sessionen. Källgranskning och 20/20/15/15-test måste reproduceras i ROM DEVELOPMENT:s första interna moment. Grafikhäftets 25 vs 23 bitmapuppgift ska redas ut mot faktiska datatabeller.
+- **Ingen ROM byggd, ingen emulator eller independent Verification körd.**
+
 ## Gjort
 - GitHub-repot inventerat som tomt vid projektstart.
 - Drive-projektmapp skapad.
@@ -27,7 +34,7 @@ Användaren har överlämnat ett nytt V5.1-förslag till MAIN. Den indexerade fi
 1. Ta in det faktiska V5.1-ZIP-paketet inklusive `LAS_MIG_FORST.md`, `reference/engine.py`, `reference/solve.py`, testfiler, JSON-vittnen, kartor och bildoriginal.
 2. Ange källa, datum, filhash, verifiera abstrakta tester och status för föreslagna regler; följ granskningens öppna punkter.
 3. Bestäm vad som kräver normativ precisering: FIRE-edge-kö, tickprioritet, videonegativ utan kollisionsändring och RAM-/stackrisk; håll ljudprototyp separat från verifierad ROM.
-4. Efter GRAPHICS-överlämning och källberedning: formulera ett **enda sammanhållet fullspelsuppdrag** till ROM DEVELOPMENT enligt användarens nya direkta instruktion (MEL-017–019), med fri kreativ/teknisk problemlösning, byggbar ROM, tester och ärliga kvarstående risker. Ingen ny mikrogate mellan ROM-teamets egna arbetsfaser; oberoende Verification hålls separat.
+4. **Fullspelsuppdraget har nu formulerats** i [ROM DEVELOPMENT FULL GAME ORDER](ROM_DEVELOPMENT_FULL_GAME_ORDER_2026-11-22.md). Nästa genomförande är överlämning till ROM DEVELOPMENT tillsammans med original-ZIP:erna, första interna källkontroll och därefter hela spelimplementeringen. Inga mikrogates under ROM-teamets arbete; oberoende Verification hålls separat.
 
 **Befintlig nästa arbetsorder:** [GitHub Issue #1 – G0 designintag](https://github.com/Odourman/mellanrum/issues/1). Ingen automatiskt påbörjad kodning i MAIN-chatten; den framtida fullspelsordern skickas som en uttrycklig handoff efter GRAPHICS-underlaget.
 
