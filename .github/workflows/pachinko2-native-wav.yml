@@ -49,6 +49,6 @@ jobs:
             build/pachinko/headless-native-audio/
             gopher_wav_cli.SHA256SUMS
           retention-days: 30
-      - name: Strict WAV gate: 3 native PCM recordings and non-silent audio
+      - name: "Strict WAV gate: 3 native PCM recordings and non-silent audio"
         run: |
           python3 -c "import json,sys;d=json.load(open('build/pachinko/headless-native-audio/metrics.json'));print(d['audio_capture_status'],d['real_wavs']);sys.exit(0 if d['audio_capture_status']=='PASS' and d['real_wavs']==3 else 1)"
