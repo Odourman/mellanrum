@@ -1,11 +1,20 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-22 (MAIN independently inspected Issue #8 delivery; A/B separate order #9 now issued).
-**Phase:** **TITLE+PRESENCE DEVELOPER CANDIDATE RECEIVED / HARDWARE A/B IMPLEMENTATION ORDER OPEN / PACHINKO 2.0 FINAL FREEZE PENDING**.
-**Implementation:** Updated 15-room 4K NTSC product candidate exists on Draft PR #4, head `eea14339010306de635a8c6238e242b76b28cc64`; `main` contains coordination docs, not merged game. Native ROM SHA256 `a9531d5bbbff033711fbe54f8688b8e0259640e0a9a284c8ab585eea415c0bd5` (4096 bytes), verified from GitHub Actions by MAIN. **Further A/B-only UI/input change is ordered but not implemented; this SHA is not final for full Pachinko.**
+**Updated:** 2026-11-22 (MAIN verified final Issue #9 A/B build and authentic Stella artifact; frozen for Pachinko 2.0).
+**Phase:** **A/B FINAL DEVELOPER CANDIDATE VERIFIED AT ARTIFACT LEVEL / PACHINKO 2.0 FULL-SYSTEM EXECUTION ORDER ISSUED / INDEPENDENT_VERIFICATION_PENDING**.
+**Implementation:** Final current NTSC 4096-byte 4K ROM candidate lives only on open Draft PR #4, evidence HEAD **`49eb168b17d0254d06cf50d87c60e8fb6016db6e`**, game-code commit **`6cb86247c668162b180e5d77377098941b9803b3`**, native DASM ROM SHA256 **`e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974`**. MAIN independently checked actual ROM bytes from GitHub Actions artifacts. Not merged/released. Previous `a953...` visual revision and `ec791...` baseline are superseded.
 **Release:** **NOT APPROVED**. Independent gameplay, visual, sound and hardware testing is not complete.
 
-## Nästa auktoriserade designbeslut, uppskjutet ROM-arbete – A/B-konsolreglage
+## FINAL A/B candidate: verified intake, exact Pachinko target — 2026-11-22
+
+**Authoritative current developer candidate (not released)**: [MAIN received & independently hashed full final native DASM ROM](MAIN_FINAL_AB_ROM_INTAKE_2026-11-22.md), exactly `e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974`, 4096 bytes, PR #4 head `49eb168b17d0254d06cf50d87c60e8fb6016db6e`. GitHub Actions [native build 45075716636](https://github.com/Odourman/mellanrum/actions/runs/45075716636) SUCCESS, artifact 14775257125 and [Stella A/B 45075039996](https://github.com/Odourman/mellanrum/actions/runs/45075039996) SUCCESS artifact 14774798060; both extracted ROMs independently SHA-matched, ZIP CRC valid.
+
+- **MEL-037 A/B NOW IMPLEMENTED AND OBSERVED IN STELLA:** Only LEFT physical Difficulty A→Campaign, B→FRI; FIRE starts chosen mode, SELECT/joystick cannot change mode on title, RESET then FIRE re-reads hardware, midgame switching does not change mode, RIGHT difficulty irrelevant. Full single-word title `MELLANRUM` and no menu icons remain. Developer's 20/20 reference, 15/15 model witness, 225 seeded CPU runs and 262-line *developer model* pass.
+- **Evidence boundaries:** Stella A/B observations rely on timestamped keyboard events and 12 real production-ROM PNGs, *not* frame-indexed input replay or direct SWCHB/RAM debugger transcript. Two debugger attempts produced no readable register transcript. Original Presence glimpses from previous Issue #8 **instrumented variant ROMs** do not themselves prove the visual effect is reachable in a real 15-room full campaign.
+- **CURRENT NEXT ACTION:** [MAIN full execution order for PACHINKO 2.0](MAIN_TO_PACHINKO_2_0_FINAL_AB_E9EA_FULL_TEST_2026-11-22.md), [Issue #7](https://github.com/Odourman/mellanrum/issues/7). A/B implementation dependency is SATISFIED; earlier Stage0 documents that tell Pachinko to **wait** are now historical. Build and run real GitHub Actions emulator test harness on **this exact ROM identity**. Independent Verification [Issue #5](https://github.com/Odourman/mellanrum/issues/5) must separately test and decide. Old SHA evidence not carried forward.
+- **OUTSTANDING:** true frame-indexed all 15 rooms, actual raster/cycle counters, actual audio recording+human listening, original hardware and RetroN77 SKILL P1 test, independent verification. PAL NOT_IMPLEMENTED. NO MERGE/RELEASE.
+
+## Historik: tidigare uppskjutet A/B-beslut — nu implementerat enligt FINAL A/B ovan
 
 - **USER-APPROVED control design, NOT YET IMPLEMENTED:** vänstra fysiska Difficulty-reglaget används **exklusivt** för val av spelläge; **A = Kampanj (standard)** och **B = FRI SKOG**. Joystick och SELECT får inte byta spelläge; FIRE startar den hårdvaruvalda varianten, titelskärmen visar enbart `MELLANRUM`.
 - **Mekanisk begränsning:** ROM kan läsa Difficulty A/B, men kan inte flytta det fysiska reglaget till A. "Standard Kampanj" betyder normalt läge när A är inställt; om användaren har reglaget på B aktiveras B vid nästa start. Under pågående spel ska A/B inte tvinga ett oavsiktligt lägesbyte.
