@@ -72,7 +72,7 @@ jobs:
         name: issue14-native-DASM-disposable-4k-listing-symbols
         path: diagnostics/issue14/build
     - run: chmod +x diagnostics/tools/gopher2600
-    - name: Actual Gopher2600: 15 original PF rooms, same/different Y, moving marker, four feedback states, Presence
+    - name: "Actual Gopher2600: 15 original PF rooms, same/different Y, moving marker, four feedback states, Presence"
       run: |
         cd diagnostics/issue14
         python3 scripts/probe_15.py
