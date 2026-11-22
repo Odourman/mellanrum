@@ -1,9 +1,9 @@
 # Mellanrum: aktuellt projektläge
 
 **Senast uppdaterad:** 2026-11-22  
-**Fas:** G0 – projektetablering och designöverlämning.  
+**Fas:** G0 – V5.1-designgranskning, fortfarande **inte accepterad** som canon.  
 **Implementationsstatus:** INGEN ROM-kod eller spelbar ROM.  
-**Verifieringsstatus:** CI_STATIC_PASS för projektkontroller i run #2; ROM_BUILD_NOT_RUN för DASM-build samt NOT_RUN för Stella, Gopher2600, fysisk konsol, spelbarhet, ljud och rastertiming.
+**Verifieringsstatus:** CI_STATIC_PASS för projektkontroller i [run #3](https://github.com/Odourman/mellanrum/actions/runs/45059313938); ROM_BUILD_NOT_RUN för DASM-build samt NOT_RUN för Stella, Gopher2600, fysisk konsol, spelbarhet, ljud och rastertiming.
 
 ## Bekräftad projektidentitet
 - Namn: **Mellanrum** (beslutat av användaren).
@@ -14,7 +14,9 @@
 - MAIN-roll: samordning, spårbarhet, uppdrag, mottagning, granskning – inte automatiskt utveckling eller oberoende Verification.
 
 ## Designkällans ställning
-En tidigare konceptiteration **"Mellanrum: Skogen som lyssnar" V5** beskrevs i föregående designarbete med barrträd, uggla, sten, tre akter och femton rum. Detaljerna i V5 är **inte infogade eller fullständigt lästa i detta repo**. Den senare frågan om en oidentifierbar hotfull varelse har inte ett slutligt dokumenterat designbeslut. V5 ska importeras som originalunderlag, därefter granskas och få uttrycklig status. V3 eller Let Me Out!-material får inte automatiskt fylla luckorna.
+Användaren har överlämnat ett nytt V5.1-förslag till MAIN. Den indexerade filen `MELLANRUM_V5_1_SKOGEN_SOM_LYSSNAR_KRITISKT_REVIDERAD_AVHANDLING.md` har gått att läsa i Library och granska som text. **Det efterfrågade V5.1-ZIP-paketet med `LAS_MIG_FORST.md`, Python-skript och testresultat har däremot inte varit åtkomligt i denna konversation.** Inga original- eller kodhashar har därför verifierats och 15/15-modellresultatet är endast källans *påstående*, inte MAIN:s reproducerade test.
+
+**Bedömning:** V5.1 är en betydligt starkare och välstrukturerad designkandidat än föregående V5. Formell acceptans avvaktar källpaket/regelpreciseringar. Granskning: [MAIN V5.1 review](MAIN_V5_1_REVIEW_2026-11-22.md). Tre materiella motiv, tre akter, femton rum och Närvarons tvåtick-fönster är *föreslagna regler* i väntan på beslut. Ingen gameplay-ROM får startas.
 
 ## Gjort
 - GitHub-repot inventerat som tomt vid projektstart.
@@ -22,9 +24,9 @@ En tidigare konceptiteration **"Mellanrum: Skogen som lyssnar" V5** beskrevs i f
 - Projektstyrning och statisk CI/valfritt assemblersteg initierade. Det första faktiska projektkontrollsjobbet är grönkört, utan ROM.
 
 ## Nästa grind: G0-DESIGN-INTAKE
-1. Ta in den faktiska sista V5-filen/ZIP:en och eventuell senare konstnärlig revision.
-2. Ange källa, datum, filhash, vad som är `APPROVED` / `PROPOSED` / `OPEN`; reda ut hotvarelsens roll.
-3. Sammanställ Mellanrums egna spelregler, ljudkontrakt och simultana TIA-objektschema.
+1. Ta in det faktiska V5.1-ZIP-paketet inklusive `LAS_MIG_FORST.md`, `reference/engine.py`, `reference/solve.py`, testfiler, JSON-vittnen, kartor och bildoriginal.
+2. Ange källa, datum, filhash, verifiera abstrakta tester och status för föreslagna regler; följ granskningens öppna punkter.
+3. Bestäm vad som kräver normativ precisering: FIRE-edge-kö, tickprioritet, videonegativ utan kollisionsändring och RAM-/stackrisk; håll ljudprototyp separat från verifierad ROM.
 4. Presentera den första avgränsade ROM-uppgiften **för separat uttrycklig implementationsauktorisation**.
 
 **Befintlig nästa arbetsorder:** [GitHub Issue #1 – G0 designintag](https://github.com/Odourman/mellanrum/issues/1). Ingen automatisk fortsättning till G1.

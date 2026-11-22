@@ -2,6 +2,9 @@
 
 Detta är en **överlämningscheck**, inte en nyskriven slutlig spelmanual.
 
+## Uppdatering 2026-11-22: V5.1
+V5.1 är ny föreslagen designbas. Den läsbara indexerade avhandlingen har granskats, men efterfrågat ZIP-paket inklusive `LAS_MIG_FORST.md` är inte åtkomligt. Se [MAIN:s preliminära V5.1-granskning](MAIN_V5_1_REVIEW_2026-11-22.md). Ingen ROM-implementation får följa av detta.
+
 ## Utgångsläge
 - Spelets namn är Mellanrum.
 - Den tidigare designprocessen kom enligt överlämningskontext till **"Mellanrum: Skogen som lyssnar" V5**: skogligt tretal med barrträd, uggla och sten; tre akter; femton rum; experimentell ljudbild med drone, dissonans och tystnad. Den versionens exakta ruleset, rumsdata och testunderlag är ännu inte publicerade/inspekterade i denna källa.

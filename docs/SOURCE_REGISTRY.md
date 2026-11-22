@@ -18,3 +18,13 @@
 | M-REF-004 | Äldre "Mellanrum: Det som lyssnar" V3 | Version/filhash ej intagen | Historiskt koncept, ej automatiskt slutgiltigt |
 
 Källfilens namn, titel eller senare datum räcker inte ensamt för att ge den högre auktoritet. Ändra alltid detta register när faktisk ny originalfil tas emot. En hash identifierar bytes, inte att innehållet är rätt eller slutligt.
+
+## V5.1 mottagningskandidater, ej auktoriserad slutcanon
+
+| ID | Källa | Integritet | Status |
+|---|---|---|---|
+| M-CAND-005 | Indexerad Library-text `MELLANRUM_V5_1_SKOGEN_SOM_LYSSNAR_KRITISKT_REVIDERAD_AVHANDLING.md` | 1 396 indexerade rader läsbara. Originalråbyte och SHA-256 inte tillgängliga via materialisering | READABLE_TEXT_ONLY / PROPOSED / REVIEWED_PROVISIONALLY |
+| M-CAND-006 | Användaren hänvisar till V5.1-ZIP och `LAS_MIG_FORST.md` | Inte bifogat/åtkomligt för denna MAIN-överföring; inte validerat | WAITING_FOR_SOURCE |
+| M-CAND-007 | `reference/engine.py`, `reference/solve.py`, `reference/check_rooms.py`, `reference/validate_traces.py`, `reference/abstract_solution_results.json` | Beskrivna i avhandlingen men varken hämtade eller körda | NOT_RUN / WAITING_FOR_SOURCE |
+
+Använd aldrig slumpmässig liknämnd Drive-fil som ersättning för M-CAND-006. En Drive-sökning gav t.ex. `LAS_MIG_FORST.md` som handlar om **The Cabin**, alltså är den inte Mellanrums källa. Originalens byte och SHA måste verifieras när de finns.

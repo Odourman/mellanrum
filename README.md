@@ -2,7 +2,7 @@
 
 Ett nytt, fristående experimentellt/avantgardistiskt spelprojekt för **Atari 2600**.
 
-**Status 2026-11-22:** Projektet är initierat. Ingen ROM är implementerad eller emulatorverifierad. Den tidigare spelidén "Mellanrum: Skogen som lyssnar" (V5) är ett *designunderlag under överlämning*, inte automatiskt fryst slutlig canon. En oidentifierbar hotfull närvaro diskuteras fortfarande.
+**Status 2026-11-22:** Projektet är initierat. Ingen ROM är implementerad eller emulatorverifierad. Det **nya V5.1-förslaget** för "Mellanrum: Skogen som lyssnar" granskas som designkandidat, inte automatiskt godkänd canon. Närvaron är beskriven som ett tvåtickslångt intrång i FIRE:s betydelse, inte traditionell fiende. Det fullständiga ZIP-paketet och modelltesterna inväntar källverifiering.
 
 ## Projektkällor
 
@@ -12,6 +12,7 @@ Ett nytt, fristående experimentellt/avantgardistiskt spelprojekt för **Atari 2
 - [Projektstatus](docs/CURRENT_PROJECT_STATE.md) – faktisk status
 - [Beslutsregister](docs/DECISIONS.md) – godkända, föreslagna och öppna beslut
 - [Designintag](docs/DESIGN_INTAKE.md) – vilken designkälla som saknas/behöver granskas
+- [MAIN:s V5.1-designgranskning](docs/MAIN_V5_1_REVIEW_2026-11-22.md) – konstnärlig och teknisk riskbedömning, ännu ingen accept
 - [Teknisk och verifieringsmässig arbetsmodell](docs/WORKFLOW.md)
 
 ## Arbetsprincip
