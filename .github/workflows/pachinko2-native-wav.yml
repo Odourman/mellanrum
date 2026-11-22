@@ -1,0 +1,54 @@
+name: PACHINKO 2.0 E9EA real TIA WAV via Gopher native audio mixer in HEADLESS
+on:
+  push:
+    branches: [pachinko/p2-native-audio-headless-e9ea]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-headless-wav:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y git gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev dasm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+      - name: Verify exact E9EA production ROM and compile pinned original Gopher with CLI-only HEADLESS wav option
+        run: |
+          dasm rom/src/main.asm -f3 -obuild-rebuilt.bin
+          python3 pachinko2/check_identity.py build-rebuilt.bin
+          cmp build-rebuilt.bin rom/bin/mellanrum_ntsc.bin
+          git clone --quiet https://github.com/JetSetIlly/Gopher2600.git gopher-src
+          cd gopher-src
+          git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('gopher2600.go');s=p.read_text()
+          old='flgs.BoolVar(&opts.FpsCap, "fpscap", false, "cap FPS to emulation TV (defaults to false)")'
+          assert s.count(old)==1
+          # Gopher already has unchanged WavWriter / TIA mixer in debugger.NewDebugger.
+          # This only registers the existing Wav option in command-line HEADLESS parsing.
+          s=s.replace(old,old+'\n\tflgs.BoolVar(&opts.Wav, "wav", false, "native TIA WAV in headless debugger")')
+          p.write_text(s)
+          PY
+          go build -o ../gopher2600_headless_tia_wav .
+          cd ..
+          sha256sum gopher2600_headless_tia_wav > gopher_wav_cli.SHA256SUMS
+          ./gopher2600_headless_tia_wav HEADLESS -help || true
+      - name: Generate authentic complete 15-room 6507 audio and FRI/titel recordings
+        run: |
+          python3 pachinko2/capture_audio_headless.py --emulator ./gopher2600_headless_tia_wav --rom rom/bin/mellanrum_ntsc.bin --out build/pachinko/headless-native-audio
+          python3 pachinko2/analyze_audio.py build/pachinko/headless-native-audio
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pachinko2-REAL-GOPHER-native-TIA-WAV-all-rooms-FRI-title
+          path: |
+            build/pachinko/headless-native-audio/
+            gopher_wav_cli.SHA256SUMS
+          retention-days: 30
+      - name: Strict WAV gate: 3 native PCM recordings and non-silent audio
+        run: |
+          python3 -c "import json,sys;d=json.load(open('build/pachinko/headless-native-audio/metrics.json'));print(d['audio_capture_status'],d['real_wavs']);sys.exit(0 if d['audio_capture_status']=='PASS' and d['real_wavs']==3 else 1)"
