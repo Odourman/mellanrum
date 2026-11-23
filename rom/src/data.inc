@@ -34,13 +34,13 @@ PaletteOwl:
 PaletteGlyph:
         dc.b $3A,$3A,$38,$36,$3A  ; S3 symbols, valid NTSC TIA orange/amber
 SoundControl0:
-        dc.b $08,$08,$06,$0A
+        dc.b $0C,$0C,$06,$0A
 SoundControl1:
         dc.b $06,$06,$0C,$04
 SoundPitch0:
-        dc.b $0F,$0C,$0F,$0D
+        dc.b $1C,$1D,$0F,$0D
 SoundPitch1:
-        dc.b $15,$16,$1A,$1C
+        dc.b $1E,$1D,$1A,$1C
 RoomAct:
         dc.b $01,$01,$01,$01,$01,$02,$02,$02,$02,$02,$03,$03,$03,$03,$03
 RoomPolarity:
