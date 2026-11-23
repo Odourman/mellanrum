@@ -1,0 +1,44 @@
+name: MELLANRUM title Presence real Stella visual capture
+on:
+  push:
+    branches: [main, 'romdev/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-real-stella:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install real DASM Stella Pillow and Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm stella xvfb xdotool python3-pil
+      - name: Build new production 4K Atari ROM using native DASM
+        run: |
+          mkdir -p build
+          dasm rom/src/main.asm -f3 -obuild/mellanrum_ntsc.bin -lbuild/mellanrum_ntsc.lst -sbuild/mellanrum_ntsc.sym
+          python3 scripts/check_rom.py build/mellanrum_ntsc.bin
+          cp build/mellanrum_ntsc.bin build/native_dasm.bin
+          python3 scripts/assemble_check.py rom/src/main.asm -o build/mellanrum_ntsc.bin
+          cmp build/native_dasm.bin build/mellanrum_ntsc.bin
+          python3 scripts/check_title_presence.py
+      - name: Observe title + all three III intrusion rooms in genuine Stella images
+        shell: bash
+        run: |
+          chmod +x scripts/capture_visual_evidence.sh
+          xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash scripts/capture_visual_evidence.sh
+      - name: Upload full Stella evidence including PNG variants, SHA, ROM and assembler listing
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mell-title-presence-real-stella-developer-evidence
+          path: |
+            build/visual/
+            build/mellanrum_ntsc.bin
+            build/mellanrum_ntsc.lst
+            build/mellanrum_ntsc.sym
+          if-no-files-found: warn
+          retention-days: 30
