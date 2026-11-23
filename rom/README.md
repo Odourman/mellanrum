@@ -1,31 +1,27 @@
-# MELLANRUM vNext – Issue #21, user-authorized Atari 2600 cartridge
+# MELLANRUM – real 16KiB F6 NTSC (Issue #26, Draft PR #27)
 
-**Active vNext candidate** is the isolated Draft PR #23 branch `romdev/issue21-vnext-16k-20261123`; do not mistake this for frozen PR #16 or earlier PR #4. The historic one-line assertion "no gameplay ROM exists" was obsolete.
+## Build a standard unmodified Atari 2600 ROM
+The Issue26 product is **NOT** the old single-bank Issue21 ROM. Current user-approved game candidate uses standard **F6 four-bank 16KiB cartridge** and real 6507/TIA/RIOT only.
 
-## Build real Atari 2600 native ROM
-
-From repository root with real DASM:
-
-```sh
-mkdir -p build/issue21
-dasm rom/src/main.asm -f3 -obuild/issue21/mellanrum_vnext_ntsc.bin -lbuild/issue21/mellanrum_vnext.lst -sbuild/issue21/mellanrum_vnext.sym
-wc -c build/issue21/mellanrum_vnext_ntsc.bin
-sha256sum build/issue21/mellanrum_vnext_ntsc.bin
-python3 -m unittest discover -s reference -p test_engine.py -v
-python3 reference/check_rooms.py
+```bash
+sudo apt-get install dasm
+python3 rom/f6/build_f6.py --out build/issue26
+sha256sum build/issue26/MELLANRUM_16K_NTSC_F6.bin
 ```
 
-The new game currently fits **unbanked 4K (4096 bytes)**, well inside the hard **16384-byte** limit. An authentic standard 4K ROM needs neither F6 nor cartridge coprocessors or extra RAM; if a later approved revision crosses 4096, introduce authentic F6 four-bank ROM and test all hotspots. Do not pretend F6 is already in use.
+**Exactly 16,384 bytes** and expected binary SHA-256 `7ce777dc273e1c30d8621843052e941ced41fcf2961bcdf835576a11c9592446`. A source modification must produce a **new** hash and rerun all emulator tests; never keep using a frozen SHA.
 
-**Canonical new rooms:** `reference/rooms.json`, exactly 15 unique geometries. Their exact generated/hand-packed `GeoMap0..14` and `GeoPF0..14` metadata live in `rom/src/data.inc`; original graphic U3/S3/Presence masks preserved. Do not run `build_issue15.py` against the new candidate; that older script regenerates the **frozen historical PR #16 game** and would overwrite the new 15-room map and audio modifications. Use the native `dasm` command and commit-specific CI as the reproducibility entrypoint. See `docs/GAMEPLAY_CANON_DELTA.md` for intentional rule/map differences.
+The already built, hash-confirmed game ROM is versioned in GitHub `rom/bin/MELLANRUM_16K_NTSC_F6.bin`, not generated as empty padded banks. Score banks are `rom/f6/bank0_score.asm`, `bank1_score.asm`, `bank2_score.asm`; real 15-room game/NTSC raster lives in `rom/src/main.asm`, `rom/src/data.inc`. Three score banks include 15 individually active room-specific TIA sequences, with shared crossbank call/return/reset trampoline; all are actually executed by 6507.
 
-## Evidence, strict boundaries
+## How to play / controls
+On **title**: physical left difficulty switch **A = campaign**, **B = FRI SKOG**; press **FIRE** to start selected mode. **Joystick** moves the visible mark, not the autonomous owl; hover over mutable trees or stone and press FIRE to influence the forest/stone. **SELECT** restarts the current room. **RESET** returns to title. On a completed room, FIRE advances. In Acts II/III, a second FIRE on an echo-pending tree cancels the queued reversal and instead flips stone polarity. The active Presence can intercept specific FIRE gestures. Title text is only `MELLANRUM`; no action gameplay, scores, conventional enemies or boss.
 
-- `.github/workflows/issue21-native-vnext.yml`: real native DASM, full listing+symbols, exact ROM SHA and **mandatory** room/model tests.
-- `.github/workflows/issue21-stella-vnext.yml`: real Stella/libretro controller-only 15-room campaign and actual TIA PCM; separate true gameplay PASS (not just a successful workflow, because optional experiments may fail).
-- `tests/issue21/gopher_full_campaign.py`: real Gopher HEADLESS joystick/FIRE run with no POKE and exact 262-line TV FRAME samples, all 15 rooms and coda.
-- Source-only reference/model wins do not count as emulator wins. ROM SHA must match every emulator evidence result.
-- The earlier `rom/bin/mellanrum_ntsc.bin` is the **old PR #16 frozen 4 KiB artifact**; do not replace it. The new vNext binary must be distinguished as `mellanrum_vnext_ntsc.bin` in Actions/archive.
-- Independent Verification, adversarial Pachinko, physical console/RetroN77/PAL, end-user art and human gameplay/release acceptance remain separately gated.
+For a stock 2600 cartridge, F6 is the standard 16KiB bank mechanism, no custom cartridge RAM/assist CPU. Authentic original hardware and Hyperkin RetroN77 **have not been physically tested**. Stella 8.0_pre authentic libretro recognizes F6* (16K) and runs all 15 rooms.
 
-**NO MERGE / NO RELEASE** under ROM DEVELOPMENT authority.
+## Reproducibility / evidence
+`docs/ISSUE26_IMPLEMENTATION_REPORT.md` is the developer receipt. `docs/ROM_16K_F6_BANK_MAP.md` documents all bank windows/selector/reset, `docs/SOUND_DESIGN.md` actual two-channel TIA score, `docs/GAMEPLAY_16K_DESIGN_DELTA.md` exact scope vs PR23, `docs/TECHNIQUE_30_AUDIT.md` original 30 technique cross-reference and `docs/COMPATIBILITY_16K_F6.md` residual risks. 
+`.github/workflows/issue26-native-f6.yml` builds all banks, runs strict source tests and **requires actual complete 15-room Stella controller gameplay and PCM audio**. `.github/workflows/issue26-pin-rom.yml` commits *only* the versioned ROM file on the new branch, byte-for-byte native DASM.
+
+**Historic protected ROMs:** PR23 frozen 4KiB ROM SHA `63e719...bdc`; PR16 `45d342...`; PR4 `e9ea87...`. They remain unchanged. **Do not run `build_issue15.py`** against Issue26; it regenerates historical PR16 source/graphics and is not the F6 build method. Legacy 4K CI jobs are guarded for this Issue26 branch.
+
+**No merge or final release under ROM Development authority**. Independent Verification and Pachinko on this exact new SHA, worst-case timing/stack and original hardware/RetroN77 remain pending.
