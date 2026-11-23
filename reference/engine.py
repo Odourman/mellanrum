@@ -51,7 +51,7 @@ def passable(r,s,x,y,cursor=None):
     k=index(x,y)
     blocked=bool(s.bits&(1<<k))
     if r.act==3: blocked = blocked ^ bool(s.phase)
-    if cursor is not None and cursor==(x,y) and is_mutable(r,k):blocked=False
+    # Issue21: cursor hover is visual only; FIRE is the only tree edit.
     return not blocked
 
 # Normative V5.1 interruption schedule, timed in owl beats (0-based).
