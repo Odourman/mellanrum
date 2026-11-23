@@ -8,7 +8,7 @@ jobs:
   stella-ntsc-boot:
     # Issue26 uses the strict real-F6 workflow; this historical job rebuilds
     # 4K Issue15 source and must not run against an unrelated 16K candidate.
-    if: ${{ !startsWith(github.ref, 'refs/heads/romdev/issue26-') && !startsWith(github.head_ref, 'romdev/issue26-') && !startsWith(github.ref, 'refs/heads/romdev/issue32-') && !startsWith(github.head_ref, 'romdev/issue32-') }}
+    if: ${{ !startsWith(github.ref, 'refs/heads/romdev/issue26-') && !startsWith(github.head_ref, 'romdev/issue26-') && !startsWith(github.ref, 'refs/heads/romdev/issue32-') && !startsWith(github.head_ref, 'romdev/issue32-') && !startsWith(github.ref, 'refs/heads/romdev/mainii-') && !startsWith(github.head_ref, 'romdev/mainii-') }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read
