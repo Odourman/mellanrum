@@ -1,0 +1,50 @@
+{
+  "status": "GRAPHICS_DESIGN_PROPOSED",
+  "operation": "bit-reverse every byte in the prior vertical-beak U3 frames (horizontal mirror)",
+  "source_ref": "graphics/mel046-u3-vertical-beak-20261123",
+  "emulator_verified": false,
+  "frames": {
+    "B0": {
+      "top_down_hex": "18 7E DB F7 F7 7E 7E 24",
+      "rows_binary": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11110111",
+        "11110111",
+        "01111110",
+        "01111110",
+        "00100100"
+      ],
+      "nine_byte_bottom_up_plus_00": "24 7E 7E F7 F7 DB 7E 18 00"
+    },
+    "B1": {
+      "top_down_hex": "18 7E DB F7 F7 FF BD 24",
+      "rows_binary": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11110111",
+        "11110111",
+        "11111111",
+        "10111101",
+        "00100100"
+      ],
+      "nine_byte_bottom_up_plus_00": "24 BD FF F7 F7 DB 7E 18 00"
+    },
+    "B2": {
+      "top_down_hex": "18 7E DB F7 F7 FF FF 24",
+      "rows_binary": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11110111",
+        "11110111",
+        "11111111",
+        "11111111",
+        "00100100"
+      ],
+      "nine_byte_bottom_up_plus_00": "24 FF FF F7 F7 DB 7E 18 00"
+    }
+  }
+}

@@ -39,12 +39,12 @@ assert not any(k in data for k in ('TitleWordLo:', 'TitleWordHi:','TitleKAM:','T
 # Console SELECT is covered by check_input.py; check video title in real CPU model.
 c=load(str(ROOT/'build/mellanrum_ntsc.bin'),str(ROOT/'build/mellanrum_ntsc.sym'))
 c.run_to_frame(4)
-assert all(t==19912 for t,_,_ in c.frame_samples[1:]),c.frame_samples
+assert all(t==19988 for t,_,_ in c.frame_samples[1:]),c.frame_samples  # CPU model predicts one line MORE than native Gopher TV FRAME
 assert c.ram('mode')==0
 c.input_swchb=0xfd;c.run_to_frame(6);assert c.ram('mode')==0
 c.input_swchb=0xbf;c.run_to_frame(8);assert c.ram('mode')==0
-assert c.frame_samples[-1][0]==19912
-print('TITLE_EXACT_WORD_PASS: 9 connected glyphs, no other textual words or mode icons, SELECT no-op in title; 262 scanlines developer CPU')
+assert c.frame_samples[-1][0]==19988
+print('TITLE_EXACT_WORD_PASS: 9 connected glyphs, no other textual words or mode icons, SELECT no-op in title; 263 scanlines bespoke CPU model (native Gopher independently measures 262)')
 
 # Shadow is gated by the precise original state machine. Cases include all three active rooms.
 for room,warn,active1,after in [(12,1,2,4),(13,0,1,3),(14,2,3,5)]:
