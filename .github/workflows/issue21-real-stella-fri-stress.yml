@@ -39,7 +39,7 @@ jobs:
               r=json.loads((p/"result.json").read_text())
               samples=[json.loads(x) for x in (p/"read_only_ram.jsonl").read_text().splitlines()]
               values=[int(x["raw_ram_hex"][0x38*2:0x38*2+2],16) for x in samples if x["frame"]>=150]
-              assert values and all(x==4 for x in values),(name,values),r
+              assert values and all(x==4 for x in values), (name,values)
               assert r["status"]=="PASS" and r["video_callbacks"]==r["emulated_frames"] and r["audio_samples"]>0,r
               data.append({"profile":name,"frames":r["emulated_frames"],"status":"PASS","samples_after_start":len(values),"mode4_samples":len(values),"real_stella_core":r["core"]})
           assert sum(x["frames"] for x in data)==57500
