@@ -902,20 +902,12 @@ CandidateLeft:
         beq IsBaseClear
         lda phase
         bne PassYes
-        jmp CursorException
+        jmp PassNo
 IsBaseClear:
         lda phase
         beq PassYes
-CursorException:
-        lda candidateX
-        cmp cursorX
-        bne PassNo
-        lda candidateY
-        cmp cursorY
-        bne PassNo
-        lda (mapPtr),y
-        and BitMask,x
-        bne PassYes
+        ; Issue #21: no invisible marker hover collision override.
+        ; Only a deliberate FIRE edit can open a mutable tree.
 PassNo:
         clc
         rts
