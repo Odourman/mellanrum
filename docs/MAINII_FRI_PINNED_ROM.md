@@ -1,7 +1,7 @@
 # MAIN II FRI native F6 ROM
 
-Source build commit: bacd37102e858e3652097a3aa2608834ef26b609
+Source build commit: 50de756773eaf315310f4ed272f0b7548b0fae0a
 
-16,384-byte MAINII FRI standard F6 NTSC ROM SHA-256: 7e5add7d2580e7ebb3e871a79c13d7ba5680e71354946c941fe79b826e158134
+16,384-byte MAINII FRI standard F6 NTSC ROM SHA-256: a207e7944771b3a85aa640f95d6f8775243d84f80fff74a15057f66f4e9f7bcb
 
 Real Stella 15/15 and coda-to-title PASS; independent Verification/Pachinko, physical/human NOT_RUN. Draft developer candidate, no release.
