@@ -67,6 +67,13 @@ def run(a):
        buttons={"Fire"};fire_tick.add((i,tick));fire_inputs+=1
       elif x!=target[0]:buttons={"Right" if target[0]>x else "Left"}
       elif y!=target[1]:buttons={"Down" if target[1]>y else "Up"}
+     else:
+      # Cursor is *causal* in the 6507 rules: it clears a tree when
+      # standing on its cell. Return to an immutable border between
+      # planned interventions to match the source witness assumptions.
+      x,y=s["cursorX"],s["cursorY"]
+      if x>0:buttons={"Left"}
+      elif y>0:buttons={"Up"}
    if buttons!=last_buttons:
     if last_buttons is not None:events.append({"start":start,"end":f,"buttons":sorted(last_buttons)})
     start=f;last_buttons=buttons
