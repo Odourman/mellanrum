@@ -1,7 +1,7 @@
 name: Issue32 true 16KiB F6 native DASM, gameplay, audio
 on:
   push:
-    branches: [romdev/issue32-f6-16k-20261123]
+    branches: [romdev/issue32-finish-game-20261123]
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,7 +16,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y dasm curl unzip
       - name: BUILD – four real native banks, vectors, hotspots, hashes, no 4K fallback
-        run: python3 rom/f6/build_f6.py
+        run: python3 rom/f6/build_f6.py --out build/issue32
       - name: STRICT source parity & 15 authored rooms
         run: |
           python3 -m unittest discover -s reference -p test_engine.py -v
