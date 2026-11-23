@@ -12,6 +12,7 @@ The following user-facing local ZIP was prepared on 2026-11-23 from the exact ne
 - No product code or test was changed as part of migration.
 
 Drive project folder: https://drive.google.com/drive/folders/1rO3ZTTBgyZZhqOx1WCxevM6sE3CrvUcl
+Verified migration ZIP mirror: https://drive.google.com/file/d/1CPNM5d2zwVJduXk05tZF79XcESB_gaTE/view (Google Drive size 9697336 bytes matches local ZIP)
 Native Google Doc handoff: https://docs.google.com/document/d/1kMoR4sjaRHr0XZ8YyZQ0cotdJormmApPD7600Q5jImM/edit
 Drive original CI artifact (unmodified): https://drive.google.com/file/d/1M9eBl579Jq6MvUQg2sehABIV24c3IUiH/view
 GitHub Actions original: https://github.com/Odourman/mellanrum/actions/runs/45184894712/artifacts/14823930347
