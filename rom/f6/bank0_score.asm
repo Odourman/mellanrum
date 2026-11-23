@@ -335,6 +335,8 @@ BankSlot:
         and #$06
         ora #$A0
         sta COLUBK
+        lda M_mode
+        beq BankWarning
         lda M_presence
         beq BankScoreDone
         cmp #2
@@ -356,8 +358,8 @@ BankQuiet:
         rts
 BankWarning:
         lda M_soundStep
-        and #$3F
-        bne BankScoreDone
+        cmp #24
+        bcs BankScoreDone
         lda #8
         sta AUDC1
         lda #2

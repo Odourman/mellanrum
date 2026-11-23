@@ -255,9 +255,9 @@ StartCoda:
         sta presenceEnd
         lda #3
         sta mode
-        lda #$E0         ; 480 frames = $01E0
+        lda #$D0         ; 720 frames = $02D0
         sta codaLo
-        lda #1
+        lda #2
         sta codaHi
 
 ; Joystick input: UP > LEFT > DOWN > RIGHT, no diagonal.
@@ -1068,7 +1068,9 @@ NoSlowCarry:
         tax
         lda PaletteBG,x
         sta COLUBK
-        lda PalettePF,x
+        lda room
+        and #$06
+        eor PalettePF,x
         sta COLUPF
         lda PaletteOwl,x
         sta COLUP0

@@ -26,11 +26,11 @@ SpriteRowIndex:
 PresenceHUD:
         dc.b $00,$04,$0A,$01
 PaletteBG:
-        dc.b $A0,$A0,$F0,$0C,$80
+        dc.b $A0,$A0,$F0,$82,$84
 PalettePF:
-        dc.b $B6,$B6,$B6,$B6,$B6
+        dc.b $B6,$B6,$46,$B4,$B6
 PaletteOwl:
-        dc.b $0E,$0E,$0C,$06,$0E  ; COLUP0 shared with M0 marker
+        dc.b $0E,$0E,$0C,$0E,$0E  ; COLUP0 shared with M0 marker
 PaletteGlyph:
         dc.b $3A,$3A,$38,$36,$3A  ; S3 symbols, valid NTSC TIA orange/amber
 RoomAct:
@@ -209,7 +209,7 @@ ShadowCrownOr:
 ShadowCrownAnd:
         dc.b $FF,$FF,$3F,$1F,$3F,$FF,$FF,$FF
         dc.b $FF,$FF,$3F,$1F,$3F,$FF,$FF,$FF
-        dc.b $FF,$FF,$3F,$0F,$3F,$FF,$FF,$FF
+        dc.b $FF,$FF,$1F,$07,$1F,$FF,$FF,$FF
 ShadowStemOr:
         dc.b $00,$00,$10,$11,$10,$20,$00,$00 ; B0
         dc.b $00,$00,$11,$11,$10,$20,$00,$00 ; B1
