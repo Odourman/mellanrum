@@ -1,0 +1,142 @@
+--- /mnt/data/mell_revision/MELLANRUM_ROMDEV/rom/src/main.asm	2026-11-22 21:32:21.548821096 +0000
++++ rom/src/main.asm	2026-11-22 21:50:57.849630436 +0000
+@@ -41,7 +41,6 @@
+ pfbuf       ds 48       ; 8 rows x upper/lower x 3 TIA bytes
+ mapRows     ds 8        ; current collision bits, 5 left-hand columns each
+ mode        ds 1        ; 0 title, 1 campaign, 2 room done, 3 coda, 4 free forest
+-menu        ds 1
+ room        ds 1        ; 0..14, original I-01..III-05
+ act         ds 1
+ geom        ds 1
+@@ -114,7 +113,6 @@
+         sta slot0Key
+         sta slot1Key
+         lda #0
+-        sta menu
+         sta mode
+         sta prevFire
+         sta prevSelect
+@@ -168,7 +166,8 @@
+         sta WSYNC
+         jmp Frame
+ 
+-; Console switches: RESET=title, SELECT=edge cycles title menu or restarts room.
++; Console RESET returns title. SELECT restarts active room, never selects a mode.
++; LEFT physical Difficulty A/B is latched exclusively when FIRE starts title.
+ ReadInput:
+         lda SWCHB
+         and #1
+@@ -187,15 +186,10 @@
+         lda #1
+         sta prevSelect
+         lda mode
+-        beq SelectTitle
++        beq AfterSelect     ; SELECT on title has no mode effect
+         cmp #3
+         beq AfterSelect
+-        jsr LoadRoom       ; full state rewind on SELECT
+-        jmp AfterSelect
+-SelectTitle:
+-        lda menu
+-        eor #1
+-        sta menu
++        jsr LoadRoom       ; full state rewind on SELECT, same mode
+         jmp AfterSelect
+ SelectReleased:
+         lda #0
+@@ -220,8 +214,9 @@
+         sta prevFire
+         jmp ReadMovement
+ StartMode:
+-        lda menu
+-        beq StartCampaign
++        lda SWCHB
++        and #$40           ; LEFT Difficulty A (1) = campaign, B (0) = free forest
++        bne StartCampaign  ; read ONCE at FIRE; game mode is latched
+         lda #4
+         sta mode
+         lda soundStep
+@@ -422,7 +417,6 @@
+         bne GameFrameDone
+         lda #0
+         sta mode
+-        sta menu
+         jmp GameFrameDone
+ NotCoda:
+         cmp #2
+@@ -1295,9 +1289,9 @@
+ 
+ ; Only legible title word: MELLANRUM. 40 PF bits, 9 letters in one line.
+ ; Unmirrored 20+20 PF scanline rewrite; no other text.
+-; Two abstract modes below: left rooted triangle = campaign, right open fork = FRI SKOG.
+-; Bright half selects mode, dim half is inactive. SELECT/FIRE logic unchanged.
+-; Visible lines: 32 + 56 + 24 + 24 + 56 = exact 192.
++; NO selectable title UI: the console's LEFT Difficulty A/B is the sole mode selector.
++; FIRE starts the hardware-selected mode, SELECT and joystick do not select.
++; The previous icon band is deliberately blank; 192-line raster retained.
+ DrawTitle:
+         lda #0
+         sta CTRLPF           ; no mirroring, distinct L/R PF halves
+@@ -1350,56 +1344,16 @@
+         sta WSYNC
+         dex
+         bne TitleGap
+-        ; Text-free menu: brighter tree triangle vs open branches.
+-        lda menu
+-        bne TitleFreeSelected
+-        lda #$B6
+-        sta sprite0Ptr     ; left selected
+-        lda #$34
+-        sta sprite1Ptr     ; right inactive
+-        jmp TitleMenuReady
+-TitleFreeSelected:
+-        lda #$34
+-        sta sprite0Ptr
+-        lda #$B6
+-        sta sprite1Ptr
+-TitleMenuReady:
+-        ldx #0
+-TitleMenuLine:
+-        ldy TitleMenuY,x
+-        sta WSYNC
+-        lda sprite0Ptr
+-        sta COLUPF
+-        lda TitleMenuLeftPF2,y
+-        sta PF2
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        nop
+-        lda sprite1Ptr
+-        sta COLUPF
+-        lda TitleMenuRightPF2,y
+-        sta PF2
+-        inx
+-        cpx #24
+-        bne TitleMenuLine
+-TitleMenuDone:
++        ; Preserve the original 24-scanline layout without menu icons.
+         lda #0
+         sta PF0
+         sta PF1
+         sta PF2
++        ldx #25       ; preserve 262 NTSC lines after removing long icon kernel
++TitleBlankSelectionBand:
++        sta WSYNC
++        dex
++        bne TitleBlankSelectionBand
+         ldx #55
+ TitleBottom:
+         sta WSYNC
