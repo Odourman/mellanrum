@@ -40,55 +40,23 @@
     "note": "Speglat ingrepp. Ugglan hittar en egen väg.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        17
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "stone",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 12,
+    "initial_forest_preclear_key": null,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#.T..",
+      "#..T.",
+      "#....",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 11,
-    "abstract_search_states": 457,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "I-02",
@@ -131,39 +99,23 @@
     "note": "FIRE förändrar samma form på båda sidor.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        12
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 20,
+    "initial_forest_preclear_key": null,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#..T.",
+      "#T...",
+      "#.T..",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 1105,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "I-03",
@@ -206,39 +158,23 @@
     "note": "Stenens polaritet ändrar ugglans riktning.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        22
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 22,
+    "initial_forest_preclear_key": null,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.TT.",
+      "#....",
+      "#.T..",
+      "#..T.",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 399,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "I-04",
@@ -281,39 +217,23 @@
     "note": "Samma visuella element får motsatta följder.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        17
-      ],
-      [
-        "tree",
-        18
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 8,
+    "initial_forest_preclear_key": null,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#..T.",
+      "#....",
+      "#.TT.",
+      "#..T.",
+      "#....",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 597,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "I-05",
@@ -356,39 +276,23 @@
     "note": "Symmetrin är en regel, inte ett löfte om trygghet.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "wait",
-        -1
-      ],
-      [
-        "tree",
-        18
-      ],
-      [
-        "tree",
-        19
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 12,
+    "initial_forest_preclear_key": null,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#..TT",
+      "#.T..",
+      "#.T..",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 1416,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "II-01",
@@ -398,7 +302,7 @@
       "#####",
       "#....",
       "#.T..",
-      "#.T..",
+      "#.t..",
       "#..T.",
       "#....",
       "#....",
@@ -408,7 +312,7 @@
       "##########",
       "#........#",
       "#.T....T.#",
-      "#.T....T.#",
+      "#.t....t.#",
       "#..T..T..#",
       "#........#",
       "#........#",
@@ -431,55 +335,23 @@
     "note": "Ändringarna kommer tillbaka efter tre steg.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        17
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "stone",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 12,
+    "initial_forest_preclear_key": 17,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#.T..",
+      "#..T.",
+      "#....",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 11,
-    "abstract_search_states": 2908,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "II-02",
@@ -488,7 +360,7 @@
     "half_rows": [
       "#####",
       "#....",
-      "#.T..",
+      "#.t..",
       "#..T.",
       "#T...",
       "#.T..",
@@ -498,7 +370,7 @@
     "full_rows": [
       "##########",
       "#........#",
-      "#.T....T.#",
+      "#.t....t.#",
       "#..T..T..#",
       "#T......T#",
       "#.T....T.#",
@@ -522,47 +394,23 @@
     "note": "Stenen växlar minnesfördröjning.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "tree",
-        18
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 20,
+    "initial_forest_preclear_key": 12,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#..T.",
+      "#T...",
+      "#.T..",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 9,
-    "abstract_search_states": 6920,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "II-03",
@@ -571,7 +419,7 @@
     "half_rows": [
       "#####",
       "#....",
-      "#.TT.",
+      "#.Tt.",
       "#....",
       "#.T..",
       "#..T.",
@@ -581,7 +429,7 @@
     "full_rows": [
       "##########",
       "#........#",
-      "#.TT..TT.#",
+      "#.Tt..tT.#",
       "#........#",
       "#.T....T.#",
       "#..T..T..#",
@@ -605,39 +453,23 @@
     "note": "Två fördröjda händelser kan samexistera.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        22
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "tree",
-        22
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 22,
+    "initial_forest_preclear_key": 13,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.TT.",
+      "#....",
+      "#.T..",
+      "#..T.",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 1916,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "II-04",
@@ -647,7 +479,7 @@
       "#####",
       "#..T.",
       "#....",
-      "#.TT.",
+      "#.tT.",
       "#..T.",
       "#....",
       "#....",
@@ -657,7 +489,7 @@
       "##########",
       "#..T..T..#",
       "#........#",
-      "#.TT..TT.#",
+      "#.tT..Tt.#",
       "#..T..T..#",
       "#........#",
       "#........#",
@@ -680,47 +512,23 @@
     "note": "Avvisade handlingar är synliga, inte tysta buggar.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        17
-      ],
-      [
-        "tree",
-        18
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 8,
+    "initial_forest_preclear_key": 17,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#..T.",
+      "#....",
+      "#.TT.",
+      "#..T.",
+      "#....",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 9,
-    "abstract_search_states": 2919,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "II-05",
@@ -730,7 +538,7 @@
       "#####",
       "#....",
       "#.T..",
-      "#..TT",
+      "#..tT",
       "#.T..",
       "#.T..",
       "#....",
@@ -740,7 +548,7 @@
       "##########",
       "#........#",
       "#.T....T.#",
-      "#..TTTT..#",
+      "#..tTTt..#",
       "#.T....T.#",
       "#.T....T.#",
       "#........#",
@@ -763,39 +571,23 @@
     "note": "Världen återtar ett gammalt tillstånd.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": 4,
-    "solution_oracle_abstract": [
-      [
-        "stone",
-        -1
-      ],
-      [
-        "tree",
-        18
-      ],
-      [
-        "tree",
-        19
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 12,
+    "initial_forest_preclear_key": 18,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#..TT",
+      "#.T..",
+      "#.T..",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 5604,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "III-01",
@@ -806,7 +598,7 @@
       "#....",
       "#.T..",
       "#.T..",
-      "#..T.",
+      "#..t.",
       "#....",
       "#....",
       "#####"
@@ -816,7 +608,7 @@
       "#........#",
       "#.T....T.#",
       "#.T....T.#",
-      "#..T..T..#",
+      "#..t..t..#",
       "#........#",
       "#........#",
       "##########"
@@ -838,59 +630,23 @@
     "note": "Kollisionen inverteras när skogen vänder.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": 4,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        17
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "tree",
-        23
-      ],
-      [
-        "stone",
-        -1
-      ],
-      [
-        "stone",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "tree",
-        17
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 12,
+    "initial_forest_preclear_key": 23,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#.T..",
+      "#..T.",
+      "#....",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 12,
-    "abstract_search_states": 10277,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "III-02",
@@ -902,7 +658,7 @@
       "#.T..",
       "#..T.",
       "#T...",
-      "#.T..",
+      "#.t..",
       "#....",
       "#####"
     ],
@@ -912,7 +668,7 @@
       "#.T....T.#",
       "#..T..T..#",
       "#T......T#",
-      "#.T....T.#",
+      "#.t....t.#",
       "#........#",
       "##########"
     ],
@@ -933,39 +689,23 @@
     "note": "Samma bild blir ett annat hinder.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": 2,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        12
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 20,
+    "initial_forest_preclear_key": 27,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#..T.",
+      "#T...",
+      "#.T..",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 5080,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "III-03",
@@ -977,7 +717,7 @@
       "#.TT.",
       "#....",
       "#.T..",
-      "#..T.",
+      "#..t.",
       "#....",
       "#####"
     ],
@@ -987,7 +727,7 @@
       "#.TT..TT.#",
       "#........#",
       "#.T....T.#",
-      "#..T..T..#",
+      "#..t..t..#",
       "#........#",
       "##########"
     ],
@@ -1011,39 +751,23 @@
       2
     ],
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        22
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 22,
+    "initial_forest_preclear_key": 28,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.TT.",
+      "#....",
+      "#.T..",
+      "#..T.",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 7,
-    "abstract_search_states": 1263,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "III-04",
@@ -1054,7 +778,7 @@
       "#..T.",
       "#....",
       "#.TT.",
-      "#..T.",
+      "#..t.",
       "#....",
       "#....",
       "#####"
@@ -1064,7 +788,7 @@
       "#..T..T..#",
       "#........#",
       "#.TT..TT.#",
-      "#..T..T..#",
+      "#..t..t..#",
       "#........#",
       "#........#",
       "##########"
@@ -1089,79 +813,23 @@
       2
     ],
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "stone",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 8,
+    "initial_forest_preclear_key": 23,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#..T.",
+      "#....",
+      "#.TT.",
+      "#..T.",
+      "#....",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 17,
-    "abstract_search_states": 26499,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   },
   {
     "id": "III-05",
@@ -1173,7 +841,7 @@
       "#.T..",
       "#..TT",
       "#.T..",
-      "#.T..",
+      "#.t..",
       "#....",
       "#####"
     ],
@@ -1183,7 +851,7 @@
       "#.T....T.#",
       "#..TTTT..#",
       "#.T....T.#",
-      "#.T....T.#",
+      "#.t....t.#",
       "#........#",
       "##########"
     ],
@@ -1207,46 +875,22 @@
       2
     ],
     "intrusion_foreshadow_tick": null,
-    "solution_oracle_abstract": [
-      [
-        "tree",
-        18
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "tree",
-        22
-      ],
-      [
-        "stone",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ],
-      [
-        "wait",
-        -1
-      ]
+    "solution_oracle_abstract": [],
+    "abstract_step_count": null,
+    "abstract_search_states": null,
+    "coarse_cursor_travel_checked": false,
+    "resonance_gate_key": 12,
+    "initial_forest_preclear_key": 27,
+    "original_v5_1_half_rows": [
+      "#####",
+      "#....",
+      "#.T..",
+      "#..TT",
+      "#.T..",
+      "#.T..",
+      "#....",
+      "#####"
     ],
-    "abstract_step_count": 9,
-    "abstract_search_states": 23204,
-    "coarse_cursor_travel_checked": true
+    "new_controller_only_witness": "NOT_RUN"
   }
 ]
