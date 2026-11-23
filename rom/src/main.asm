@@ -96,6 +96,9 @@ pfPtr       ds 2
 moveTemp    ds 1
 soundStep   ds 1
 shadowOn    ds 1        ; render-only: 0 normal / 1 warning / 2 active
+fireX       ds 1        ; visible cursor column captured on FIRE edge
+fireY       ds 1        ; visible cursor row captured on FIRE edge
+markerPtr   ds 2        ; active playfield M0+BL two-stroke glyph pointer
 
         SEG code
         ORG $F000
@@ -213,8 +216,24 @@ AfterSelect:
         beq AdvanceRoom
         cmp #3
         beq ReadMovement
+        cmp #4
+        beq FreeForestFire
         jsr LatchFire
-        jmp ReadMovement
+        ; FIRE selects the cursor that was on-screen BEFORE this input poll.
+        ; A simultaneous direction may move only on a later video frame.
+        rts
+FreeForestFire:
+        ; Distinct free installation: FIRE modulates shadow and TIA score,
+        ; but MUST NEVER queue the campaign's stone or tree edit.
+        lda cursorX
+        sta fireX
+        lda cursorY
+        sta fireY
+        lda #3
+        sta ackType
+        lda #18
+        sta ackFrames
+        rts
 FireReleased:
         lda #0
         sta prevFire
@@ -231,14 +250,14 @@ StartMode:
         adc #10
         sta room
         jsr LoadRoom
-        jmp ReadMovement
+        rts                 ; display spawn marker before any movement
 StartCampaign:
         lda #0
         sta room
         lda #1
         sta mode
         jsr LoadRoom
-        jmp ReadMovement
+        rts                 ; title FIRE is not also a move command
 AdvanceRoom:
         lda waitFrames
         bne ReadMovement
@@ -345,6 +364,12 @@ LatchFire:
         bne FireDenied
         lda usedFire
         bne FireDenied
+        ; Snapshot the exact grid cell shown last frame. Only accepted
+        ; targets are subsequently committed; moving cannot retarget them.
+        lda cursorX
+        sta fireX
+        lda cursorY
+        sta fireY
         lda cursorX
         cmp stoneX
         bne TryEditable
@@ -512,18 +537,19 @@ LoadRoom:
         sta pfPtr+1
         ldy #7
 CopyMap:
-        lda (mapPtr),y  ; mutable geometry mask is in first 8 bytes
-        ; blocked base masks in mapPtr+8, copied from indirect offset
-        tya
-        clc
-        adc #8
-        tay
+        ; 15*8 ROM bytes recovered: source blocked masks were exactly
+        ; source tree bits OR 1 in interior, $1F on border rows.
+        ; Keep mutable collision byte-for-byte identical to prior ROM.
         lda (mapPtr),y
-        sta mapRows-8,y
-        tya
-        sec
-        sbc #8
-        tay
+        ora #1
+        cpy #0
+        beq CopyWall
+        cpy #7
+        bne CopyMapStore
+CopyWall:
+        lda #$1F
+CopyMapStore:
+        sta mapRows,y
         dey
         bpl CopyMap
         ldy #47
@@ -1014,19 +1040,47 @@ PlaceObjects:
         adc #7           ; logical stoneX 4 => x=71
         ldx #1           ; P1 first symbol; second copy automatically x+64
         jsr PositionOne
+        ; M0 at cell+2 and BL at cell+12 visually bracket one 16px cell.
+        ; The S3 stone is P1 at cell+7..14, BETWEEN these two rails.
         lda cursorX
         asl
         asl
         asl
         asl
         clc
-        adc #4
-        ldx #2           ; M0 is cursor, no separate P1 mark
+        adc #2
+        ldx #2           ; missile 0 left rail (2 physical pixels)
         jsr PositionOne
-        ; M0 stays a precise 1px locator. P0 bottom HUD draws genuine
-        ; ring / check / X / broken Presence feedback glyphs instead.
-        lda #0
+        lda pending
+        bne BallFrozen
+        lda ackFrames
+        beq BallCurrent
+BallFrozen:
+        lda fireX        ; queued/ack target stays visible when cursor moves
+        jmp BallXChosen
+BallCurrent:
+        lda cursorX
+BallXChosen:
+        asl
+        asl
+        asl
+        asl
+        clc
+        adc #12
+        ldx #4           ; RESBL/HMBL: right rail or locked FIRE location
+        jsr PositionOne
+        lda #$10        ; NUSIZ0 missile width=2, owl P0 size unchanged
         sta NUSIZ0
+        ; Select one of four *in-scene* 8-line two-column TIA glyphs.
+        ldx #0
+        lda ackFrames
+        beq MarkerStyleChosen
+        ldx ackType
+MarkerStyleChosen:
+        lda CursorPlayLo,x
+        sta markerPtr
+        lda CursorPlayHi,x
+        sta markerPtr+1
         sta WSYNC
         sta HMOVE
 NoObjects:
@@ -1192,7 +1246,7 @@ ShadowGateDone:
 ; NTSC display: 16 top status lines, 8*20 gameplay rows, 16 bottom lines.
 ; Conifer crowns 10 lines, stems 10; P0/P1 use safe lower-band raster slots.
 RenderPlay:
-        lda #1
+        lda #$11       ; playfield mirror + 2px TIA ball rail
         sta CTRLPF
         lda #0
         sta GRP0
@@ -1290,7 +1344,7 @@ OwlB0Frame:
 OwlFrameReady:
         lda OwlFrameLo,x
         sta sprite0Ptr
-        lda OwlFrameHi,x
+        lda #>OwlB0         ; all U3 wing frames reside in one ROM page
         sta sprite0Ptr+1
         jmp OwlRowChosen
 NoOwlOnRow:
@@ -1353,13 +1407,30 @@ NoSymbolBOnRow:
 SymbolBReady:
         ; fifth crown line: prepare M0 cursor gate (not game state).
         sta WSYNC
+        ; Independently gate the moving M0 and the frozen BL target.
         lda #0
         sta candidateY
+        sta candidateX
         lda rowIndex
         cmp cursorY
-        bne MarkerGateDone
+        bne MarkerM0Ready
         lda #2
         sta candidateY
+MarkerM0Ready:
+        lda pending
+        bne MarkerBLFrozen
+        lda ackFrames
+        beq MarkerBLCurrent
+MarkerBLFrozen:
+        lda fireY
+        jmp MarkerBLRow
+MarkerBLCurrent:
+        lda cursorY
+MarkerBLRow:
+        cmp rowIndex
+        bne MarkerGateDone
+        lda #4
+        sta candidateX
 MarkerGateDone:
         lda workY
         sta candidateD    ; current mask frame index for the forthcoming stem
@@ -1410,7 +1481,6 @@ NoStemShadow:
         sta PF2
         lda #0
         sta ENABL
-        lda candidateY
         sta ENAM0
         ldx #9
 Stem13:
@@ -1423,18 +1493,16 @@ Stem13:
         cpx #1           ; last blank sprite row must update PF bookkeeping
         beq StemLastFast  ; early, avoiding >76 cycles from post-loop bookkeeping
         ; P1 glyph A fetches around beam c46-50; wait until after its right edge.
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
+        ; Exactly 28 cycles replace 14 NOPs: two separate marked rails.
+        ; packed bit1 = M0, bit2 = BL. Gated by real 8x20 row index.
+        ; Stone and mirrored tree cell have the SAME 16px target anchor.
+        lda (markerPtr),y
+        and candidateY
+        sta ENAM0
+        lda (markerPtr),y
+        and candidateX
+        lsr
+        sta ENABL
         nop
         nop
         lda (pfPtr),y
@@ -1483,7 +1551,7 @@ HUDNeutral:
 HUDChoose:
         lda CursorSpriteLo,x
         sta sprite0Ptr
-        lda CursorSpriteHi,x
+        lda #>CursorIdle    ; all four HUD glyphs reside in one ROM page
         sta sprite0Ptr+1
         ldy #7
 HUDIcon8:
