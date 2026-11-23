@@ -21,6 +21,7 @@ class Room:
     stone_initial:int=0
     instruction:str=''
     dramaturgy:str=''
+    gate:int=0
     def validate(self):
         assert len(self.half)==8 and all(len(row)==5 for row in self.half)
         assert all(set(row)<=set('#.Tt') for row in self.half)
@@ -31,7 +32,7 @@ class Room:
 @dataclass(frozen=True)
 class State:
     x:int;y:int;direction:int;bits:int;polarity:int;phase:int;phase_age:int
-    tick:int;queue:Tuple[Tuple[int,int],...];done:bool=False
+    tick:int;queue:Tuple[Tuple[int,int],...];done:bool=False;visitedstone:bool=False
 
 def index(x,y):return 5*y+min(x,9-x)
 def index_xy(idx):return (idx%5,idx//5)
@@ -136,7 +137,11 @@ def step(r,s,action=('wait',-1),cursor=None):
     # Stone rotates heading on arrival, not every tick standing on stone.
     if (x,y)==r.stone and (s.x,s.y)!=r.stone:
         d=(d+(1 if polarity==0 else 3))&3
-    return replace(ns,x=x,y=y,direction=d,done=(x,y)==r.exit)
+    visited = s.visitedstone or (x,y)==r.stone
+    # Exits are conditions in the material world, not press-count gates.
+    gate={0:True,1:visited,2:polarity==1,3:polarity==0,
+          4:not queue,5:phase==1,6:phase==0,7:bool(queue)}[r.gate]
+    return replace(ns,x=x,y=y,direction=d,done=(x,y)==r.exit and gate,visitedstone=visited)
 
 def path_preview(r,sequence,maxsteps=40):
     s=initial(r)
