@@ -1,6 +1,6 @@
-; MELLANRUM: SKOGEN SOM LYSSNAR - ISSUE #15 USER-AUTHORIZED CANDIDATE
+; MELLANRUM vNext ISSUE #21 new gameplay/audio candidate - 15-room resonance experiment
 ; Atari 2600 / 6507 / DASM 2.20+, 4 KiB NTSC cartridge.
-; Full 15-room reference-derived rule set. Hardware/playability is UNVERIFIED.
+; MEL-054 authorizes room remapping and meaningful-actions gate; new ROM tests required.
         processor 6502
 VSYNC   = $00
 VBLANK  = $01
@@ -531,6 +531,14 @@ CopyPF:
         sta pfbuf,y
         dey
         bpl CopyPF
+        ; Each act has a materially distinct editable forest contour, not just reused map.
+        ldx room
+        lda RoomPatchKey,x
+        cmp #$FF
+        beq InitialForestReady
+        sta workKey
+        jsr ToggleTree      ; reversible authored preclear, no pending echo
+InitialForestReady:
         rts
 
 ; Discrete logical owl beat. Strict ordering: FIRE, autonomous Presence,
@@ -857,6 +865,18 @@ OwlVictoryCheck:
         lda owlY
         cmp exitY
         bne OwlMoved
+        ; The exit is a resonator, not an automatic finish tile. The room's
+        ; authored tree must actually be made absent by FIRE before escape.
+        ; A wrong tree or stone action cannot open this passage.
+        ldx room
+        lda RoomGateKey,x
+        sta workKey
+        jsr DecodeKey
+        ldx workX
+        ldy workY
+        lda BitMask,x
+        and mapRows,y
+        bne OwlMoved
         lda #2
         sta mode
         lda #48
@@ -1019,9 +1039,15 @@ Sound:
         beq Silence
         cmp #2
         beq Silence
+        lda mode
+        beq TitleDrone
         lda act
         and #3
         tax
+        jmp DroneIndexReady
+TitleDrone:
+        ldx #0              ; RESET and coda cannot leak a previous act's sound
+DroneIndexReady:
         lda SoundControl0,x
         sta AUDC0
         lda SoundControl1,x
@@ -1038,9 +1064,9 @@ Sound:
         sta AUDV1
         lda presence
         cmp #1
-        beq MuteSecond
+        beq PresenceNoise
         cmp #2
-        beq MuteSecond
+        beq PresenceNoise
         lda slot0Key
         cmp #$FF
         bne EchoDissonance
@@ -1053,7 +1079,24 @@ EchoDissonance:
         lda #2
         sta AUDV1
         jmp SoundDone
-MuteSecond:
+PresenceNoise:
+        ; Rare 8-frame coarse crackle followed by 24-frame silence on ch.1.
+        ; The low channel remains a drone except during occasional intrusions.
+        lda soundStep
+        and #$1F
+        cmp #8
+        bcs MutePresenceNoise
+        lda #$08
+        sta AUDC1
+        lda soundStep
+        and #$07
+        clc
+        adc #$13
+        sta AUDF1
+        lda #1
+        sta AUDV1
+        jmp SoundDone
+MutePresenceNoise:
         lda #0
         sta AUDV1
         lda presence
@@ -1062,8 +1105,7 @@ MuteSecond:
         lda soundStep
         and #$1F
         bne SoundDone
-        lda #0
-        sta AUDV0             ; a measured silent interval can be inspected in TIA
+        sta AUDV0             ; brief silence at the edge of an intrusion
 SoundDone:
         rts
 Silence:
