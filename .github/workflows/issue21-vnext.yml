@@ -21,6 +21,9 @@ jobs:
           test "$n" -ge 4096 && test "$n" -le 16384
           sha256sum build/issue21/mellanrum_vnext.bin | tee build/issue21/SHA256SUMS
           python3 scripts/check_rom.py build/issue21/mellanrum_vnext.bin
+          python3 scripts/assemble_check.py rom/src/main.asm -o build/mellanrum_ntsc.bin
+          cmp build/issue21/mellanrum_vnext.bin build/mellanrum_ntsc.bin
+          cp build/issue21/mellanrum_vnext.bin build/candidate.bin
       - name: Native source sanity tests
         run: |
           python3 scripts/check_hardware_ab.py
