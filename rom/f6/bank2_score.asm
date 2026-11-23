@@ -363,7 +363,7 @@ BankWarning:
         lda #2
         sta AUDV1
 BankScoreDone:
-        rts
+        jmp FreeForestInstrument
 TrackHigh:
         dc.b $F0,$F3,$F6,$F9,$FC
 
@@ -380,6 +380,59 @@ F6BankReturn:
 F6BankReset:
         lda $FFF9
         jmp $F000
+        ; FRI SKOG: instrument-like response to live joystick. Entire routine
+        ; lives in bank 2's unused post-trampoline space, BEFORE F6 hotspots.
+        ; No cartridge RAM, no sampling, only genuine TIA AUDF/AUDC/AUDV.
+        ORG $FFA0
+FreeForestInstrument:
+        lda M_mode
+        cmp #4
+        bne FreeForestExit
+        ldx $0280         ; SWCHA, active-low directions
+        txa
+        and #$10          ; UP: unstable microtone rises over 256 frames
+        bne FreeNoUp
+        lda M_soundStep
+        and #$1F
+        sta AUDF1
+FreeNoUp:
+        txa
+        and #$20          ; DOWN: remove second voice, revealing emptiness
+        bne FreeNoDown
+        lda #0
+        sta AUDV1
+FreeNoDown:
+        txa
+        and #$40          ; LEFT: electrify the drone
+        bne FreeNoLeft
+        lda #8
+        sta AUDC1
+        lda #3
+        sta AUDV1
+FreeNoLeft:
+        txa
+        and #$80          ; RIGHT: return to a stable counter-tone
+        bne FreeNoRight
+        lda #4
+        sta AUDC1
+        lda #$1A
+        sta AUDF1
+FreeNoRight:
+        lda $0C           ; INPT4, active-low FIRE: short hard-edged color
+        bmi FreePalette
+        lda #8
+        sta AUDC0
+FreePalette:
+        lda M_soundStep
+        lsr
+        lsr
+        lsr
+        and #$06
+        ora #$02          ; very dark slowly changing NTSC grey, no strobe
+        sta COLUBK
+FreeForestExit:
+        rts
+FreeForestEnd:
         ORG $FFFC
         dc.w F6BankReset
         dc.w F6BankReset
