@@ -122,7 +122,7 @@ def main():
  for name in ("core","rom","out"):p.add_argument("--"+name,required=True)
  p.add_argument("--frames",type=int,default=480);p.add_argument("--seed",type=int,default=2600);p.add_argument("--profile",default="RAIN");p.add_argument("--left",choices=["A","B"],default="A");p.add_argument("--snap-every",type=int,default=120);p.add_argument("--audio-frames",type=int,default=480);p.add_argument("--sample-every",type=int,default=30);p.add_argument("--replay")
  a=p.parse_args();out=pathlib.Path(a.out);out.mkdir(parents=True,exist_ok=True)
- data=pathlib.Path(a.rom).read_bytes();assert len(data)==4096 and hashlib.sha256(data).hexdigest()==ROM_SHA,"FROZEN_SHA_MISMATCH"
+ data=pathlib.Path(a.rom).read_bytes();assert len(data) in (4096,16384) and hashlib.sha256(data).hexdigest()==ROM_SHA, "ACTUAL_SOURCE_SHA_OR_SUPPORTED_MAPPER_MISMATCH"
  core=Core(a.core,a.rom,out,a.audio_frames);m=mapping_for(core.desc)
  print("QUALIFIED_CORE",json.dumps(core.info),"DESCRIPTORS",json.dumps(core.desc),"MAPPING",json.dumps(m),flush=True)
  playback=json.loads(pathlib.Path(a.replay).read_text()).get("events") if a.replay else None
