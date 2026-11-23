@@ -46,12 +46,15 @@ class TestRules(unittest.TestCase):
         self.assertEqual(s.queue[0][1],6) # scheduled at tick 1+5
         s=step(r,s,('stone',-1))
         self.assertEqual(s.queue[0][1],6)
-    def test_queue_same_cell_locked(self):
+    def test_queued_tree_recall_cancels_echo_and_changes_stone(self):
         r=ROOMS[5];s=initial(r);k=index(2,3)
         s=step(r,s,('tree',k));bit=s.bits
+        self.assertEqual(len(s.queue),1)
+        polarity=s.polarity
         s=step(r,s,('tree',k))
         self.assertEqual(s.bits,bit)
-        self.assertEqual(len(s.queue),1)
+        self.assertEqual(len(s.queue),0)
+        self.assertEqual(s.polarity,1-polarity)
     def test_queue_full_rejects_third(self):
         r=ROOMS[9];s=initial(r)
         ks=[index(x,y) for y,row in enumerate(r.half) for x,c in enumerate(row) if c in 'Tt']
