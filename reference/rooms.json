@@ -103,7 +103,7 @@
     "abstract_step_count": null,
     "abstract_search_states": null,
     "coarse_cursor_travel_checked": false,
-    "resonance_gate_key": 20,
+    "resonance_gate_key": 21,
     "initial_forest_preclear_key": null,
     "original_v5_1_half_rows": [
       "#####",
@@ -398,7 +398,7 @@
     "abstract_step_count": null,
     "abstract_search_states": null,
     "coarse_cursor_travel_checked": false,
-    "resonance_gate_key": 20,
+    "resonance_gate_key": 21,
     "initial_forest_preclear_key": 12,
     "original_v5_1_half_rows": [
       "#####",
@@ -693,7 +693,7 @@
     "abstract_step_count": null,
     "abstract_search_states": null,
     "coarse_cursor_travel_checked": false,
-    "resonance_gate_key": 20,
+    "resonance_gate_key": 21,
     "initial_forest_preclear_key": 27,
     "original_v5_1_half_rows": [
       "#####",
