@@ -1,0 +1,60 @@
+name: ISSUE21 vNext resonance and authentic TIA drone - DEVELOPER CHECKS
+on:
+  push:
+    branches:
+      - romdev/issue21-vnext-resonance-20261123
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-dasm-and-logic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y dasm
+      - name: Native 6507/DASM compile <=16 KiB
+        run: |
+          mkdir -p build/issue21
+          dasm rom/src/main.asm -f3 -obuild/issue21/mellanrum_vnext.bin -lbuild/issue21/mellanrum_vnext.lst -sbuild/issue21/mellanrum_vnext.sym
+          n=$(wc -c < build/issue21/mellanrum_vnext.bin)
+          test "$n" -ge 4096 && test "$n" -le 16384
+          sha256sum build/issue21/mellanrum_vnext.bin | tee build/issue21/SHA256SUMS
+          python3 scripts/check_rom.py build/issue21/mellanrum_vnext.bin
+      - name: Native source sanity tests
+        run: |
+          python3 scripts/check_hardware_ab.py
+          python3 scripts/check_playfield.py
+          python3 scripts/check_input.py
+      - name: New 15 room reference idle/incorrect-target test and reachability
+        run: |
+          PYTHONPATH=reference python3 reference/issue21_audit.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-native-DASM-and-logic-developer-evidence
+          path: |
+            build/issue21/
+          retention-days: 30
+  actual-stella-visual:
+    needs: native-dasm-and-logic
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y stella xvfb xdotool python3-pil
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue21-native-DASM-and-logic-developer-evidence
+          path: build/native
+      - run: |
+          mkdir -p build
+          cp build/native/mellanrum_vnext.bin build/candidate.bin
+          xvfb-run -a -s '-screen 0 1280x960x24' bash tests/issue15/stella_capture.sh
+          python3 tests/issue15/stella_pixel_check.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-actual-stock-Stella-visual
+          path: build/issue15_stella/
+          retention-days: 30
