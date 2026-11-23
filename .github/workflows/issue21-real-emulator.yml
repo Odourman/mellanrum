@@ -1,0 +1,70 @@
+name: ISSUE21 real emulator full campaigns + native TIA audio (developer)
+on:
+  push:
+    branches: [romdev/issue21-vnext-resonance-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gopher-real-15:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+      - run: sudo apt-get update && sudo apt-get install -y dasm gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev
+      - name: Exact native DASM ROM and all 15 new authored abstract witness paths
+        run: |
+          mkdir -p build/issue21 build/gopher
+          dasm rom/src/main.asm -f3 -obuild/issue21/mellanrum_vnext.bin -lbuild/issue21/game.lst -sbuild/issue21/game.sym
+          echo '6993474e6dfc6bc75a6e94a6fd700035955fe8880e18c8466d5af507504f6086  build/issue21/mellanrum_vnext.bin' | sha256sum -c -
+          PYTHONPATH=reference python3 reference/issue21_audit.py
+      - name: Real pinned Gopher2600 native executable
+        run: |
+          git clone --quiet https://github.com/JetSetIlly/Gopher2600.git build/gopher-src
+          cd build/gopher-src
+          git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4
+          go build -o ../gopher/gopher2600 .
+          cd ../..
+          build/gopher/gopher2600 VERSION > build/issue21/gopher_version.txt
+      - name: Full genuine controller-only 15-room title to coda on real Gopher
+        run: |
+          python3 pachinko2/campaign_issue21.py --emulator build/gopher/gopher2600 --rom build/issue21/mellanrum_vnext.bin --rooms reference/rooms.json --paths build/issue21/model_gate_idle_results.json --out build/issue21/gopher_campaign --attempt 1
+          python3 pachinko2/analyze_campaign.py --dir build/issue21/gopher_campaign
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-actual-Gopher-controller-campaign-or-counterexample
+          path: |
+            build/issue21/
+          retention-days: 30
+  stella-real-15:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y dasm curl unzip
+      - name: Exact native DASM ROM and model witnesses
+        run: |
+          mkdir -p build/issue21/stella
+          dasm rom/src/main.asm -f3 -obuild/issue21/stella/native.bin -lbuild/issue21/stella/native.lst -sbuild/issue21/stella/native.sym
+          echo '6993474e6dfc6bc75a6e94a6fd700035955fe8880e18c8466d5af507504f6086  build/issue21/stella/native.bin' | sha256sum -c -
+          PYTHONPATH=reference python3 reference/issue21_audit.py
+      - name: Real libretro Stella core (version and SHA recorded by harness)
+        run: |
+          curl -fsSL --retry 4 --retry-delay 2 -o build/issue21/stella/core.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue21/stella/core.zip -d build/issue21/stella
+          sha256sum build/issue21/stella/stella_libretro.so > build/issue21/stella/CORE_SHA256SUMS
+      - name: Real controller-only 15-room Stella, raw screenshots and authentic TIA PCM
+        run: |
+          python3 tests/issue21/issue21_stella_full_campaign.py --core build/issue21/stella/stella_libretro.so --rom build/issue21/stella/native.bin --sym build/issue21/stella/native.sym --rooms reference/rooms.json --paths build/issue21/model_gate_idle_results.json --out build/issue21/stella/first --frames 20000 --audio-frames 20000 --screens
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-real-Stella-controller-campaign-and-TIA-PCM-or-counterexample
+          path: |
+            build/issue21/stella/
+            build/issue21/model_gate_idle_results.json
+          retention-days: 30
