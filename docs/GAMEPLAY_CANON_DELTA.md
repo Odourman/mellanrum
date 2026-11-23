@@ -48,3 +48,7 @@ Title and Act I use native TIA AUDC $04 tonal channels with slow low AUDF values
 
 ## Compatibility
 ROM source currently remains a 4 KiB unbanked candidate; **no F6 banking has been implemented**. This is within the hard 16 KiB limit, but must not be called F6 in evidence. All 30 techniques are reviewed separately in `docs/TECHNIQUE_30_AUDIT.md`.
+
+## Cursor comprehensibility revision (same Issue #21 candidate)
+
+The original M0-only status widths (neutral 1, accepted 2, denied 4, intercepted 8 color clocks) remain unchanged. These three ordinary statuses plus the distinct Presence interception now additionally use `COLUP0` hues: pale neutral `$0E`, green accepted `$B6`, red denied `$46`, violet intercepted `$86`. When no acknowledgment is active but the player moves onto the uniquely authored resonant tree (either reflected side), the marker responds with gold/amber `$1E` before FIRE; this makes the rule discoverable rather than a hidden arbitrary button test. Because M0 and P0 share the hardware's `COLUP0` register, the owl also temporarily changes hue; this is an intentional uncanny reaction, not a claimed independent marker palette. U3 source bitmaps, game state and actual room geometry remain unchanged. New SHA, screenshots, raster/stack and human readability must be rechecked.
