@@ -34,13 +34,13 @@ PaletteOwl:
 PaletteGlyph:
         dc.b $3A,$3A,$38,$36,$3A  ; S3 symbols, valid NTSC TIA orange/amber
 SoundControl0:
-        dc.b $08,$08,$06,$0A
+        dc.b $04,$04,$04,$06   ; title / I: warm low TIA tones, not $08 noise
 SoundControl1:
-        dc.b $06,$06,$0C,$04
+        dc.b $04,$04,$06,$04
 SoundPitch0:
-        dc.b $0F,$0C,$0F,$0D
+        dc.b $1E,$1D,$1C,$1B   ; slow, low drone registers
 SoundPitch1:
-        dc.b $15,$16,$1A,$1C
+        dc.b $1A,$1B,$1B,$1D
 RoomAct:
         dc.b $01,$01,$01,$01,$01,$02,$02,$02,$02,$02,$03,$03,$03,$03,$03
 RoomPolarity:
@@ -61,6 +61,14 @@ RoomExitY:
         dc.b $03,$02,$04,$03,$03,$03,$02,$04,$03,$03,$03,$02,$04,$03,$03
 RoomGeom:
         dc.b $00,$01,$02,$03,$04,$00,$01,$02,$03,$04,$00,$01,$02,$03,$04
+; The five room silhouettes change across Acts II and III via an intentional
+; real tree clearing at load, not a cosmetic palette-only change.
+RoomPatchKey:
+        dc.b $FF,$FF,$FF,$FF,$FF,$11,$0C,$0D,$11,$12,$17,$1B,$1C,$17,$1B
+; A separate, physically editable anchor tree per room; mirrored on both sides.
+; Win requires actual dynamic map bit = 0 when the owl enters the exit.
+RoomGateKey:
+        dc.b $0C,$14,$16,$08,$0C,$0C,$14,$16,$08,$0C,$0C,$14,$16,$08,$0C
 RoomWarning:
         dc.b $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$04,$02,$01,$00,$02
 RoomActive:
