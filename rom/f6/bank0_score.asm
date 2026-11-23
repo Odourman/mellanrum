@@ -1,0 +1,385 @@
+; MELLANRUM ISSUE26 – REAL F6 BANK 0 – ACT 1.
+; Each of five rooms has THREE fully consumed 256-frame streams (768 bytes).
+; Every video frame reads and applies all three stream bytes to true TIA registers.
+; These live audio scores and background breaths differ in actual emulation.
+; This is source, not an audio sample/coprocessor.
+        processor 6502
+AUDC0=$15
+AUDC1=$16
+AUDF0=$17
+AUDF1=$18
+AUDV0=$19
+AUDV1=$1A
+COLUBK=$09
+M_mode=$B8
+M_room=$B9
+M_presence=$DB
+M_soundStep=$F0
+M_workX=$E3
+M_workY=$E4
+        SEG score
+        ORG $F000
+Act1Room0Voice0:
+        dc.b $1D,$1D,$1D,$1D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $5E,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $5F,$5F,$5F,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $5D,$5D,$5D,$5D,$7E,$7E,$7E,$1E,$1E,$1E,$1E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7F,$7F,$7F,$7F,$7F,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F
+        dc.b $7C,$7C,$7C,$7C,$7C,$7C,$7C,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$1C,$1C
+        dc.b $1D,$1D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$7C,$7C,$7C,$7C,$7C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $5E,$5E,$5E,$5E,$5E,$1E,$1E,$1E,$1E,$5E,$5E,$5E,$5E,$3D,$3D,$3D
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$7C
+Act1Room0Voice1:
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC
+Act1Room0Voice2:
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $1B,$1B,$1B,$1B,$1B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$5D,$5D
+        dc.b $3F,$3F,$3F,$3F,$5F,$5F,$5F,$1F,$1F,$1F,$1F,$5F,$5F,$5F,$5F,$5F
+        dc.b $40,$40,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$1B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$5C,$5C,$5C,$5C,$1C,$1C,$1C,$1C,$1C
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $1D,$1D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $5E,$5E,$5E,$5E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E
+        dc.b $1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$3F,$3F,$5F,$5F,$5F,$5F,$5F
+        dc.b $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$1F,$1F,$1F
+        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b $1A,$1A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A
+        dc.b $5B,$5B,$5B,$5B,$5B,$5B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+Act1Room1Voice0:
+        dc.b $1E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7F,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $7F,$7F,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $5E,$5E,$5E,$5E,$1F,$1F,$1F,$1F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F
+        dc.b $7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $3E,$3E,$3E,$3E,$3E,$3E,$3E,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$7C,$7C,$7C,$1C,$1C,$1C,$1C,$7C
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $7E,$7E,$1E,$1E,$1E,$1E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$5D,$5D,$5D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$3F,$3F
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$7F
+Act1Room1Voice1:
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4
+Act1Room1Voice2:
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$5C,$5C
+        dc.b $5D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $3F,$3F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F
+        dc.b $00,$00,$00,$00,$00,$00,$00,$20,$20,$20,$20,$20,$20,$20,$20,$20
+        dc.b $40,$40,$40,$40,$00,$00,$00,$00,$20,$20,$20,$00,$00,$00,$00,$00
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$3D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D
+        dc.b $1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$5D,$5D,$1D,$1D,$1D,$1D,$5D
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$3E,$3E,$3E,$3E,$1E,$1E,$1E
+        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b $1A,$1A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A
+        dc.b $3A,$3A,$3A,$3A,$3A,$3A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$3B,$3B,$5B,$5B,$5B
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$3D,$1D
+        dc.b $1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E
+Act1Room2Voice0:
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
+        dc.b $7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $7D,$7D,$7D,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $3F,$1F,$1F,$1F,$1C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$1E,$1E,$1E,$1E,$5E,$5E,$5E,$5E
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$1C
+        dc.b $1D,$1D,$1D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$5E
+Act1Room2Voice1:
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+Act1Room2Voice2:
+        dc.b $1E,$1E,$1E,$1E,$1E,$1E,$1E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$1F,$1F,$1F,$1F,$1F
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $3B,$3B,$3B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B
+        dc.b $3D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D
+        dc.b $1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$1F,$1F,$1F
+        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b $1A,$1A,$3A,$3A,$3A,$3A,$3A,$3A,$1A,$1A,$1A,$1A,$3A,$3A,$3A,$3A
+        dc.b $3B,$3B,$3B,$3B,$3B,$3B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$1D
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $1D,$1D,$1D,$1D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F
+        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$40,$40,$20
+Act1Room3Voice0:
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $3E,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
+        dc.b $7C,$7C,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $3E,$3E,$3E,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$1F,$1F
+        dc.b $1F,$1F,$3F,$3F,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $7F,$7F,$7F,$7F,$7F,$7F,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $5C,$5C,$5C,$5C,$5C,$1C,$1C,$1C,$1D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$1E,$1E,$1E,$1E
+        dc.b $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$5C,$5C,$5C
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$3E,$3E
+        dc.b $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$5C
+Act1Room3Voice1:
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+Act1Room3Voice2:
+        dc.b $20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20,$20
+        dc.b $3A,$5A,$5A,$5A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$1D,$1D,$1D
+        dc.b $1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D
+        dc.b $1E,$1E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $20,$20,$20,$20,$20,$20,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$3A,$3A,$3A,$3A,$3A
+        dc.b $5C,$5C,$5C,$5C,$5C,$1C,$1C,$1C,$1C,$3C,$3C,$3C,$3C,$3C,$3C,$1C
+        dc.b $1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D
+        dc.b $1F,$1F,$1F,$1F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
+        dc.b $40,$40,$40,$40,$40,$40,$40,$40,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b $1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E
+        dc.b $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$3F,$3F,$3F
+        dc.b $3A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$3B
+Act1Room4Voice0:
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $7E,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $7E,$7E,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $5D,$5D,$5D,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$1C,$1C,$1C,$1C,$3C
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $7E,$7E,$7E,$7E,$7E,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F,$7F
+        dc.b $5C,$5C,$1C,$1C,$1C,$1C,$5C,$5C,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F,$3F
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$5D,$5D,$5D,$5D,$5D
+        dc.b $3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$1E,$1E,$1E,$1D,$7D,$7D,$7D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$5D,$5D,$5D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$5C,$5C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$3C
+Act1Room4Voice1:
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+        dc.b $CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC,$CC
+Act1Room4Voice2:
+        dc.b $5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$1B,$1B,$1B
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $1E,$1E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $3F,$3F,$3F,$5F,$5F,$5F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F
+        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$20,$20,$20,$20,$20
+        dc.b $3A,$3A,$3A,$3A,$3A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$5A,$1A
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $1D,$1D,$1D,$1D,$3D,$3D,$3D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $3D,$3D,$1D,$1D,$1D,$1D,$3D,$3D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D
+        dc.b $1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$5E,$5E,$5E
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $5F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F
+        dc.b $00,$00,$00,$00,$00,$00,$40,$40,$40,$00,$00,$00,$00,$20,$20,$20
+        dc.b $3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$5C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$3D
+
+; TIA runtime: this is banked code at $FF00, not inert lookup data.
+; The shared $FF90 stub switches F6 bank on call and switches back on return.
+        ORG $FF00
+BankScorePlay:
+        lda M_mode
+        beq BankTitle
+        lda M_room
+        jmp BankModFive
+BankTitle:
+        lda #0
+BankModFive:
+        cmp #5
+        bcc BankSlot
+        sec
+        sbc #5
+        bcs BankModFive
+BankSlot:
+        tax
+        lda TrackHigh,x
+        sta M_workY
+        lda #0
+        sta M_workX
+        ldy M_soundStep
+        lda (M_workX),y
+        tax
+        and #$1F
+        sta AUDF0
+        txa
+        lsr
+        lsr
+        lsr
+        lsr
+        lsr
+        sta AUDV0
+        inc M_workY
+        lda (M_workX),y
+        tax
+        and #$0F
+        sta AUDC1
+        txa
+        lsr
+        lsr
+        lsr
+        lsr
+        sta AUDC0
+        inc M_workY
+        lda (M_workX),y
+        tax
+        and #$1F
+        sta AUDF1
+        txa
+        lsr
+        lsr
+        lsr
+        lsr
+        lsr
+        sta AUDV1
+        and #$06
+        ora #$A0
+        sta COLUBK
+        lda M_presence
+        beq BankScoreDone
+        cmp #2
+        bne BankWarning
+        lda M_soundStep
+        and #$0F
+        cmp #4
+        bcs BankQuiet
+        lda #$08
+        sta AUDC1
+        lda #$1D
+        sta AUDF1
+        lda #3
+        sta AUDV1
+        rts
+BankQuiet:
+        lda #0
+        sta AUDV1
+        rts
+BankWarning:
+        lda M_soundStep
+        and #$3F
+        bne BankScoreDone
+        lda #8
+        sta AUDC1
+        lda #2
+        sta AUDV1
+BankScoreDone:
+        rts
+TrackHigh:
+        dc.b $F0,$F3,$F6,$F9,$FC
+
+        ; Shared F6 crossbank execution layout; source bank3 at same PC.
+        ORG $FF90
+F6BankCall:
+        lda $FFF6,x
+        jsr BankScorePlay
+        lda $FFF9
+F6BankReturn:
+        rts
+        ; If reset happens while a score bank is selected, boot game bank3.
+        ORG $FF9A
+F6BankReset:
+        lda $FFF9
+        jmp $F000
+        ORG $FFFC
+        dc.w F6BankReset
+        dc.w F6BankReset

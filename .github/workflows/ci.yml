@@ -28,6 +28,9 @@ jobs:
           echo "No emulator, TIA timing, RAM, audio, or gameplay test was performed." >> "$GITHUB_STEP_SUMMARY"
 
   rom-build:
+    # Historical 4KiB-only source checker must not process an F6-16KiB PR.
+    # Our strict issue26-native-f6.yml checks real native F6 source and 15 rooms.
+    if: ${{ !startsWith(github.ref, 'refs/heads/romdev/issue26-') && !startsWith(github.head_ref, 'romdev/issue26-') && !startsWith(github.ref, 'refs/heads/romdev/issue32-') && !startsWith(github.head_ref, 'romdev/issue32-') }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
