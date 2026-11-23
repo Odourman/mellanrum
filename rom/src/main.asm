@@ -1,5 +1,6 @@
 ; MELLANRUM: SKOGEN SOM LYSSNAR - ISSUE #15 USER-AUTHORIZED CANDIDATE
-; Atari 2600 / 6507 / DASM 2.20+, 4 KiB NTSC cartridge.
+; Atari 2600 / 6507 / DASM 2.20+, F6 16 KiB NTSC bank 3 (runtime kernel).
+; Issue26: bank0/1/2 are ACT I/II/III score engines + 5x768 live soundtrack bytes each.
 ; Full 15-room reference-derived rule set. Hardware/playability is UNVERIFIED.
         processor 6502
 VSYNC   = $00
@@ -1101,6 +1102,21 @@ PresenceQuiet:
         lda #0
         sta AUDV1
 SoundDone:
+        ; A true F6 call every active frame; old 4K tables are only fallback.
+        ; Keep code/render in bank3 and call each act's own ROM score bank.
+        lda mode
+        cmp #2
+        beq NoBankedScore
+        cmp #3
+        beq NoBankedScore
+        ldx #0
+        lda mode
+        beq BankScoreCall
+        ldx act
+        dex
+BankScoreCall:
+        jsr $FF90
+NoBankedScore:
         rts
 Silence:
         lda #0
@@ -1454,6 +1470,20 @@ TitleBottom:
         rts
 
         include "rom/src/data.inc"
+
+        ; Every bank has the 6507 trampoline at the exact SAME address.
+        ; $FFF6+X selects F6 bank 0..2, then execution falls into the selected
+        ; bank's $FF93: JSR score interpreter; $FFF9 returns bank3 and RTS.
+        ORG $FF90
+F6ScoreTrampoline:
+        lda $FFF6,x
+        nop
+        nop
+        nop
+        lda $FFF9
+F6ScoreReturn:
+        rts
+
         ORG $FFFC
         dc.w Reset
         dc.w Reset
