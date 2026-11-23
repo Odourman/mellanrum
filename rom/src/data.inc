@@ -174,4 +174,6 @@ GlyphA:
 GlyphB:
         dc.b $42,$66,$3C,$5A,$24,$3C,$66,$42,$00
 MarkerWidth:
-        dc.b $00,$10,$20,$30 ; M0 widths: normal=1, ack=2, denied=4, intercept=8 pixels
+        dc.b $00,$10,$20,$30 ; M0 width: neutral=1, accepted=2, denied=4, Presence=8
+MarkerEventColor:
+        dc.b $0E,$B6,$46,$86 ; neutral owl-white / accepted green / denied red / Presence violet
