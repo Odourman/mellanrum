@@ -43,7 +43,7 @@ jobs:
               assert r["status"]=="PASS" and r["video_callbacks"]==r["emulated_frames"] and r["audio_samples"]>0,r
               data.append({"profile":name,"frames":r["emulated_frames"],"status":"PASS","samples_after_start":len(values),"mode4_samples":len(values),"real_stella_core":r["core"]})
           assert sum(x["frames"] for x in data)==57500
-          (root/"strict_stress_result.json").write_text(json.dumps({"classification":"REAL_STELLA_FRI_CONTROLLER_SOAK","status":"PASS","frames":57500,"profiles":data},indent=2)+"\\n")
+          (root/"strict_stress_result.json").write_text(json.dumps({"classification":"REAL_STELLA_FRI_CONTROLLER_SOAK","status":"PASS","frames":57500,"profiles":data},indent=2)+"\n")
           print("ISSUE21_REAL_STELLA_57500_FRI_FRAMES_PASS")
           PY
       - uses: actions/upload-artifact@v4
