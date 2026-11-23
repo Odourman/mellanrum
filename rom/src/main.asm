@@ -463,6 +463,7 @@ LoadRoom:
         sta pending
         sta usedFire
         sta ackFrames
+        sta waitFrames      ; active-room stone encounter evidence, cleared on load
         sta ackType
         sta presence
         sta presenceEnd
@@ -841,6 +842,8 @@ UpdateOwlCell:
         lda owlY
         cmp stoneY
         bne OwlVictoryCheck
+        lda #1
+        sta waitFrames      ; real owl has encountered the stone
         lda polarity
         beq RotateClockwise
         lda owlDir
@@ -862,6 +865,15 @@ AlreadyOnStone:
         sta owlY
         lda candidateD
         sta owlDir
+        jmp OwlVictoryCheck
+OwlTryNext:
+        inc attempt
+        lda attempt
+        cmp #4
+        beq OwlNoExit
+        jmp TryOwlDirection
+OwlNoExit:
+        rts
 OwlVictoryCheck:
         lda mode
         cmp #4
@@ -872,21 +884,65 @@ OwlVictoryCheck:
         lda owlY
         cmp exitY
         bne OwlMoved
+        ldx room
+        lda RoomGate,x
+        beq ExitResonates
+        cmp #1
+        beq GateStoneVisit
+        cmp #2
+        beq GatePolarityOne
+        cmp #3
+        beq GatePolarityZero
+        cmp #4
+        beq GateEchoEmpty
+        cmp #5
+        beq GatePhaseOne
+        ; Gate7 needs at least one unsettled echo at the exit.
+        lda slot0Key
+        cmp #$FF
+        bne ExitResonates
+        lda slot1Key
+        cmp #$FF
+        bne ExitResonates
+        beq ExitDissonance
+GateStoneVisit:
+        lda waitFrames
+        bne ExitResonates
+        beq ExitDissonance
+GatePolarityOne:
+        lda polarity
+        bne ExitResonates
+        beq ExitDissonance
+GatePolarityZero:
+        lda polarity
+        beq ExitResonates
+        bne ExitDissonance
+GateEchoEmpty:
+        lda slot0Key
+        cmp #$FF
+        bne ExitDissonance
+        lda slot1Key
+        cmp #$FF
+        beq ExitResonates
+        bne ExitDissonance
+GatePhaseOne:
+        lda phase
+        bne ExitResonates
+        beq ExitDissonance
+ExitDissonance:
+        ; Visible and reversible wrong guess, not a mandatory FIRE counter.
+        lda #2
+        sta ackType
+        lda #18
+        sta ackFrames
+        rts
+ExitResonates:
         lda #2
         sta mode
         lda #48
         sta waitFrames
 OwlMoved:
         rts
-OwlTryNext:
-        inc attempt
-        lda attempt
-        cmp #4
-        beq OwlNoExit
-        jmp TryOwlDirection
-OwlNoExit:
-        rts
-
 ; Candidate coordinates already range-checked; carry 1 => can move.
 PassableCandidate:
         lda candidateX
@@ -964,34 +1020,9 @@ PlaceObjects:
         adc #4
         ldx #2           ; M0 is cursor, no separate P1 mark
         jsr PositionOne
-        ; Diagnostic cursor widths communicate four original ackType values;
-        ; NUSIZ0 bits 4:5 set M0 hardware width, independent of gameplay state.
-        lda ackFrames
-        beq MarkerNormal
-        ldx ackType
-        jmp MarkerWidthSelected
-MarkerNormal:
-        ldx #0
-MarkerWidthSelected:
-        ; Issue #21: visually distinguish four outcomes for ~0.3 seconds.
-        ; neutral=steady 1px, accepted=2/4px slow pulse,
-        ; denied=4px steady, Presence intercept=8/1px rapid shiver.
-        cpx #1
-        bne MarkerCheckIntercept
-        lda ackFrames
-        and #$04
-        beq MarkerFetchWidth
-        ldx #2
-        bne MarkerFetchWidth
-MarkerCheckIntercept:
-        cpx #3
-        bne MarkerFetchWidth
-        lda ackFrames
-        and #$02
-        beq MarkerFetchWidth
-        ldx #0
-MarkerFetchWidth:
-        lda MarkerWidth,x
+        ; M0 stays a precise 1px locator. P0 bottom HUD draws genuine
+        ; ring / check / X / broken Presence feedback glyphs instead.
+        lda #0
         sta NUSIZ0
         sta WSYNC
         sta HMOVE
