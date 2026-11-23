@@ -29,6 +29,7 @@ jobs:
           python3 scripts/check_hardware_ab.py
           python3 scripts/check_playfield.py
           python3 scripts/check_input.py
+          python3 scripts/issue21_stack_source_audit.py build/issue21/mellanrum_vnext.sym
       - name: New 15 room reference idle/incorrect-target test and reachability
         run: |
           PYTHONPATH=reference python3 reference/issue21_audit.py
