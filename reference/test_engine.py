@@ -32,7 +32,7 @@ class TestRules(unittest.TestCase):
         q=step(r,s,('stone',-1))
         self.assertEqual((q.x,q.y,q.direction),(4,5,3))
     def test_echo_commits_and_reverts(self):
-        r=ROOMS[5];s=initial(r);k=index(2,3);start=bool(s.bits>>k&1)
+        r=ROOMS[9];s=initial(r);k=index(2,3);start=bool(s.bits>>k&1)
         s=step(r,s,('tree',k));self.assertEqual(len(s.queue),1)
         self.assertNotEqual(bool(s.bits>>k&1),start)
         # due for action in tick 0 = tick 3, processed on step #4
@@ -41,7 +41,7 @@ class TestRules(unittest.TestCase):
         s=step(r,s)
         self.assertEqual(bool(s.bits>>k&1),start)
     def test_polarity_5_delays_old_due(self):
-        r=ROOMS[5];s=initial(r);s=step(r,s,('stone',-1))
+        r=ROOMS[9];s=initial(r);s=step(r,s,('stone',-1))
         s=step(r,s,('tree',index(2,3)))
         self.assertEqual(s.queue[0][1],6) # scheduled at tick 1+5
         s=step(r,s,('stone',-1))
