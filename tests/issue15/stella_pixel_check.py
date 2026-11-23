@@ -17,7 +17,7 @@ for name,im in imgs:
     for x in range(int(w*0.42),int(w*0.52)):
       r,g,b=pixels[x,y]
       left+=int(r>g*1.2 and r>b*1.3 and r>110)
-    for x in range(int(w*0.76),int(w*0.86)):
+    for x in range(int(w*0.82),int(w*0.92)):
       r,g,b=pixels[x,y]
       right+=int(r>g*1.2 and r>b*1.3 and r>110)
   found.append({'file':name,'w':w,'h':h,'left_redorange':left,'right_redorange':right})
