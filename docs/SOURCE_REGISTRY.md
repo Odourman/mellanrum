@@ -1,3 +1,7 @@
+> **MAIN III source registry addendum (2026-11-23; DOCS-ONLY proposal, not merged).** Latest PR38: [Draft PR38](https://github.com/Odourman/mellanrum/pull/38) HEAD `2c70bf7468fc33eed198246281a8ffd0a7cc9252`, source build `bacd37102e858e3652097a3aa2608834ef26b609`, checked ROM 16,384 B F6 SHA `7e5add7d2580e7ebb3e871a79c13d7ba5680e71354946c941fe79b826e158134`, Git blob `87371e9cbbe584e21a85d855062e50e13721ef17`. [Native/Stella](https://github.com/Odourman/mellanrum/actions/runs/45264527061), [Gopher](https://github.com/Odourman/mellanrum/actions/runs/45264527051), [15-room idle](https://github.com/Odourman/mellanrum/actions/runs/45264527111) CI SUCCESS; [legacy Issue15 CI](https://github.com/Odourman/mellanrum/actions/runs/45264537305), [visual CI](https://github.com/Odourman/mellanrum/actions/runs/45264527127) FAIL. Earlier PR38 videos SHA `4921f723ff989bffaf48e4bebdab36406c83c9f5083588f55f21528fb7e5bba0` not same as latest checked ROM. PR37 `d3754d78...`, PR36 `a14524ce...`, PR33 native `962818fa...` vs old checked PR27 `7ce777dc...` all separate. Drive project source **proposal** ZIP: https://drive.google.com/file/d/1owkqh8N-dWjKzs8QNiYcqgvKLB3fsIDZ/view (not merged; earlier snapshot). See [MAIN III handoff](migrations/MAIN_II_TO_MAIN_III_HANDOFF_2026-11-23.md), [ledger](migrations/MAIN_III_LIVE_EVIDENCE_LEDGER_2026-11-23.md). Never reuse old independent #28/#29 for PR38.
+>
+> **Older registry content below is retained as dated historical material.**
+
 # Source ID Registry – Mellanrum
 
 ## Auktoritativa ingångar
