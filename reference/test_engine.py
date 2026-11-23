@@ -14,23 +14,23 @@ class TestRules(unittest.TestCase):
             for x in range(10):self.assertEqual(index(x,y),index(9-x,y))
     def test_edit_is_reflected(self):
         s=initial(self.r)
-        k=index(2,3)
+        k=index(1,3)
         self.assertTrue(s.bits>>k&1)
         t=step(self.r,s,('tree',k))
         self.assertFalse(t.bits>>k&1)
-        self.assertTrue(passable(self.r,t,2,3))
-        self.assertTrue(passable(self.r,t,7,3))
+        self.assertTrue(passable(self.r,t,1,3))
+        self.assertTrue(passable(self.r,t,8,3))
     def test_immutable_tree_rejects(self):
         s=initial(self.r);before=s.bits
         self.assertEqual(step(self.r,s,('tree',index(0,0))).bits,before)
     def test_stone_changes_orientation(self):
         r=self.r;s=initial(r)
-        # owl about to enter stone from x3,y3 to x4,y3, heading east
-        s=replace(s,x=3,y=3,direction=0)
+        # owl about to enter revised I-01 stone from x3,y5 to x4,y5
+        s=replace(s,x=3,y=5,direction=0)
         q=step(r,s)
-        self.assertEqual((q.x,q.y,q.direction),(4,3,1))
+        self.assertEqual((q.x,q.y,q.direction),(4,5,1))
         q=step(r,s,('stone',-1))
-        self.assertEqual((q.x,q.y,q.direction),(4,3,3))
+        self.assertEqual((q.x,q.y,q.direction),(4,5,3))
     def test_echo_commits_and_reverts(self):
         r=ROOMS[5];s=initial(r);k=index(2,3);start=bool(s.bits>>k&1)
         s=step(r,s,('tree',k));self.assertEqual(len(s.queue),1)
@@ -98,7 +98,7 @@ class TestIntrusionV51(unittest.TestCase):
     def test_intercept_tree_becomes_stone_flip(self):
         r=next(r for r in ROOMS if r.id=='III-04')
         s=initial(r)
-        k=index(2,3)
+        k=index(3,3)
         s=step(r,s) # tick 0 = warning
         self.assertEqual(intrusion_phase(r,s.tick),'active')
         before=s
