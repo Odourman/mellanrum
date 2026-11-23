@@ -1,0 +1,165 @@
+{
+  "status": "GRAPHICS_DESIGN_PROPOSED",
+  "source": "MEL-046 2026-11-23",
+  "owls": {
+    "U1": {
+      "name": "RUNDÖGD",
+      "rows_top_down": [
+        "00100100",
+        "01111110",
+        "11011011",
+        "11111111",
+        "11100111",
+        "01111110",
+        "00111100",
+        "00100100"
+      ],
+      "hex_top_down": "24 7E DB FF E7 7E 3C 24",
+      "hex_bottom_up_plus_blank": "24 3C 7E E7 FF DB 7E 24 00"
+    },
+    "U2": {
+      "name": "NATTANSIKTE",
+      "rows_top_down": [
+        "00111100",
+        "01111110",
+        "11011011",
+        "11011011",
+        "11100111",
+        "01111110",
+        "00111100",
+        "00100100"
+      ],
+      "hex_top_down": "3C 7E DB DB E7 7E 3C 24",
+      "hex_bottom_up_plus_blank": "24 3C 7E E7 DB DB 7E 3C 00"
+    },
+    "U3": {
+      "name": "VINGKROPP",
+      "rows_top_down": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11111111",
+        "11100111",
+        "11111111",
+        "10111101",
+        "00100100"
+      ],
+      "hex_top_down": "18 7E DB FF E7 FF BD 24",
+      "hex_bottom_up_plus_blank": "24 BD FF E7 FF DB 7E 18 00"
+    },
+    "U4": {
+      "name": "SIDOBLICK",
+      "rows_top_down": [
+        "00011100",
+        "00111110",
+        "01101111",
+        "01111111",
+        "01111110",
+        "00111100",
+        "00110100",
+        "00100100"
+      ],
+      "hex_top_down": "1C 3E 6F 7F 7E 3C 34 24",
+      "hex_bottom_up_plus_blank": "24 34 3C 7E 7F 6F 3E 1C 00"
+    },
+    "U5": {
+      "name": "SKOGSÖGA",
+      "rows_top_down": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11111111",
+        "11100111",
+        "01111110",
+        "01100110",
+        "00100100"
+      ],
+      "hex_top_down": "18 7E DB FF E7 7E 66 24",
+      "hex_bottom_up_plus_blank": "24 66 7E E7 FF DB 7E 18 00"
+    }
+  },
+  "pairs": {
+    "S1": {
+      "name": "SÅRBROTT / FRÖSKYMF",
+      "A_rows_top_down": [
+        "00100000",
+        "01100100",
+        "00100100",
+        "00111000",
+        "01101000",
+        "00011100",
+        "00100000",
+        "01100100"
+      ],
+      "B_rows_top_down": [
+        "01000100",
+        "00111100",
+        "00000110",
+        "01110000",
+        "00100100",
+        "00011100",
+        "01100010",
+        "00000100"
+      ],
+      "A_hex_top_down": "20 64 24 38 68 1C 20 64",
+      "B_hex_top_down": "44 3C 06 70 24 1C 62 04",
+      "A_hex_bottom_up_plus_blank": "64 20 1C 68 38 24 64 20 00",
+      "B_hex_bottom_up_plus_blank": "04 62 1C 24 70 06 3C 44 00"
+    },
+    "S2": {
+      "name": "KANTVÄV / VINDREST",
+      "A_rows_top_down": [
+        "01000000",
+        "01101000",
+        "00011100",
+        "01110100",
+        "01000110",
+        "00101000",
+        "00001100",
+        "00000100"
+      ],
+      "B_rows_top_down": [
+        "00001010",
+        "01011000",
+        "00100110",
+        "01110000",
+        "00001100",
+        "00100110",
+        "01011000",
+        "00100000"
+      ],
+      "A_hex_top_down": "40 68 1C 74 46 28 0C 04",
+      "B_hex_top_down": "0A 58 26 70 0C 26 58 20",
+      "A_hex_bottom_up_plus_blank": "04 0C 28 46 74 1C 68 40 00",
+      "B_hex_bottom_up_plus_blank": "20 58 26 0C 70 26 58 0A 00"
+    },
+    "S3": {
+      "name": "MINNESSKÄRVA / OMVÄND SKOG",
+      "A_rows_top_down": [
+        "00010000",
+        "00110100",
+        "01100100",
+        "00011100",
+        "00101000",
+        "01100010",
+        "00001100",
+        "00001000"
+      ],
+      "B_rows_top_down": [
+        "01000100",
+        "01110000",
+        "00010110",
+        "00100010",
+        "01101100",
+        "00001010",
+        "00110000",
+        "00010000"
+      ],
+      "A_hex_top_down": "10 34 64 1C 28 62 0C 08",
+      "B_hex_top_down": "44 70 16 22 6C 0A 30 10",
+      "A_hex_bottom_up_plus_blank": "08 0C 62 28 1C 64 34 10 00",
+      "B_hex_bottom_up_plus_blank": "10 30 0A 6C 22 16 70 44 00"
+    }
+  },
+  "proof": "new art NOT_RUN in emulators; existing diagnostic P1 two different synthetic symbols passed according to Issue14"
+}
