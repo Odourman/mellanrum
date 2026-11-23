@@ -13,7 +13,7 @@ assert len(set(tuple(r.half) for r in ROOMS)) == 15
 def replay(r, path, after=0):
     s = initial(r)
     for a in path:
-        s = step(r, tuple(a))
+        s = step(r, s, tuple(a))
         if s.done:
             return s
     for _ in range(after):
