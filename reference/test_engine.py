@@ -82,6 +82,20 @@ class TestRules(unittest.TestCase):
             action=[('wait',-1),('stone',-1),('tree',index(2,3))][i%3]
             a=step(r,a,action);b=step(r,b,action)
             self.assertEqual(a,b)
+    def test_compound_exit_gate_rejects_missing_causal_state(self):
+        # A nominal exit position must fail when the secondary material
+        # condition is missing, even though its primary gate would pass.
+        for i in (1,6,8,10,13,14):
+            r=ROOMS[i]
+            s=replace(initial(r),x=7,y=r.exit[1],direction=0,tick=12,
+                      visitedstone=False,phase=1,phase_age=0,polarity=0,
+                      queue=((2,100),))
+            if r.gate==3: s=replace(s,polarity=0)
+            if r.gate==2: s=replace(s,polarity=1)
+            if r.gate==5: s=replace(s,phase=1)
+            if r.gate==7: s=replace(s,queue=((2,100),))
+            self.assertFalse(step(r,s).done,(r.id,r.gate,r.extra))
+
     def test_is_readonly_by_audio(self):
         # Sound is not part of engine and cannot affect game rules.
         s=initial(self.r)

@@ -14,7 +14,8 @@ for data in DOCUMENT:
         data["id"], data["act"], data["title"],
         tuple(data["half_rows"]), tuple(data["owl_start"]),
         tuple(data["stone"]), tuple(data["exit"]),
-        data["stone_initial"], data["note"], data["note"],data.get("exit_gate",0),
+        data["stone_initial"], data["note"], data["note"],
+        data.get("exit_gate",0), data.get("exit_extra",0),
     )
     room.validate()
     ROOMS.append(room)

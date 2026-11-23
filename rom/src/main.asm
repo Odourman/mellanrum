@@ -937,6 +937,10 @@ ExitDissonance:
         sta ackFrames
         rts
 ExitResonates:
+        ; Multi-causal resonance: an exit may require a memory, stone visit
+        ; or polarity beyond its original gate, never a FIRE count.
+        jsr CheckExitExtras
+        bcc ExitDissonance
         lda #2
         sta mode
         lda #48
@@ -1056,6 +1060,7 @@ NoSlowCarry:
         lda mode
         cmp #3
         beq CodaColorsSound
+        cmp #0
         beq TitleColors
         lda act
         clc
@@ -1092,6 +1097,8 @@ ChooseBank:
         jsr $FF90
         ; Every eight 256f periods new silence/partial dissonance pattern.
         lda codaHi
+        eor polarity       ; player stone decisions alter the long-form score
+        eor phase          ; act III dissonance changes on phase inversion
         and #7
         cmp #5
         bne LongPhaseThree
@@ -1109,10 +1116,7 @@ LongPhaseThree:
 SoundDone:
         rts
 CodaColorsSound:
-        lda #$82
-        sta COLUBK
-        lda #$84
-        sta COLUPF
+        jsr CodaPalette    ; genuine three-stage TIA palette transformation
         lda #$0E
         sta COLUP0
         lda #$26
@@ -1545,6 +1549,68 @@ F6ScoreReturn:
 F6BankReset:
         lda $FFF9
         jmp Reset
+
+        ; Bank3-only routines in the free pre-vector area.
+        ; F6 reset/trampoline code remains byte-for-byte at $FF90/$FF9A.
+        ORG $FFA0
+CheckExitExtras:
+        ldx room
+        lda RoomExtra,x
+        and #1
+        beq ExtraPolarity
+        lda waitFrames
+        beq ExtraNo
+ExtraPolarity:
+        lda RoomExtra,x
+        and #2
+        beq ExtraEcho
+        lda polarity
+        beq ExtraNo
+ExtraEcho:
+        lda RoomExtra,x
+        and #4
+        beq ExtraPolZero
+        lda slot0Key
+        cmp #$FF
+        bne ExtraPolZero
+        lda slot1Key
+        cmp #$FF
+        beq ExtraNo
+ExtraPolZero:
+        lda RoomExtra,x
+        and #8
+        beq ExtraYes
+        lda polarity
+        bne ExtraNo
+ExtraYes:
+        sec
+        rts
+ExtraNo:
+        clc
+        rts
+
+; A three-stage coda: the forest darkens and finally disappears.
+; U3 vanishes late while the glowing S3 stone is still readable.
+CodaPalette:
+        lda codaHi
+        bne CodaEarly
+        lda codaLo
+        cmp #$80
+        bcc CodaLate
+        lda #$80
+        ldx #$84
+        bne CodaApply
+CodaLate:
+        lda #$00
+        ldx #$02
+        bne CodaApply
+CodaEarly:
+        lda #$82
+        ldx #$86
+CodaApply:
+        sta COLUBK
+        stx COLUPF
+        rts
 
         ORG $FFFC
         dc.w Reset

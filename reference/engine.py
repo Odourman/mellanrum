@@ -22,12 +22,14 @@ class Room:
     instruction:str=''
     dramaturgy:str=''
     gate:int=0
+    extra:int=0  # bitmask: visited stone / polarity 1 / queued echo / polarity 0
     def validate(self):
         assert len(self.half)==8 and all(len(row)==5 for row in self.half)
         assert all(set(row)<=set('#.Tt') for row in self.half)
         for x,y in (self.owl[:2],self.stone,self.exit):
             assert 0<=x<W and 0<=y<H and self.half[y][min(x,9-x)] in '.t'
         assert self.act in (1,2,3)
+        assert 0 <= self.extra <= 15
 
 @dataclass(frozen=True)
 class State:
@@ -141,7 +143,11 @@ def step(r,s,action=('wait',-1),cursor=None):
     # Exits are conditions in the material world, not press-count gates.
     gate={0:True,1:visited,2:polarity==1,3:polarity==0,
           4:not queue,5:phase==1,6:phase==0,7:bool(queue)}[r.gate]
-    return replace(ns,x=x,y=y,direction=d,done=(x,y)==r.exit and gate,visitedstone=visited)
+    extra_ok=((not (r.extra & 1) or visited)
+              and (not (r.extra & 2) or polarity==1)
+              and (not (r.extra & 4) or bool(queue))
+              and (not (r.extra & 8) or polarity==0))
+    return replace(ns,x=x,y=y,direction=d,done=(x,y)==r.exit and gate and extra_ok,visitedstone=visited)
 
 def path_preview(r,sequence,maxsteps=40):
     s=initial(r)

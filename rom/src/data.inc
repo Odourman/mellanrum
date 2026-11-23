@@ -55,6 +55,11 @@ RoomGeom:
         dc.b $00,$01,$02,$03,$04,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E
 RoomGate:
         dc.b $02,$03,$01,$03,$01,$04,$07,$04,$03,$07,$05,$04,$07,$02,$05
+; Extra causal tests: bit 0 = owl actually visited stone,
+; bit 1 = polarity one, bit 2 = an outstanding delayed echo,
+; bit 3 = polarity zero. Only original physical state is checked.
+RoomExtra:
+        dc.b $00,$01,$08,$00,$08,$08,$02,$08,$01,$08,$03,$08,$08,$05,$03
 RoomWarning:
         dc.b $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$04,$02,$01,$00,$02
 RoomActive:

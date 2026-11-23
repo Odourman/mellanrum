@@ -101,7 +101,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 2
+    "exit_gate": 2,
+    "exit_extra": 0
   },
   {
     "id": "I-02",
@@ -237,7 +238,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 3
+    "exit_gate": 3,
+    "exit_extra": 1
   },
   {
     "id": "I-03",
@@ -357,7 +359,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 1
+    "exit_gate": 1,
+    "exit_extra": 8
   },
   {
     "id": "I-04",
@@ -449,7 +452,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 3
+    "exit_gate": 3,
+    "exit_extra": 0
   },
   {
     "id": "I-05",
@@ -577,7 +581,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 1
+    "exit_gate": 1,
+    "exit_extra": 8
   },
   {
     "id": "II-01",
@@ -685,7 +690,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 4
+    "exit_gate": 4,
+    "exit_extra": 8
   },
   {
     "id": "II-02",
@@ -781,7 +787,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 7
+    "exit_gate": 7,
+    "exit_extra": 2
   },
   {
     "id": "II-03",
@@ -881,7 +888,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 4
+    "exit_gate": 4,
+    "exit_extra": 8
   },
   {
     "id": "II-04",
@@ -1005,7 +1013,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 3
+    "exit_gate": 3,
+    "exit_extra": 1
   },
   {
     "id": "II-05",
@@ -1109,7 +1118,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 7
+    "exit_gate": 7,
+    "exit_extra": 8
   },
   {
     "id": "III-01",
@@ -1309,7 +1319,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 5
+    "exit_gate": 5,
+    "exit_extra": 3
   },
   {
     "id": "III-02",
@@ -1481,7 +1492,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 4
+    "exit_gate": 4,
+    "exit_extra": 8
   },
   {
     "id": "III-03",
@@ -1580,7 +1592,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 7
+    "exit_gate": 7,
+    "exit_extra": 8
   },
   {
     "id": "III-04",
@@ -1687,7 +1700,8 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 2
+    "exit_gate": 2,
+    "exit_extra": 5
   },
   {
     "id": "III-05",
@@ -1826,6 +1840,7 @@
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
     "coarse_cursor_travel_checked": false,
-    "exit_gate": 5
+    "exit_gate": 5,
+    "exit_extra": 3
   }
 ]
