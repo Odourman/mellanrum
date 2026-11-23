@@ -1,9 +1,17 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-23 (MAIN real-Stella zero-input test: 14/15 auto-wins; user requests dark TIA drone audio; design P1 release blocker, existing PR16 unchanged).
+**Updated:** 2026-11-23 (MEL-052: user approves new 32 KiB maximum ROM budget for native Atari 2600; previous passive-win P1 and audio gates unchanged).
 **Phase:** **PR16_MAIN_REAL_STELLA_14_OF_15_PASSIVE_AUTO_WINS_P1_DESIGN_FAIL / USER_AUDIO_NEW_CANDIDATE_AUTHORIZED / VERIFICATION_PARTIAL / PACHINKO_PARTIAL / RELEASE_BLOCKED**.
 **Implementation:** Current NEW native DASM 4096-byte NTSC candidate on Draft PR #16, HEAD **`56d70c316031bf55a5260e1fbbe0fe187c55f297`**, ROM SHA256 **`45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7`**; original frozen Draft PR #4/E9EA ROM preserved separately.
 **Release:** **NOT APPROVED**. New P1 gameplay design failure (14/15 no-input victories) plus requested replacement of noisy title/start audio now block acceptance; previous developer/Pachinko/Verification evidence is bounded and does not settle these new gates.
+
+## MAIN 32 KiB maximum ROM decision — 2026-11-23
+
+**[MEL-052](DECISIONS.md) USER_APPROVED_FUTURE_ROM_MAX_32768_BYTES.** User explicitly replaces old 4 KiB-first *capacity policy* with **up to 32 KiB ROM** for future MELLANRUM, provided the result remains a genuine original Atari 2600 game. Conventional Atari-compatible **F4** bankswitch supports eight 4 KiB ROM banks in a 32768-byte cartridge, as demonstrated by original game Fatal Run; standard Stella documents F4 support. Smaller well-fitting ROM remains preferable to padding with filler; 4KiB no longer an artificial must-have.
+
+**This is a maximum-size design/architecture policy, not authority to rewrite protected original V5.1 geometry/game rules, silently switch mapper now, or start a later implementation family.** Preserve Draft PR #16 HEAD `56d70c316031bf55a5260e1fbbe0fe187c55f297` and SHA256 `45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7`; frozen PR #4 unchanged. Next approved scope still requires separate V5.2 game design/geometry approval after [Issue #19](https://github.com/Odourman/mellanrum/issues/19); audio-only implementation [Issue #20](https://github.com/Odourman/mellanrum/issues/20) retains its own explicit permission. Independent Verification and Pachinko evidence are byte-bound to original 4K SHA, not automatically transferable.
+
+**Hardware constraints unchanged:** 128-byte RIOT RAM, TIA sprite/playfield and 76 cycles/scanline; additional bankswitch control overhead. Explicitly test genuine F4 game on native Stella/Gopher and if available real original Atari 2600 compatible cartridge (no coprocessor-only shortcuts); separately test user RetroN77 Stella 7 from SD and its cartridge reader, which may differ in mapper compatibility.
 
 ## MAIN IMPORTANT NEW FINDING — passive wins & user-directed TIA audio (2026-11-23)
 
