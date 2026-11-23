@@ -333,7 +333,7 @@ BankSlot:
         lsr
         sta AUDV1
         and #$02
-        ora #$82
+        ora #$02
         sta COLUBK
         lda M_presence
         beq BankScoreDone
