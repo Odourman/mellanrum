@@ -1,7 +1,5 @@
 name: MAIN II ART – guarded ROM pin on new isolated branch
 on:
-  push:
-    branches: [romdev/mainii-art-final-20261123]
   workflow_dispatch:
 permissions:
   contents: write
