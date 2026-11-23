@@ -1,11 +1,12 @@
-name: PR38 conifer 16K F6 – 15 real Stella 600-second idle checks
+name: PR38 cursor precision 16K F6 – 15 real Stella 600-second idle checks
 on:
   push:
     branches: [romdev/mainii-freeforest-and-campaign-20261123]
     paths:
       - '.github/workflows/pr38_idle_matrix.yml'
       - 'tests/issue32/pr38_idle_one_room.py'
-      - 'rom/src/**'
+      # Version-specific replay: source changes require a new exact-ROM pin,
+      # not silently reusing this matrix against a different product SHA.
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,13 +25,13 @@ jobs:
       - name: Download original exact native Stella executable+ROM+controller evidence
         uses: actions/download-artifact@v4
         with:
-          run-id: 45270872726
+          run-id: 45280366004
           name: mainii-experimental-F6-Stella15-FRI-evidence
           github-token: ${{ github.token }}
           path: build/evidence
       - name: Verify same native frozen ROM before running ANY frames
         run: |
-          echo 'a207e7944771b3a85aa640f95d6f8775243d84f80fff74a15057f66f4e9f7bcb  build/evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
+          echo '090cff2fe4055512cda64f23db829b96e8b10a3a29a0bd9f324b23b5d1e7b4c4  build/evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
           python3 - <<'PY'
           import json,pathlib,hashlib
           root=pathlib.Path('build/evidence')
