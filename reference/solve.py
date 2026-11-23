@@ -25,4 +25,4 @@ def solve(room,max_depth=34,max_states=90000):
 def key(r,s):
     # Future matters only via relative due tick offsets, not absolute tick.
     return (s.x,s.y,s.direction,s.bits,s.polarity,s.phase,s.phase_age,
-            tuple((k,d-s.tick) for k,d in s.queue),s.done, intrusion_search_key(r,s.tick))
+            tuple((k,d-s.tick) for k,d in s.queue),s.done,s.visitedstone, intrusion_search_key(r,s.tick))
