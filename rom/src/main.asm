@@ -1484,6 +1484,12 @@ F6ScoreTrampoline:
 F6ScoreReturn:
         rts
 
+        ; Common reset recovery when SELECT/RESET occurs with bank0..2 selected.
+        ORG $FF9A
+F6BankReset:
+        lda $FFF9
+        jmp Reset
+
         ORG $FFFC
         dc.w Reset
         dc.w Reset
