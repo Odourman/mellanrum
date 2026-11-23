@@ -1444,7 +1444,7 @@ HUDIcon8:
         bpl HUDIcon8
         lda #0
         sta GRP0
-        ldx #7
+        ldx #5
 HUDBottom7:
         sta WSYNC
         dex
