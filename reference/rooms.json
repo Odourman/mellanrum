@@ -38,7 +38,7 @@
       2
     ],
     "stone_initial": 0,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -47,7 +47,7 @@
         21
       ],
       [
-        "wait",
+        "stone",
         -1
       ],
       [
@@ -100,7 +100,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 2
   },
   {
     "id": "I-02",
@@ -141,12 +142,12 @@
       3
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
       [
-        "wait",
+        "stone",
         -1
       ],
       [
@@ -184,18 +185,59 @@
       [
         "wait",
         -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ]
     ],
-    "abstract_step_count": 10,
+    "abstract_step_count": 20,
     "abstract_search_states": null,
     "essential_action": [
-      5,
-      "tree",
-      8
+      0,
+      "stone",
+      -1
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 3
   },
   {
     "id": "I-03",
@@ -236,7 +278,7 @@
       4
     ],
     "stone_initial": 0,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -246,11 +288,43 @@
       ],
       [
         "tree",
-        22
+        17
       ],
       [
         "tree",
-        23
+        16
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ],
       [
         "wait",
@@ -273,16 +347,17 @@
         -1
       ]
     ],
-    "abstract_step_count": 8,
+    "abstract_step_count": 16,
     "abstract_search_states": null,
     "essential_action": [
       1,
       "tree",
-      22
+      17
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 1
   },
   {
     "id": "I-04",
@@ -323,7 +398,7 @@
       2
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -332,7 +407,7 @@
         22
       ],
       [
-        "wait",
+        "stone",
         -1
       ],
       [
@@ -373,7 +448,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 3
   },
   {
     "id": "I-05",
@@ -414,7 +490,7 @@
       3
     ],
     "stone_initial": 0,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -435,8 +511,8 @@
         19
       ],
       [
-        "wait",
-        -1
+        "tree",
+        19
       ],
       [
         "wait",
@@ -444,14 +520,54 @@
       ],
       [
         "tree",
-        17
+        23
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ],
       [
         "wait",
         -1
       ]
     ],
-    "abstract_step_count": 8,
+    "abstract_step_count": 18,
     "abstract_search_states": null,
     "essential_action": [
       3,
@@ -460,7 +576,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 1
   },
   {
     "id": "II-01",
@@ -501,7 +618,7 @@
       3
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -510,8 +627,8 @@
         17
       ],
       [
-        "stone",
-        -1
+        "tree",
+        17
       ],
       [
         "tree",
@@ -536,18 +653,39 @@
       [
         "wait",
         -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ]
     ],
-    "abstract_step_count": 8,
+    "abstract_step_count": 13,
     "abstract_search_states": null,
     "essential_action": [
-      0,
+      1,
       "tree",
       17
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 4
   },
   {
     "id": "II-02",
@@ -588,7 +726,7 @@
       5
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -617,8 +755,8 @@
         -1
       ],
       [
-        "wait",
-        -1
+        "tree",
+        9
       ],
       [
         "wait",
@@ -642,7 +780,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 7
   },
   {
     "id": "II-03",
@@ -683,7 +822,7 @@
       2
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -692,7 +831,7 @@
         12
       ],
       [
-        "wait",
+        "stone",
         -1
       ],
       [
@@ -722,9 +861,17 @@
       [
         "wait",
         -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ]
     ],
-    "abstract_step_count": 9,
+    "abstract_step_count": 11,
     "abstract_search_states": null,
     "essential_action": [
       0,
@@ -733,7 +880,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 4
   },
   {
     "id": "II-04",
@@ -774,7 +922,7 @@
       4
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": null,
     "solution_oracle_abstract": [
@@ -803,8 +951,8 @@
         -1
       ],
       [
-        "wait",
-        -1
+        "tree",
+        8
       ],
       [
         "wait",
@@ -856,7 +1004,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 3
   },
   {
     "id": "II-05",
@@ -897,7 +1046,7 @@
       5
     ],
     "stone_initial": 0,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": 4,
     "solution_oracle_abstract": [
@@ -938,8 +1087,8 @@
         -1
       ],
       [
-        "wait",
-        -1
+        "tree",
+        8
       ],
       [
         "wait",
@@ -959,7 +1108,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 7
   },
   {
     "id": "III-01",
@@ -1000,7 +1150,7 @@
       2
     ],
     "stone_initial": 0,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": 4,
     "solution_oracle_abstract": [
@@ -1073,19 +1223,83 @@
         -1
       ],
       [
+        "tree",
+        17
+      ],
+      [
+        "tree",
+        17
+      ],
+      [
         "wait",
         -1
       ],
       [
-        "tree",
-        16
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ],
       [
         "wait",
         -1
       ]
     ],
-    "abstract_step_count": 20,
+    "abstract_step_count": 36,
     "abstract_search_states": null,
     "essential_action": [
       3,
@@ -1094,7 +1308,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 5
   },
   {
     "id": "III-02",
@@ -1135,7 +1350,7 @@
       3
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": null,
     "intrusion_foreshadow_tick": 2,
     "solution_oracle_abstract": [
@@ -1144,8 +1359,8 @@
         27
       ],
       [
-        "wait",
-        -1
+        "tree",
+        24
       ],
       [
         "wait",
@@ -1190,9 +1405,73 @@
       [
         "wait",
         -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ]
     ],
-    "abstract_step_count": 13,
+    "abstract_step_count": 29,
     "abstract_search_states": null,
     "essential_action": [
       0,
@@ -1201,7 +1480,8 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 4
   },
   {
     "id": "III-03",
@@ -1242,7 +1522,7 @@
       2
     ],
     "stone_initial": 0,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": [
       2,
       2
@@ -1278,8 +1558,8 @@
         -1
       ],
       [
-        "wait",
-        -1
+        "tree",
+        6
       ],
       [
         "wait",
@@ -1293,13 +1573,14 @@
     "abstract_step_count": 10,
     "abstract_search_states": null,
     "essential_action": [
-      4,
-      "stone",
-      -1
+      1,
+      "tree",
+      13
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 7
   },
   {
     "id": "III-04",
@@ -1340,7 +1621,7 @@
       3
     ],
     "stone_initial": 0,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": [
       1,
       2
@@ -1360,8 +1641,8 @@
         -1
       ],
       [
-        "wait",
-        -1
+        "tree",
+        8
       ],
       [
         "stone",
@@ -1386,18 +1667,27 @@
       [
         "wait",
         -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ]
     ],
-    "abstract_step_count": 10,
+    "abstract_step_count": 12,
     "abstract_search_states": null,
     "essential_action": [
-      0,
+      3,
       "tree",
-      23
+      8
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 2
   },
   {
     "id": "III-05",
@@ -1438,7 +1728,7 @@
       5
     ],
     "stone_initial": 1,
-    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg.",
+    "note": "Väntan räcker inte; en särskild handling förändrar ugglans väg. Utgångstecknet svarar först när skogens, stenens och ekots tillstånd stämmer.",
     "intrusion_window": [
       3,
       2
@@ -1470,7 +1760,7 @@
         19
       ],
       [
-        "wait",
+        "stone",
         -1
       ],
       [
@@ -1496,9 +1786,37 @@
       [
         "wait",
         -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
       ]
     ],
-    "abstract_step_count": 13,
+    "abstract_step_count": 20,
     "abstract_search_states": null,
     "essential_action": [
       1,
@@ -1507,6 +1825,7 @@
     ],
     "source_idle_600_beats": "NO_WIN",
     "counterfactual_600_beats": "NO_WIN",
-    "coarse_cursor_travel_checked": false
+    "coarse_cursor_travel_checked": false,
+    "exit_gate": 5
   }
 ]
