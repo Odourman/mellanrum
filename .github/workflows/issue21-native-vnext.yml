@@ -27,6 +27,10 @@ jobs:
         run: |
           python3 -m unittest discover -s reference -p test_engine.py -v
           python3 reference/check_rooms.py
+      - name: Package exact source snapshot for offline model work
+        run: |
+          mkdir -p build/issue21
+          tar -czf build/issue21/vnext_source_snapshot.tar.gz reference rom scripts art_sources build_issue15.py
       - name: Upload byte-exact product binary and native DASM evidence
         if: always()
         uses: actions/upload-artifact@v4
