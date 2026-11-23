@@ -74,8 +74,8 @@ with (out/'gopher_stdout.txt').open('w') as fh:
  proc=subprocess.run([str(em),'HEADLESS',str(rom)],input='\n'.join(cmd)+'\n',
                      text=True,cwd=str(out),stdout=fh,stderr=subprocess.STDOUT,timeout=900)
 log=(out/'gopher_stdout.txt').read_text(errors='replace')
-modes=[int(x,16) for x in re.findall(r'0x00b8 \(RAM\) = 0x([0-9a-fA-F]{2})',log)]
-numbers=[int(x,16) for x in re.findall(r'0x00b9 \(RAM\) = 0x([0-9a-fA-F]{2})',log)]
+modes=[int(x,16) for x in re.findall(r'0x00b8[^\n]*= 0x([0-9a-fA-F]{2})',log)]
+numbers=[int(x,16) for x in re.findall(r'0x00b9[^\n]*= 0x([0-9a-fA-F]{2})',log)]
 scanlines=[int(x) for x in re.findall(r'total: (\d+)',log)]
 assert len(modes)==len(checks) and len(numbers)==len(checks),(len(modes),len(checks))
 wins=[]
