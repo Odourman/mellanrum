@@ -1592,25 +1592,22 @@ ExtraNo:
 ; A three-stage coda: the forest darkens and finally disappears.
 ; U3 vanishes late while the glowing S3 stone is still readable.
 CodaPalette:
-        lda codaHi
-        bne CodaEarly
-        lda codaLo
-        cmp #$80
-        bcc CodaLate
-        lda #$80
-        ldx #$84
-        bne CodaApply
-CodaLate:
-        lda #$00
-        ldx #$02
-        bne CodaApply
-CodaEarly:
-        lda #$82
+        ; Compact: never execute from F6 bank-switch hotspots $FFF6-$FFF9.
         ldx #$86
+        lda #$82
+        ldy codaHi
+        bne CodaApply
+        ldx #$84
+        lda #$80
+        ldy codaLo
+        bmi CodaApply
+        ldx #$02
+        lda #$00
 CodaApply:
         sta COLUBK
         stx COLUPF
         rts
+CodaPaletteEnd:
 
         ORG $FFFC
         dc.w Reset
