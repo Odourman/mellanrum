@@ -26,7 +26,7 @@ jobs:
           python3 scripts/assemble_check.py rom/src/main.asm -o build/issue15_native/local_subset.bin
           cmp build/candidate.bin build/issue15_native/local_subset.bin
           cp build/candidate.bin build/mellanrum_ntsc.bin
-          cp build/issue15_native/mellanrum.sym build/mellanrum_ntsc.sym
+          cp build/issue15_native/local_subset.sym build/mellanrum_ntsc.sym
           sha256sum build/candidate.bin rom/bin/mellanrum_ntsc.bin
           (cd build/issue15_native && sha256sum * > SHA256SUMS)
       - name: Original oracle, game model, title, A/B input and Presence regressions
