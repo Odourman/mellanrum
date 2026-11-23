@@ -1016,9 +1016,13 @@ TitleColors:
 Sound:
         lda mode
         cmp #3
-        beq Silence
+        bne AudioNotCoda
+        jmp Silence
+AudioNotCoda:
         cmp #2
-        beq Silence
+        bne AudioNotRoomDone
+        jmp Silence
+AudioNotRoomDone:
         ; RESET/title must not inherit last completed act's audio.
         ldx #0
         lda mode
