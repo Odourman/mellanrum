@@ -1537,8 +1537,13 @@ PolarityReady:
         sta PF2
         lda #$44
         sta PF1
-        ; Four authentic 8x8 P0 bitmap symbols in lower HUD.
-        ; Owl is only drawn in upper forest rows; use P0 again safely.
+        ; Prepare page and Y BEFORE PositionOne's WSYNC. On a
+        ; positive ack the old preparation crossed cycle 76 and added
+        ; one unintended NTSC scanline (Gopher 261/262 mixture).
+        ; Never do more than ~70 cycles between this WSYNC and HUDIcon8.
+        lda #>CursorIdle    ; all four HUD glyphs reside in one ROM page
+        sta sprite0Ptr+1
+        ldy #7
         lda #72
         ldx #0
         jsr PositionOne
@@ -1551,9 +1556,6 @@ HUDNeutral:
 HUDChoose:
         lda CursorSpriteLo,x
         sta sprite0Ptr
-        lda #>CursorIdle    ; all four HUD glyphs reside in one ROM page
-        sta sprite0Ptr+1
-        ldy #7
 HUDIcon8:
         sta WSYNC
         lda (sprite0Ptr),y
@@ -1562,7 +1564,7 @@ HUDIcon8:
         bpl HUDIcon8
         lda #0
         sta GRP0
-        ldx #5
+        ldx #6             ; one explicit NTSC line replaces legacy ack overrun
 HUDBottom7:
         sta WSYNC
         dex
