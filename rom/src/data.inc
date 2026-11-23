@@ -176,14 +176,15 @@ OwlFrameLo:
         dc.b <OwlB0,<OwlB1,<OwlB2
 OwlFrameHi:
         dc.b >OwlB0,>OwlB1,>OwlB2
+; P0 feedback HUD: authentic black-and-white distinct bitmaps.
 CursorIdle:
-        dc.b $C3,$81,$00,$00,$00,$00,$81,$C3,$00
+        dc.b $00,$3C,$42,$81,$81,$42,$3C,$00,$00 ; open circle
 CursorAck:
-        dc.b $C3,$81,$00,$18,$18,$00,$81,$C3,$00
+        dc.b $00,$04,$0C,$1C,$38,$70,$E0,$40,$00 ; check mark
 CursorDenied:
-        dc.b $81,$42,$24,$18,$18,$24,$42,$81,$00
+        dc.b $00,$81,$42,$24,$18,$24,$42,$81,$00 ; blocked X
 CursorIntercept:
-        dc.b $C3,$81,$00,$18,$24,$00,$81,$C3,$00
+        dc.b $00,$99,$24,$42,$81,$18,$42,$99,$00 ; broken contradictory mark
 CursorSpriteLo:
         dc.b <CursorIdle,<CursorAck,<CursorDenied,<CursorIntercept
 CursorSpriteHi:
