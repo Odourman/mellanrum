@@ -24,11 +24,10 @@ assert len(raw)==16384
 for i in range(3):
     b=paths[i].read_bytes()
     assert b[4092:4094]==b"\x9a\xff",(i,b[-4:].hex())
-    assert b[0xff90:0xff93]==b"\xbd\xf6\xff",f"bank{i}: trampoline does not mirror LDA $FFF6,X"
-    assert b[0xff96:0xff99]==b"\xad\xf9\xff",f"bank{i}: return LDA $FFF9 missing"
+    assert b[0xF90:0xF93]==b"\xbd\xf6\xff",f"bank{i}: trampoline does not mirror LDA $FFF6,X"
+    assert b[0xF96:0xF99]==b"\xad\xf9\xff",f"bank{i}: return LDA $FFF9 missing"
 assert raw[-4:-2]==b"\x00\xf0",raw[-4:].hex()
-assert raw[0x3ff90:0x3ff93] if False else True
-assert raw[0x3000+0xff90:0x3000+0xff93]==b"\xbd\xf6\xff"
+assert raw[0x3000+0xF90:0x3000+0xF93]==b"\xbd\xf6\xff"
 product=out/"MELLANRUM_16K_NTSC_F6.bin";product.write_bytes(raw)
 report={"mapper":"F6","size":len(raw),"banks":[{"bank":i,"offset":4096*i,"size":4096,"sha256":hashlib.sha256(x.read_bytes()).hexdigest(),"src":str(src[i].relative_to(root))}for i,x in enumerate(paths)],"rom_sha256":hashlib.sha256(raw).hexdigest(),"startup_bank":3,"cartridge_ram":0,"coprocessor":"NONE","real_tia_score_bytes":3*3840,"music_control_frames_per_room":256,"rooms_scored":15,"driver":"actual native DASM 6507"}
 (out/"ROM_16K_BUILD.json").write_text(json.dumps(report,indent=2)+"\n")
