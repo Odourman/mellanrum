@@ -1,0 +1,59 @@
+{
+  "status": {
+    "U3": "USER_VISUAL_ACCEPTANCE_IN_CHAT__MAIN_REGISTRATION_PENDING",
+    "S3": "USER_PREFERENCE_NOT_FINAL_MASK_APPROVAL",
+    "PRESENCE": "GRAPHICS_DESIGN_PROPOSED",
+    "ROM": "NO_IMPLEMENTATION_AUTHORITY",
+    "NEW_TIA_EMULATOR": "NOT_RUN"
+  },
+  "owl": {
+    "B0_VILANDE": {
+      "hex_top_down": "18 7E DB F7 F7 7E 7E 24",
+      "bits_top_down": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11110111",
+        "11110111",
+        "01111110",
+        "01111110",
+        "00100100"
+      ],
+      "hex_bottom_up_plus_00": "24 7E 7E F7 F7 DB 7E 18 00"
+    },
+    "B1_MELLAN": {
+      "hex_top_down": "18 7E DB F7 F7 FF BD 24",
+      "bits_top_down": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11110111",
+        "11110111",
+        "11111111",
+        "10111101",
+        "00100100"
+      ],
+      "hex_bottom_up_plus_00": "24 BD FF F7 F7 DB 7E 18 00"
+    },
+    "B2_VINGAR_UT": {
+      "hex_top_down": "18 7E DB F7 F7 FF FF 24",
+      "bits_top_down": [
+        "00011000",
+        "01111110",
+        "11011011",
+        "11110111",
+        "11110111",
+        "11111111",
+        "11111111",
+        "00100100"
+      ],
+      "hex_bottom_up_plus_00": "24 FF FF F7 F7 DB 7E 18 00"
+    }
+  },
+  "symbol_proposals": {
+    "S3_A": "18 24 42 24 18 24 5A 24",
+    "S3_B": "42 66 3C 24 5A 3C 66 42"
+  },
+  "presence_proposal": "three PF2 crown/stem OR/AND masks, no new monster sprite",
+  "frozen_product": "e9ea87d381bcf8da39ec055d7d6951ceff97b21d3a798addd10fbbe540c5e974"
+}
