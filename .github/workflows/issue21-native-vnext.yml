@@ -22,8 +22,7 @@ jobs:
           test "$SIZE" -le 16384
           python3 scripts/check_rom.py build/issue21/mellanrum_vnext_ntsc.bin
           sha256sum build/issue21/mellanrum_vnext_ntsc.bin | tee build/issue21/SHA256SUMS
-      - name: Run baseline compatibility model (not new vNext playability approval)
-        continue-on-error: true
+      - name: Strict source model: 20 rules and 15 source-only passive and counterfactual replays
         run: |
           python3 -m unittest discover -s reference -p test_engine.py -v
           python3 reference/check_rooms.py
