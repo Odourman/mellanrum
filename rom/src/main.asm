@@ -1019,9 +1019,14 @@ Sound:
         beq Silence
         cmp #2
         beq Silence
+        ; RESET/title must not inherit last completed act's audio.
+        ldx #0
+        lda mode
+        beq SoundTables
         lda act
         and #3
         tax
+SoundTables:
         lda SoundControl0,x
         sta AUDC0
         lda SoundControl1,x
@@ -1038,9 +1043,9 @@ Sound:
         sta AUDV1
         lda presence
         cmp #1
-        beq MuteSecond
+        beq PresenceWarningAudio
         cmp #2
-        beq MuteSecond
+        beq PresenceActiveAudio
         lda slot0Key
         cmp #$FF
         bne EchoDissonance
@@ -1053,17 +1058,34 @@ EchoDissonance:
         lda #2
         sta AUDV1
         jmp SoundDone
-MuteSecond:
+PresenceWarningAudio:
+        ; Sparse warning abrasion, one transient per 64 video frames.
+        lda soundStep
+        and #$3F
+        bne SoundDone
+        lda #$08
+        sta AUDC1
+        lda #$1D
+        sta AUDF1
+        lda #1
+        sta AUDV1
+        jmp SoundDone
+PresenceActiveAudio:
+        ; Abrasion and deliberate silence replace a constant noise bed.
+        lda #$08
+        sta AUDC1
+        lda #$1D
+        sta AUDF1
+        lda soundStep
+        and #$0F
+        cmp #4
+        bcs PresenceQuiet
+        lda #2
+        sta AUDV1
+        jmp SoundDone
+PresenceQuiet:
         lda #0
         sta AUDV1
-        lda presence
-        cmp #2
-        bne SoundDone
-        lda soundStep
-        and #$1F
-        bne SoundDone
-        lda #0
-        sta AUDV0             ; a measured silent interval can be inspected in TIA
 SoundDone:
         rts
 Silence:
