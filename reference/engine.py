@@ -21,12 +21,16 @@ class Room:
     stone_initial:int=0
     instruction:str=''
     dramaturgy:str=''
+    gate_key:int=-1  # vNext: a specified living tree must become a clearing at exit
     def validate(self):
         assert len(self.half)==8 and all(len(row)==5 for row in self.half)
         assert all(set(row)<=set('#.Tt') for row in self.half)
         for x,y in (self.owl[:2],self.stone,self.exit):
             assert 0<=x<W and 0<=y<H and self.half[y][min(x,9-x)] in '.t'
         assert self.act in (1,2,3)
+        if self.gate_key>=0:
+            gx,gy=index_xy(self.gate_key)
+            assert self.half[gy][gx] in 'Tt', (self.id,self.gate_key)
 
 @dataclass(frozen=True)
 class State:
@@ -131,7 +135,7 @@ def step(r,s,action=('wait',-1),cursor=None):
     # Stone rotates heading on arrival, not every tick standing on stone.
     if (x,y)==r.stone and (s.x,s.y)!=r.stone:
         d=(d+(1 if polarity==0 else 3))&3
-    return replace(ns,x=x,y=y,direction=d,done=(x,y)==r.exit)
+    return replace(ns,x=x,y=y,direction=d,done=(x,y)==r.exit and (r.gate_key<0 or not (bits & (1<<r.gate_key))))
 
 def path_preview(r,sequence,maxsteps=40):
     s=initial(r)
