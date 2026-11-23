@@ -1012,9 +1012,19 @@ Position15:
         sta RESP0,x
         rts
 
+; Issue32: eight evolving 256-frame pages = 34.1-second aural envelope.
+; codaHi is free until actual mode 3 and reused for the coda countdown.
 SetColorsSound:
         inc soundStep
+        bne NoSlowCarry
         lda mode
+        cmp #3
+        beq NoSlowCarry
+        inc codaHi
+NoSlowCarry:
+        lda mode
+        cmp #3
+        beq CodaColorsSound
         beq TitleColors
         lda act
         clc
@@ -1028,7 +1038,7 @@ SetColorsSound:
         sta COLUP0
         lda PaletteGlyph,x
         sta COLUP1
-        jmp Sound
+        jmp PlayScore
 TitleColors:
         lda #$A0
         sta COLUBK
@@ -1038,99 +1048,55 @@ TitleColors:
         sta COLUP0
         lda #$26
         sta COLUP1
-Sound:
+PlayScore:
         lda mode
-        cmp #3
-        bne AudioNotCoda
-        jmp Silence
-AudioNotCoda:
         cmp #2
-        bne AudioNotRoomDone
-        jmp Silence
-AudioNotRoomDone:
-        ; RESET/title must not inherit last completed act's audio.
+        beq Silence
         ldx #0
         lda mode
-        beq SoundTables
-        lda act
-        and #3
-        tax
-SoundTables:
-        lda SoundControl0,x
-        sta AUDC0
-        lda SoundControl1,x
-        sta AUDC1
-        lda SoundPitch0,x
-        clc
-        adc polarity
-        sta AUDF0
-        lda SoundPitch1,x
-        sta AUDF1
-        lda #2
-        sta AUDV0
-        lda #1
-        sta AUDV1
-        lda presence
-        cmp #1
-        beq PresenceWarningAudio
-        cmp #2
-        beq PresenceActiveAudio
-        lda slot0Key
-        cmp #$FF
-        bne EchoDissonance
-        lda slot1Key
-        cmp #$FF
-        beq SoundDone
-EchoDissonance:
-        lda #$17
-        sta AUDF1
-        lda #2
-        sta AUDV1
-        jmp SoundDone
-PresenceWarningAudio:
-        ; Sparse warning abrasion, one transient per 64 video frames.
-        lda soundStep
-        and #$3F
-        bne SoundDone
-        lda #$08
-        sta AUDC1
-        lda #$1D
-        sta AUDF1
-        lda #1
-        sta AUDV1
-        jmp SoundDone
-PresenceActiveAudio:
-        ; Abrasion and deliberate silence replace a constant noise bed.
-        lda #$08
-        sta AUDC1
-        lda #$1D
-        sta AUDF1
-        lda soundStep
-        and #$0F
-        cmp #4
-        bcs PresenceQuiet
-        lda #2
-        sta AUDV1
-        jmp SoundDone
-PresenceQuiet:
-        lda #0
-        sta AUDV1
-SoundDone:
-        ; A true F6 call every active frame; old 4K tables are only fallback.
-        ; Keep code/render in bank3 and call each act's own ROM score bank.
-        lda mode
-        cmp #2
-        beq NoBankedScore
-        cmp #3
-        beq NoBankedScore
-        ldx #0
-        lda mode
-        beq BankScoreCall
+        beq ChooseBank
         ldx act
         dex
-BankScoreCall:
+ChooseBank:
         jsr $FF90
-NoBankedScore:
+        ; Every eight 256f periods new silence/partial dissonance pattern.
+        lda codaHi
+        and #7
+        cmp #5
+        bne LongPhaseThree
+        lda soundStep
+        and #$80
+        beq SoundDone
+        lda #0
+        sta AUDV1
+        jmp SoundDone
+LongPhaseThree:
+        cmp #3
+        bne SoundDone
+        lda #$1F
+        sta AUDF1
+SoundDone:
+        rts
+CodaColorsSound:
+        lda #$82
+        sta COLUBK
+        lda #$84
+        sta COLUPF
+        lda #$0E
+        sta COLUP0
+        lda #$26
+        sta COLUP1
+        lda #$0C
+        sta AUDC0
+        lda #$1E
+        sta AUDF0
+        lda codaHi
+        asl
+        clc
+        adc #1
+        sta AUDV0
+        lda #0
+        sta AUDV1
         rts
 Silence:
         lda #0
@@ -1145,6 +1111,17 @@ SetShadowVisibility:
         sta shadowOn
         sta moveTemp       ; render-only mask frame offset 0/8/16; safe scratch
         lda mode
+        cmp #3
+        bne ShadowOnlyGame
+        lda codaHi
+        bne ShadowGateDone
+        lda #2
+        sta shadowOn
+        lda codaLo
+        and #$18
+        sta moveTemp
+        rts
+ShadowOnlyGame:
         cmp #1
         bne ShadowGateDone
         lda presence
@@ -1241,6 +1218,15 @@ NoCrownShadow:
         lda rowIndex
         cmp owlY
         bne NoOwlOnRow
+        lda mode
+        cmp #3
+        bne OwlPresent
+        lda codaHi
+        bne OwlPresent
+        lda codaLo
+        cmp #128
+        bcc NoOwlOnRow
+OwlPresent:
         ; 72 NTSC frames: B1 x6, B2 x6, B1 x6, B0 x54.
         ; Beat timer counts downward; do not modify actual owl AI timing.
         lda beatFrames
@@ -1402,11 +1388,36 @@ PolarityReady:
         sta PF2
         lda #$44
         sta PF1
-        ldx #15
-Bottom16:
+        ; Four authentic 8x8 P0 bitmap symbols in lower HUD.
+        ; Owl is only drawn in upper forest rows; use P0 again safely.
+        lda #72
+        ldx #0
+        jsr PositionOne
+        lda ackFrames
+        beq HUDNeutral
+        ldx ackType
+        bne HUDChoose
+HUDNeutral:
+        ldx #0
+HUDChoose:
+        lda CursorSpriteLo,x
+        sta sprite0Ptr
+        lda CursorSpriteHi,x
+        sta sprite0Ptr+1
+        ldy #7
+HUDIcon8:
+        sta WSYNC
+        lda (sprite0Ptr),y
+        sta GRP0
+        dey
+        bpl HUDIcon8
+        lda #0
+        sta GRP0
+        ldx #7
+HUDBottom7:
         sta WSYNC
         dex
-        bne Bottom16
+        bne HUDBottom7
         rts
 
 ; Only legible title word: MELLANRUM. 40 PF bits, 9 letters in one line.
