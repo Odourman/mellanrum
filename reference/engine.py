@@ -93,8 +93,13 @@ def step(r,s,action=('wait',-1),cursor=None):
     intercepted=False
     # Player commands execute first. Rejected commands do not change any state.
     if typ=='stone':polarity^=1
-    elif typ=='tree' and is_mutable(r,k) and all(e[0]!=k for e in queue):
-        if r.act==1 or len(queue)<2:
+    elif typ=='tree' and is_mutable(r,k):
+        if r.act>1 and any(e[0]==k for e in queue):
+            # Issue26: a second deliberate gesture cancels a future echo;
+            # current tree state is left untouched, stone polarity flips.
+            queue=[e for e in queue if e[0]!=k]
+            polarity^=1
+        elif r.act==1 or len(queue)<2:
             # V5.1: for two announced beats the unnamed presence intercepts
             # an otherwise legal tree command. It flips stone polarity INSTEAD
             # of toggling tree, never scheduling an echo. The action is spent.
