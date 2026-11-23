@@ -388,7 +388,7 @@ UseXDirect:
 FireDenied:
         lda #2
         sta ackType
-        lda #9
+        lda #18
         sta ackFrames
         rts
 
@@ -722,7 +722,7 @@ FireAccepted:
         lda #1
         sta ackType
 FinishFireAccepted:
-        lda #9
+        lda #18
         sta ackFrames
         lda #1
         sta usedFire
@@ -730,7 +730,7 @@ FinishFireAccepted:
 InvalidFire:
         lda #2
         sta ackType
-        lda #9
+        lda #18
         sta ackFrames
 FinishFire:
         lda #0
@@ -958,6 +958,24 @@ PlaceObjects:
 MarkerNormal:
         ldx #0
 MarkerWidthSelected:
+        ; Issue #21: visually distinguish four outcomes for ~0.3 seconds.
+        ; neutral=steady 1px, accepted=2/4px slow pulse,
+        ; denied=4px steady, Presence intercept=8/1px rapid shiver.
+        cpx #1
+        bne MarkerCheckIntercept
+        lda ackFrames
+        and #$04
+        beq MarkerFetchWidth
+        ldx #2
+        bne MarkerFetchWidth
+MarkerCheckIntercept:
+        cpx #3
+        bne MarkerFetchWidth
+        lda ackFrames
+        and #$02
+        beq MarkerFetchWidth
+        ldx #0
+MarkerFetchWidth:
         lda MarkerWidth,x
         sta NUSIZ0
         sta WSYNC
