@@ -64,7 +64,7 @@ for idx,r in enumerate(rooms[:args.limit]):
   room_entry=change_frame+1;step(5)
 if args.limit==15:
  change_frame=frame;fire('start_coda');checkpoint('coda_start')
- step(495);checkpoint('back_to_title');image('title_after_coda.png')
+ step(735);checkpoint('back_to_title');image('title_after_coda.png')
 cmd.append('QUIT')
 (out/'commands.txt').write_text('\n'.join(cmd)+'\n')
 (out/'input_events.json').write_text(json.dumps(events,indent=2)+'\n')
