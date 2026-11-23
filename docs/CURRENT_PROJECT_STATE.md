@@ -1,9 +1,17 @@
 # Mellanrum: aktuellt projektläge
 
-**Updated:** 2026-11-23 (MEL-052: user approves new 32 KiB maximum ROM budget for native Atari 2600; previous passive-win P1 and audio gates unchanged).
+**Updated:** 2026-11-23 (MEL-053 replaces prior 32 KiB limit with hard 16 KiB F6-capable maximum for future ROMs; gameplay/audio/verification gates unchanged).
 **Phase:** **PR16_MAIN_REAL_STELLA_14_OF_15_PASSIVE_AUTO_WINS_P1_DESIGN_FAIL / USER_AUDIO_NEW_CANDIDATE_AUTHORIZED / VERIFICATION_PARTIAL / PACHINKO_PARTIAL / RELEASE_BLOCKED**.
 **Implementation:** Current NEW native DASM 4096-byte NTSC candidate on Draft PR #16, HEAD **`56d70c316031bf55a5260e1fbbe0fe187c55f297`**, ROM SHA256 **`45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7`**; original frozen Draft PR #4/E9EA ROM preserved separately.
 **Release:** **NOT APPROVED**. New P1 gameplay design failure (14/15 no-input victories) plus requested replacement of noisy title/start audio now block acceptance; previous developer/Pachinko/Verification evidence is bounded and does not settle these new gates.
+
+## MAIN current 16 KiB ROM maximum — user decision (MEL-053, 2026-11-23)
+
+**ACTIVE ROM CEILING: 16 KiB (16384 bytes).** This **supersedes previous MEL-052 32 KiB maximum** in binding priority. For future separately authorized candidates prefer standard original-Atari-compatible **F6 mapper, 4×4 KiB banks**, with no cartridge coprocessor or accessory. A smaller 4K or 8K result is permitted if adequate. **32 KiB is now outside user-approved scope**, unless the user later issues a new decision. Historical "MAIN 32 KiB maximum ROM decision" section below is preserved for audit only and is superseded by this later decision.
+
+The capacity increase can enable **15 meaningfully distinct room designs**, more detailed level/rule tables, richer TIA dark drone/noise patterns, better marker acceptance/denial feedback, more distinct Presence/animation data. It **does not independently fix** the current **14/15 passive no-input auto-wins** (Issue #19); it **does not expand** 128-byte console RAM, TIA sprite resources/two audio channels or 76 cycles/scanline. Verify only after new authorized game design, native DASM build and fresh real-emulator regressions; assess F6 16 KiB compatibility in real Stella/Gopher and separately physical Atari original and the user's RetroN77 Stella 7 SD/cart reader.
+
+**Authorization boundaries:** MEL-053 authorizes a changed *capacity limit*, **not** a new implementation step, a rewrite of V5.1 canon rooms/physics, merge or release. Old Draft PR #16 stays 4K exact SHA `45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7`, HEAD `56d70c316031bf55a5260e1fbbe0fe187c55f297`; frozen PR #4 untouched. Design alternatives require explicit user/MAIN approval before gameplay implementation; the previously authorized #20 audio-only scope remains separate.
 
 ## MAIN 32 KiB maximum ROM decision — 2026-11-23
 
