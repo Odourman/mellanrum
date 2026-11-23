@@ -18,17 +18,17 @@ The five original base silhouettes are preserved as motifs, but Acts II/III each
 | Room | Gate group (must clear) | Precleared group on entry | Rhythm |
 |---|---:|---:|---|
 | I-01 | 12 | none | permanent tree, first lesson |
-| I-02 | 20 | none | edge-tree resonance |
+| I-02 | 21 | none | edge-tree resonance |
 | I-03 | 22 | none | stone polarity |
 | I-04 | 8 | none | elevated obstruction |
 | I-05 | 12 | none | two reflected sides |
 | II-01 | 12 | 17 | time-limited echo |
-| II-02 | 20 | 12 | stone/echo |
+| II-02 | 21 | 12 | stone/echo |
 | II-03 | 22 | 13 | two pending events |
 | II-04 | 8 | 17 | denied/intercept feedback |
 | II-05 | 12 | 18 | remembering |
 | III-01 | 12 | 23 | phase-swapped traversal |
-| III-02 | 20 | 27 | inverted clearings |
+| III-02 | 21 | 27 | inverted clearings |
 | III-03 | 22 | 28 | Presence interception |
 | III-04 | 8 | 23 | polarity/phase disagreement |
 | III-05 | 12 | 27 | all three systems |
