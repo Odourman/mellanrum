@@ -68,7 +68,7 @@ RoomPatchKey:
 ; A separate, physically editable anchor tree per room; mirrored on both sides.
 ; Win requires actual dynamic map bit = 0 when the owl enters the exit.
 RoomGateKey:
-        dc.b $0C,$14,$16,$08,$0C,$0C,$14,$16,$08,$0C,$0C,$14,$16,$08,$0C
+        dc.b $0C,$15,$16,$08,$0C,$0C,$15,$16,$08,$0C,$0C,$15,$16,$08,$0C
 RoomWarning:
         dc.b $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$04,$02,$01,$00,$02
 RoomActive:
