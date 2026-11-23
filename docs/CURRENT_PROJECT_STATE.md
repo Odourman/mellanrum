@@ -1,3 +1,11 @@
+> **MAIN III MIGRATION UPDATE – 2026-11-23, DOCS-ONLY PROPOSAL, NOT YET MERGED**
+>
+> This dated supersession corrects the stale "Issue32 NOT_STARTED / PR27 current" snapshot below. The full historical text remains intact for provenance. Latest live-audited dev candidate: OPEN Draft [PR #38](https://github.com/Odourman/mellanrum/pull/38), branch romdev/mainii-freeforest-and-campaign-20261123, HEAD `2c70bf7468fc33eed198246281a8ffd0a7cc9252`, pinned source-build `bacd37102e858e3652097a3aa2608834ef26b609`, standard NTSC 16,384-byte F6 ROM SHA-256 `7e5add7d2580e7ebb3e871a79c13d7ba5680e71354946c941fe79b826e158134` (checked Git blob `87371e9cbbe584e21a85d855062e50e13721ef17`). The user revoked the earlier "Avbryt" with a newer explicit ROM DEVELOPMENT III full-scope authorization. Current art scope: KAMPANJ is primary, FRI SKOG is experimental audiovisual bonus; selected conifers may distort (Towering Inferno inspiration), original TIA harmonies/dissonances and locally restrained light effects. See [full MAIN III handoff](migrations/MAIN_II_TO_MAIN_III_HANDOFF_2026-11-23.md), [evidence ledger](migrations/MAIN_III_LIVE_EVIDENCE_LEDGER_2026-11-23.md) and [startprompt](migrations/MAIN_III_STARTPROMPT_2026-11-23.md).
+>
+> On PR38 HEAD: native 15-room Stella [SUCCESS](https://github.com/Odourman/mellanrum/actions/runs/45264527061), Gopher [SUCCESS](https://github.com/Odourman/mellanrum/actions/runs/45264527051), 15×36k idle [SUCCESS](https://github.com/Odourman/mellanrum/actions/runs/45264527111). Legacy model overlay [FAIL](https://github.com/Odourman/mellanrum/actions/runs/45264537305) and title/Presence visual [FAIL](https://github.com/Odourman/mellanrum/actions/runs/45264527127) require classification; final SHA video/audio, causal alternatives, CPU/stack worst-case, human and independent Verification/Pachinko and physical tests not all proven. Old PR38 videos (SHA `4921f723...`) cannot certify current ROM SHA `7e5add7d...`. Not ready for release; no merge authorized.
+>
+> **END MAIN III MIGRATION UPDATE. The pre-existing content below is an earlier historical snapshot.**
+
 # Mellanrum: aktuellt projektläge
 
 **Updated:** 2026-11-23 (MEL-056: user expressly authorizes NEW self-directed full 16KiB F6 game implementation after genuine video review; new Issue32 published; PR27 immutable; release blocked).
