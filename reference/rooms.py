@@ -27,7 +27,7 @@ DATA=[
 ]
 # Deliberately authored per-room vNext forest contour/exit resonance pattern.
 # Each act retains the signature woodcut silhouette but changes its live trees.
-GATE={'A':12,'B':20,'C':22,'D':8,'E':12}
+GATE={'A':12,'B':21,'C':22,'D':8,'E':12}
 PATCH={2:{'A':17,'B':12,'C':13,'D':17,'E':18},
        3:{'A':23,'B':27,'C':28,'D':23,'E':27}}
 ROOMS=[]
