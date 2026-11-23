@@ -17,7 +17,7 @@ def replay(r, path, after=0):
         if s.done:
             return s
     for _ in range(after):
-        s = step(r, ('wait', -1))
+        s = step(r, s, ('wait', -1))
         if s.done:break
     return s
 
