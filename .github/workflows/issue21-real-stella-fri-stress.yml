@@ -1,0 +1,54 @@
+name: ISSUE21 real Stella 60k-FRI adversarial native TIA and controls
+on:
+  push:
+    branches: [romdev/issue21-vnext-resonance-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fri-real-stella:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y dasm curl unzip
+      - name: Exact native DASM 4K
+        run: |
+          mkdir -p build/issue21/fri
+          dasm rom/src/main.asm -f3 -obuild/issue21/fri/native.bin -lbuild/issue21/fri/native.lst -sbuild/issue21/fri/native.sym
+          echo '18163c0435347695ee1cff5a4b6b19c80d280ec255eeb7f9b98711471ccde11c  build/issue21/fri/native.bin' | sha256sum -c -
+      - name: Actual Stella core and signature
+        run: |
+          curl -fsSL --retry 4 --retry-delay 2 -o build/issue21/fri/core.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue21/fri/core.zip -d build/issue21/fri
+          sha256sum build/issue21/fri/stella_libretro.so > build/issue21/fri/CORE_SHA256SUMS
+      - name: Long real Stella FRI SKOG randomized and adversarial controller execution
+        run: |
+          for profile in BOG CLOG TILT_FIRE; do
+            python3 tests/issue21/issue21_libretro_stella_capture.py --core build/issue21/fri/stella_libretro.so --rom build/issue21/fri/native.bin --left B --profile "$profile" --frames 2500 --seed 2600 --audio-frames 450 --snap-every 1200 --sample-every 200 --out "build/issue21/fri/$profile"
+          done
+          python3 tests/issue21/issue21_libretro_stella_capture.py --core build/issue21/fri/stella_libretro.so --rom build/issue21/fri/native.bin --left B --profile TILT_STONE --frames 50000 --seed 2600 --audio-frames 900 --snap-every 5000 --sample-every 200 --out build/issue21/fri/TILT_STONE
+      - name: Check all video/audio callbacks and actual 128-byte RIOT mode=4 after title
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path("build/issue21/fri")
+          data=[]
+          for name in ("BOG","CLOG","TILT_FIRE","TILT_STONE"):
+              p=root/name
+              r=json.loads((p/"result.json").read_text())
+              samples=[json.loads(x) for x in (p/"read_only_ram.jsonl").read_text().splitlines()]
+              values=[int(x["raw_ram_hex"][0x38*2:0x38*2+2],16) for x in samples if x["frame"]>=150]
+              assert values and all(x==4 for x in values), (name,values)
+              assert r["status"]=="PASS" and r["video_callbacks"]==r["emulated_frames"] and r["audio_samples"]>0,r
+              data.append({"profile":name,"frames":r["emulated_frames"],"status":"PASS","samples_after_start":len(values),"mode4_samples":len(values),"real_stella_core":r["core"]})
+          assert sum(x["frames"] for x in data)==57500
+          (root/"strict_stress_result.json").write_text(json.dumps({"classification":"REAL_STELLA_FRI_CONTROLLER_SOAK","status":"PASS","frames":57500,"profiles":data},indent=2)+"\n")
+          print("ISSUE21_REAL_STELLA_57500_FRI_FRAMES_PASS")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-real-Stella-FRI-57500-adversarial-frames-and-TIA-PCM
+          path: build/issue21/fri/
+          retention-days: 30

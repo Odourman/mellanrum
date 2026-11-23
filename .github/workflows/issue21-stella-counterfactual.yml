@@ -1,0 +1,39 @@
+name: ISSUE21 15 real Stella necessary-action counterfactuals (new SHA)
+on:
+  push:
+    branches: [romdev/issue21-vnext-resonance-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-stella-counterfactuals:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y dasm curl unzip
+      - name: Original new 4K candidate native DASM, native symbol map, reference witness input
+        run: |
+          mkdir -p build/issue21/counter
+          dasm rom/src/main.asm -f3 -obuild/issue21/counter/game.bin -lbuild/issue21/counter/native.lst -sbuild/issue21/counter/native.sym
+          echo '18163c0435347695ee1cff5a4b6b19c80d280ec255eeb7f9b98711471ccde11c  build/issue21/counter/game.bin' | sha256sum -c -
+          PYTHONPATH=reference python3 reference/issue21_audit.py
+      - name: Real Stella/libretro core with true TIA sound, frames and RAM
+        run: |
+          curl -fsSL --retry 4 --retry-delay 2 -o build/issue21/counter/stella.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue21/counter/stella.zip -d build/issue21/counter
+          sha256sum build/issue21/counter/stella_libretro.so > build/issue21/counter/CORE_SHA256SUMS
+      - name: Original full 15 room controller-only Stella playthrough (not precomputed source result)
+        run: |
+          python3 tests/issue21/issue21_stella_full_campaign.py --core build/issue21/counter/stella_libretro.so --rom build/issue21/counter/game.bin --sym build/issue21/counter/native.sym --rooms reference/rooms.json --paths build/issue21/model_gate_idle_results.json --out build/issue21/counter/first --frames 20000
+      - name: For every room replay genuine controller inputs but omit one correct resonant tree FIRE
+        run: |
+          python3 tests/issue21/issue21_stella_counterfactual.py --rom build/issue21/counter/game.bin --sym build/issue21/counter/native.sym --core build/issue21/counter/stella_libretro.so --first build/issue21/counter/first --rooms reference/rooms.json --out build/issue21/counter/fifteen_counterfactuals --after-win-frames 1200
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-real-Stella-15-room-critical-action-counterfactuals
+          path: |
+            build/issue21/counter/
+            build/issue21/model_gate_idle_results.json
+          retention-days: 30

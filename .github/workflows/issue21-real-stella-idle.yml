@@ -1,0 +1,36 @@
+name: ISSUE21 real Stella 600 sec per room passive-win negative control
+on:
+  push:
+    branches: [romdev/issue21-vnext-resonance-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stella-15-room-zero-input:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y dasm curl unzip
+      - name: Native DASM source and 15 authored witness paths
+        run: |
+          mkdir -p build/issue21/idle
+          dasm rom/src/main.asm -f3 -obuild/issue21/idle/native.bin -lbuild/issue21/idle/native.lst -sbuild/issue21/idle/native.sym
+          echo '18163c0435347695ee1cff5a4b6b19c80d280ec255eeb7f9b98711471ccde11c  build/issue21/idle/native.bin' | sha256sum -c -
+          PYTHONPATH=reference python3 reference/issue21_audit.py
+      - name: Native real Stella core
+        run: |
+          curl -fsSL --retry 4 --retry-delay 2 -o build/issue21/idle/core.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue21/idle/core.zip -d build/issue21/idle
+          sha256sum build/issue21/idle/stella_libretro.so > build/issue21/idle/CORE_SHA256SUMS
+      - name: 15 controller-reached rooms x36000 REAL Stella no input, then reset and solve
+        run: |
+          python3 tests/issue21/issue21_stella_idle_campaign.py --core build/issue21/idle/stella_libretro.so --rom build/issue21/idle/native.bin --sym build/issue21/idle/native.sym --rooms reference/rooms.json --paths build/issue21/model_gate_idle_results.json --out build/issue21/idle/campaign --frames 600000 --idle-frames 36000
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-real-Stella-15x600s-idle-and-full-game-or-failure
+          path: |
+            build/issue21/idle/
+            build/issue21/model_gate_idle_results.json
+          retention-days: 30
