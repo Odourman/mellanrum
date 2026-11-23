@@ -15,19 +15,19 @@ Detta paket hjälper chattar i ChatGPT-projektet "Atari 2600 avantgarde spel" at
 6. Använd överlämningar och research som lägre bevisnivå. Ingen chatthistorik eller Memory får ersätta rådata.
 
 ## Akut identitetsvarning
-Stoppad WIP: PR #33 HEAD \`48c0d5026d5a9ea22de1ff93028f3e18046e521b\`.
-- Ny byggartefakt från [Actions 45184894712](https://github.com/Odourman/mellanrum/actions/runs/45184894712): 16 384 B F6, SHA-256 \`962818fa6a8a26eb22a66c66bd3da519467b78f790b149748ea3f036a97d011a\`.
-- **Den incheckade** \`rom/bin/MELLANRUM_16K_NTSC_F6.bin\` i PR #33 är ännu **gamla** PR #27-binärramens SHA-256 \`7ce777dc273e1c30d8621843052e941ced41fcf2961bcdf835576a11c9592446\`.
+Stoppad WIP: PR #33 HEAD `48c0d5026d5a9ea22de1ff93028f3e18046e521b`.
+- Ny byggartefakt från [Actions 45184894712](https://github.com/Odourman/mellanrum/actions/runs/45184894712): 16 384 B F6, SHA-256 `962818fa6a8a26eb22a66c66bd3da519467b78f790b149748ea3f036a97d011a`.
+- **Den incheckade** `rom/bin/MELLANRUM_16K_NTSC_F6.bin` i PR #33 är ännu **gamla** PR #27-binärramens SHA-256 `7ce777dc273e1c30d8621843052e941ced41fcf2961bcdf835576a11c9592446`.
 - Blanda aldrig versionerna. Ett test-PASS gäller endast exakt testad ROM-SHA + källa + emulatorversion + faktisk metod.
 - Förra fullspels-MP4:n för Issue #32 är praktiskt taget svart och underkänd som videoevidens.
 - Ingen slutlig release, merge, oberoende Verification eller Pachinko kan hävdas.
 
 ## Paketfiler
-- \`01_AUTHORITY_AND_ROLES.md\`: beslut, behörighet, roller och stopp.
-- \`02_ARTISTIC_CANON_AND_HARDWARE.md\`: spelidentitet, skyddade designramar och teknikgränser.
-- \`03_CURRENT_SNAPSHOT_AND_OPEN_GATES.md\`: exakt versionsbunden status och osäkerheter.
-- \`04_EVIDENCE_AND_WORKFLOW.md\`: beviskrav, samordningsprocess och specialistöverlämningar.
-- \`05_LIVE_SOURCES_AND_RESEARCH.md\`: länkar, research, källtyper och underhåll.
-- \`06_PROJECT_INSTRUCTIONS_COPY.md\`: kort text att klistra i ChatGPT-projektets instruktioner.
+- `01_AUTHORITY_AND_ROLES.md`: beslut, behörighet, roller och stopp.
+- `02_ARTISTIC_CANON_AND_HARDWARE.md`: spelidentitet, skyddade designramar och teknikgränser.
+- `03_CURRENT_SNAPSHOT_AND_OPEN_GATES.md`: exakt versionsbunden status och osäkerheter.
+- `04_EVIDENCE_AND_WORKFLOW.md`: beviskrav, samordningsprocess och specialistöverlämningar.
+- `05_LIVE_SOURCES_AND_RESEARCH.md`: länkar, research, källtyper och underhåll.
+- `06_PROJECT_INSTRUCTIONS_COPY.md`: kort text att klistra i ChatGPT-projektets instruktioner.
 
 **Underhållsprincip:** denna daterade snapshot blir snabbt gammal. Kontrollera LIVE GitHub/Drive innan uppdrag, versioner, gatebedömningar eller användarbeslut. Ändra aldrig status genom att bara kopiera in nyare sammanfattningar utan primärkällor.
