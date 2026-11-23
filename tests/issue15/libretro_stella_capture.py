@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Frame-exact execution of an actual libretro Stella core, not a CPU model."""
 import argparse,ctypes as C,hashlib,json,os,pathlib,random,struct,time,wave,zlib
-COMMIT="0e860fe867f9184d6492c320b761151ff22b2cce"
-ROM_SHA="45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7"
+# Issue #21: exact new candidate is supplied by CI and logged with evidence.
+# Never silently relabel the immutable PR #16 hash as the new candidate.
+COMMIT=os.environ.get("GITHUB_SHA","SOURCE_SHA_NOT_PROVIDED")
+ROM_SHA=os.environ.get("MELLANRUM_ROM_SHA","HASH_NOT_PROVIDED")
 class Info(C.Structure):
  _fields_=[("library_name",C.c_char_p),("library_version",C.c_char_p),("valid_extensions",C.c_char_p),("need_fullpath",C.c_bool),("block_extract",C.c_bool)]
 class Geometry(C.Structure):
