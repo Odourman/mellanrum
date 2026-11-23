@@ -1,0 +1,58 @@
+name: Issue26 true 16KiB F6 native DASM, gameplay, audio
+on:
+  push:
+    branches: [romdev/issue26-f6-16k-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-f6:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install authentic DASM and native Stella core dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm curl unzip
+      - name: BUILD – four real native banks, vectors, hotspots, hashes, no 4K fallback
+        run: python3 rom/f6/build_f6.py
+      - name: STRICT source parity & 15 authored rooms
+        run: |
+          python3 -m unittest discover -s reference -p test_engine.py -v
+          python3 reference/check_rooms.py
+      - name: Download actual Stella emulator core and record its byte SHA
+        run: |
+          mkdir -p build/issue26
+          curl -fsSL --retry 4 --retry-delay 3 -o build/issue26/stella.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue26/stella.zip -d build/issue26
+          sha256sum build/issue26/stella_libretro.so > build/issue26/STELLA_CORE_SHA256SUMS
+      - name: REQUIRED authentic Stella controller-only 15 rooms / coda / title and real stereo TIA WAV
+        run: |
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue26/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/stella_full_campaign.py --core build/issue26/stella_libretro.so --rom build/issue26/MELLANRUM_16K_NTSC_F6.bin --sym build/issue26/bank3.sym --rooms reference/rooms.json --out build/issue26/CAMPAIGN --frames 26000 --audio-frames 26000 --screens
+      - name: Authentic stereo 2 channel FRI sound diagnostic, 1200 frames
+        run: |
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue26/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue26/stella_libretro.so --rom build/issue26/MELLANRUM_16K_NTSC_F6.bin --out build/issue26/FRI_AUDIO --frames 1200 --audio-frames 1200 --left B --profile TILT_STONE --snap-every 300
+      - name: Require byte-exact real gameplay evidence and nonzero audio
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,wave,hashlib
+          p=Path('build/issue26')
+          r=json.loads((p/'CAMPAIGN/result.json').read_text())
+          assert r['status']=='PASS' and r['win_rooms']==list(range(15)) and r['back_to_title_frame'] is not None,r
+          for n in ('CAMPAIGN','FRI_AUDIO'):
+              with wave.open(str(p/n/'tia_audio.wav'),'rb') as w:
+                  pcm=w.readframes(w.getnframes())
+                  assert len(pcm)>10000 and any(pcm),(n,len(pcm))
+          print("STRICT_ACTUAL_F6_STELLA_GAME_AND_PCM_PASS",json.dumps({'rom_sha256':r['rom_sha256'],'frames':r['emulated_frames'],'rooms':r['win_rooms']}))
+          PY
+      - name: Upload entire exact-ROM and evidence, whether successful or failed
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue26-native-F6-16K-Stella-15room-evidence
+          path: build/issue26/
+          retention-days: 30
