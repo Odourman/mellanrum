@@ -480,11 +480,10 @@ LoadRoom:
         lda #72
         sta beatFrames
         ldx room
-        lda RoomGeom,x
-        sta geom
+        stx geom          ; RoomGeom was the identity 0..14
         lda RoomAct,x
         sta act
-        lda RoomOwlX,x
+        lda #1            ; all fifteen approved starting columns are 1
         sta owlX
         sta cursorX
         lda RoomOwlY,x
@@ -492,11 +491,11 @@ LoadRoom:
         sta cursorY
         lda RoomOwlDir,x
         sta owlDir
-        lda RoomStoneX,x
+        lda #4            ; all fifteen stone columns are 4
         sta stoneX
         lda RoomStoneY,x
         sta stoneY
-        lda RoomExitX,x
+        lda #8            ; all fifteen exit columns are 8
         sta exitX
         lda RoomExitY,x
         sta exitY
@@ -1191,7 +1190,7 @@ ShadowGateDone:
         rts
 
 ; NTSC display: 16 top status lines, 8*20 gameplay rows, 16 bottom lines.
-; Crowns are 6 lines, stems 14; P0/P1 use safe lower-band raster slots.
+; Conifer crowns 10 lines, stems 10; P0/P1 use safe lower-band raster slots.
 RenderPlay:
         lda #1
         sta CTRLPF
@@ -1307,9 +1306,11 @@ OwlRowChosen:
         sta PF0
         iny
         lda pfbuf,y
+        and #$7D          ; narrower 2-pixel needle tier, x1 and x2
         sta PF1
         iny
         lda pfbuf,y
+        and #$3E          ; narrower 2-pixel needle tier, x3 and x4
         ldx shadowOn
         beq NoCrownShadow
         ldx workY
@@ -1363,8 +1364,29 @@ MarkerGateDone:
         lda workY
         sta candidateD    ; current mask frame index for the forthcoming stem
         inc workY         ; next crown row index; no extra work in hot PF2 scanline
-        ; sixth crown line: BL unused; P0 real U3 owl retained.
-        sta WSYNC
+        ; Crown ten lines / stem ten lines per 20-line cell.
+        ; 1-2 = slender tip, 3-6 = two-pixel boughs, 7-10 = full spread.
+        ; TIA only: collision geometry and U3/S3 originals are untouched.
+        sta WSYNC           ; crown 6
+        sta WSYNC           ; crown 7; expand the low branches
+        ldy pfIndex
+        lda pfbuf,y
+        sta PF0
+        iny
+        lda pfbuf,y
+        sta PF1
+        iny
+        lda pfbuf,y
+        ldx shadowOn
+        beq NoWideCrownShadow
+        ldx workY
+        ora ShadowCrownOr,x
+        and ShadowCrownAnd,x
+NoWideCrownShadow:
+        sta PF2
+        sta WSYNC           ; crown 8
+        sta WSYNC           ; crown 9
+        sta WSYNC           ; crown 10
         ; stem first line: register change + BL/M0 gating
         sta WSYNC
         ldy pfIndex
@@ -1390,7 +1412,7 @@ NoStemShadow:
         sta ENABL
         lda candidateY
         sta ENAM0
-        ldx #13
+        ldx #9
 Stem13:
         sta WSYNC
         ldy SpriteRowIndex,x
