@@ -665,11 +665,25 @@ FireActionPresent:
 FireTree:
         lda pendingKey
         sta workKey
-        ; No editing a tree with an outstanding echo.
+        ; Issue26: RECALL THE FUTURE. Touching an echo-queued tree
+        ; again CANCELS its coming reversal, without another tree toggle.
+        ; The cancelled memory flips stone polarity: a second strategic path.
         cmp slot0Key
-        beq InvalidFire
+        bne TryRecallSlot1
+        lda #$FF
+        sta slot0Key
+        jmp RecallEcho
+TryRecallSlot1:
         cmp slot1Key
-        beq InvalidFire
+        bne NewTreeGesture
+        lda #$FF
+        sta slot1Key
+RecallEcho:
+        lda polarity
+        eor #1
+        sta polarity
+        jmp FireAccepted
+NewTreeGesture:
         lda act
         cmp #1
         beq TreeCapacityOkay
