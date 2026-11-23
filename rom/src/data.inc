@@ -33,14 +33,6 @@ PaletteOwl:
         dc.b $0E,$0E,$0C,$06,$0E  ; COLUP0 shared with M0 marker
 PaletteGlyph:
         dc.b $3A,$3A,$38,$36,$3A  ; S3 symbols, valid NTSC TIA orange/amber
-SoundControl0:
-        dc.b $0C,$0C,$06,$0A
-SoundControl1:
-        dc.b $06,$06,$0C,$04
-SoundPitch0:
-        dc.b $1C,$1D,$0F,$0D
-SoundPitch1:
-        dc.b $1E,$1D,$1A,$1C
 RoomAct:
         dc.b $01,$01,$01,$01,$01,$02,$02,$02,$02,$02,$03,$03,$03,$03,$03
 RoomPolarity:
@@ -61,6 +53,8 @@ RoomExitY:
         dc.b $02,$03,$04,$02,$03,$03,$05,$02,$04,$05,$02,$03,$02,$03,$05
 RoomGeom:
         dc.b $00,$01,$02,$03,$04,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E
+RoomGate:
+        dc.b $02,$03,$01,$03,$01,$04,$07,$04,$03,$07,$05,$04,$07,$02,$05
 RoomWarning:
         dc.b $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$04,$02,$01,$00,$02
 RoomActive:
@@ -178,13 +172,13 @@ OwlFrameHi:
         dc.b >OwlB0,>OwlB1,>OwlB2
 ; P0 feedback HUD: authentic black-and-white distinct bitmaps.
 CursorIdle:
-        dc.b $00,$3C,$42,$81,$81,$42,$3C,$00,$00 ; open circle
+        dc.b $00,$3C,$42,$81,$81,$42,$3C,$00 ; open circle
 CursorAck:
-        dc.b $00,$04,$0C,$1C,$38,$70,$E0,$40,$00 ; check mark
+        dc.b $00,$04,$0C,$1C,$38,$70,$E0,$40 ; check mark
 CursorDenied:
-        dc.b $00,$81,$42,$24,$18,$24,$42,$81,$00 ; blocked X
+        dc.b $00,$81,$42,$24,$18,$24,$42,$81 ; blocked X
 CursorIntercept:
-        dc.b $00,$99,$24,$42,$81,$18,$42,$99,$00 ; broken contradictory mark
+        dc.b $00,$99,$24,$42,$81,$18,$42,$99 ; broken contradictory mark
 CursorSpriteLo:
         dc.b <CursorIdle,<CursorAck,<CursorDenied,<CursorIntercept
 CursorSpriteHi:
@@ -226,5 +220,4 @@ GlyphA:
         dc.b $24,$5A,$24,$18,$24,$42,$24,$18,$00
 GlyphB:
         dc.b $42,$66,$3C,$5A,$24,$3C,$66,$42,$00
-MarkerWidth:
-        dc.b $00,$10,$20,$30 ; M0 widths: normal=1, ack=2, denied=4, intercept=8 pixels
+
