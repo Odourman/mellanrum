@@ -11,7 +11,7 @@ Klass: sammanställning ur [DECISIONS](https://github.com/Odourman/mellanrum/blo
 - Spelet ska vara begripligt nog att lära sig genom synlig respons; inte vara antingen automatiskt vunnet eller svårt enbart genom långa väntetider, slumpmässiga knapptryckningar och godtyckliga räknare.
 
 ## Specifika skyddade grafikpunkter
-- U3-uggla: horisontellt spegelvänd godkänd gestalt, lodrät näbb, samma ögon och tre vingmasker. Bitmaprader rapporterade i Issue #32: B0 \`18 7E DB F7 F7 7E 7E 24\`, B1 \`18 7E DB F7 F7 FF BD 24\`, B2 \`18 7E DB F7 F7 FF FF 24\`. Matcha mot godkända grafikoriginal innan slutlig canonförklaring.
+- U3-uggla: horisontellt spegelvänd godkänd gestalt, lodrät näbb, samma ögon och tre vingmasker. Bitmaprader rapporterade i Issue #32: B0 `18 7E DB F7 F7 7E 7E 24`, B1 `18 7E DB F7 F7 FF BD 24`, B2 `18 7E DB F7 F7 FF FF 24`. Matcha mot godkända grafikoriginal innan slutlig canonförklaring.
 - S3: två skilda mystiska symboler med läsbar kontrast; sten och utgång måste hållas isär även vid överlappande P0/P1.
 - Fyra markörresponser: **neutral, godkänd, nekad** (tre tydligt olika former), plus särskild **Närvaron-kapning**. Att bara ändra M0-bredd är inte uppfyllt krav. Testa vid faktisk native 1× spelupplösning, samma rum och position.
 - Barrträd ska kunna kännas igen med krona/stam men gärna vara obehagligt abstrakta. Akt I mörk grön/blå, akt II jordnära och förändrad, akt III mörk kall grön/grå/blåsvart med tillfälliga bleka intrång. Kontrast och läsbarhet måste provas.
