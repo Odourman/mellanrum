@@ -1228,9 +1228,13 @@ Top16:
         lda moveTemp
         sta workY          ; render-only PF2 frame index, 0/8/16
 NextRow:
-        ; crown first line: register updates, no sprites
+        ; Fir tips: narrow top for two scanlines, expand branches on line 3.
+        ; Only TIA PF drawing changes: collision bits remain untouched.
         sta WSYNC
         ldy pfIndex
+        iny
+        iny
+        iny
         lda pfbuf,y
         sta PF0
         iny
@@ -1238,12 +1242,6 @@ NextRow:
         sta PF1
         iny
         lda pfbuf,y
-        ldx shadowOn
-        beq NoCrownShadow
-        ldx workY
-        ora ShadowCrownOr,x
-        and ShadowCrownAnd,x
-NoCrownShadow:
         sta PF2
         lda #0
         sta GRP0
@@ -1293,8 +1291,23 @@ NoOwlOnRow:
         lda #>BlankSprite
         sta sprite0Ptr+1
 OwlRowChosen:
-        ; crown third line: select first glyph from source stoneY.
+        ; On crown line 3 restore the broader needle branches.
         sta WSYNC
+        ldy pfIndex
+        lda pfbuf,y
+        sta PF0
+        iny
+        lda pfbuf,y
+        sta PF1
+        iny
+        lda pfbuf,y
+        ldx shadowOn
+        beq NoCrownShadow
+        ldx workY
+        ora ShadowCrownOr,x
+        and ShadowCrownAnd,x
+NoCrownShadow:
+        sta PF2
         lda rowIndex
         cmp stoneY
         bne NoSymbolAOnRow
@@ -1514,11 +1527,7 @@ TitleGap:
         sta WSYNC
         dex
         bne TitleGap
-        ; Preserve the original 24-scanline layout without menu icons.
-        lda #0
-        sta PF0
-        sta PF1
-        sta PF2
+        ; PF0/PF1/PF2 are already cleared at TitleGlyphDone.
         ldx #25       ; preserve 262 NTSC lines after removing long icon kernel
 TitleBlankSelectionBand:
         sta WSYNC
