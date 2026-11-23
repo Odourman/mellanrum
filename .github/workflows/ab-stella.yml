@@ -1,0 +1,45 @@
+name: MELLANRUM hardware LEFT Difficulty A B real Stella
+on:
+  push:
+    branches: [main, 'romdev/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stella-left-ab:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install DASM, Stella, Xvfb and Pillow
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm stella xvfb xdotool python3-pil
+      - name: Native DASM builds the A/B production ROM
+        run: |
+          mkdir -p build
+          dasm rom/src/main.asm -f3 -obuild/mellanrum_ntsc.bin -lbuild/mellanrum_ntsc.lst -sbuild/mellanrum_ntsc.sym
+          test "$(wc -c < build/mellanrum_ntsc.bin)" -eq 4096
+          python3 scripts/check_rom.py build/mellanrum_ntsc.bin
+          cp build/mellanrum_ntsc.bin build/native_dasm.bin
+          python3 scripts/assemble_check.py rom/src/main.asm -o build/mellanrum_ntsc.bin
+          cmp build/native_dasm.bin build/mellanrum_ntsc.bin
+          python3 scripts/check_hardware_ab.py
+      - name: Actual Stella F5 F6 LEFT and F7 F8 RIGHT with FIRE RESET SELECT and screenshots
+        shell: bash
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash scripts/capture_ab_stella.sh
+      - name: Upload original Stella PNGs, ROM, symbol/listing and event trace
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mell-ab-stella-genuine-console-evidence
+          path: |
+            build/ab/
+            build/mellanrum_ntsc.bin
+            build/mellanrum_ntsc.lst
+            build/mellanrum_ntsc.sym
+          retention-days: 30
+          if-no-files-found: warn
