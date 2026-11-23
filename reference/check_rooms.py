@@ -38,6 +38,6 @@ for room, data in zip(ROOMS, DOCUMENT):
     out.append(row)
     print(room.id,row,flush=True)
     assert won and not idle and not removed_action_wins,room.id
-p=Path(__file__).parent/'issue21_source_only_model_results.json'
+p=Path(__file__).parent/'issue32_source_only_model_results.json'
 p.write_text(json.dumps(out,indent=2)+'\n')
-print('SOURCE_ONLY_PASS: 15/15 source-model wins; 0/15 passive and 0/15 counterfactual wins; real emulator NOT_RUN')
+print('ISSUE32_SOURCE_ONLY_PASS: 15/15 source-model wins; 0/15 passive and 0/15 counterfactual wins; real emulator NOT_RUN')
