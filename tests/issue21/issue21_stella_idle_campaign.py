@@ -72,9 +72,11 @@ def run(a):
       if idle_age<a.idle_frames:
        buttons=set();idle_age+=1
       else:
-       idle_rooms[i]={"frames":idle_age,"room":i,"mode":s["mode"],"beat":s["beat"],"classification":"REAL_STELLA_EMPTY_INPUT"}
-       buttons={"Select"}
+       idle_rooms[i]={"frames":idle_age,"room":i,"mode":s["mode"],"beat":s["beat"],"classification":"REAL_STELLA_EMPTY_INPUT","select_start_frame":f,"select_until_frame":f+4}
+       buttons={"Select"}  # hold real console SELECT long enough for core sampling
        idle_current=None
+     elif a.idle_frames and i in idle_rooms and f<idle_rooms[i]["select_until_frame"]:
+      buttons={"Select"}  # continue select, avoids 1-frame debounce ambiguity
      else:
       ng=next_target(sol[i],s)
       if ng:
@@ -114,7 +116,7 @@ def run(a):
    if previous_state and previous_state["mode"]!=2 and after["mode"]==2:win.append({"room_index":after["room"],"frame":f,"state":after})
    if after["mode"]==0 and len(win)==15:
     first_title_end=f;stop_reason="COMPLETE_CODA_AND_TITLE";break
-   if after["mode"]==1 and after["room"]<15 and after["room"] in idle_rooms and after["beat"]>len(sol[after["room"]])+24:
+   if after["mode"]==1 and after["room"]<15 and after["room"] in idle_rooms and f>idle_rooms[after["room"]]["select_until_frame"]+200 and after["beat"]>len(sol[after["room"]])+24:
     stop_reason="BLOCKED_ROOM_"+str(after["room"]);break
    previous_state=after
   events.append({"start":start,"end":f+1,"buttons":sorted(last_buttons or [])})
