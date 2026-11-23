@@ -1,0 +1,57 @@
+name: ISSUE15 Stella libretro real TIA PCM WAV capture and visual frames
+on:
+  push:
+    branches: [romdev/issue15-complete-u3-s3-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-stella-libretro-audio:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download authentic Stella libretro core, record exact immutable binary SHA
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl unzip dasm
+          mkdir -p build/issue15_libretro
+          curl -fsSL --retry 4 --retry-delay 2 -o build/issue15_libretro/stella_libretro.so.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue15_libretro/stella_libretro.so.zip -d build/issue15_libretro
+          test -s build/issue15_libretro/stella_libretro.so
+          sha256sum build/issue15_libretro/stella_libretro.so > build/issue15_libretro/CORE_SHA256SUMS
+      - name: Require exact native DASM candidate and source identity
+        run: |
+          dasm rom/src/main.asm -f3 -obuild/issue15_libretro/native.bin
+          cmp build/issue15_libretro/native.bin rom/bin/mellanrum_ntsc.bin
+          echo '45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7  build/issue15_libretro/native.bin' | sha256sum -c -
+      - name: Real Stella/libretro frame-exact Campaign + FRI controller sessions with raw TIA stereo WAV
+        run: |
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue15_libretro/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/issue15_libretro/CAMPAIGN --frames 900 --audio-frames 900 --left A --profile RAIN --snap-every 300
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue15_libretro/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/issue15_libretro/FRI_SKOG --frames 900 --audio-frames 900 --left B --profile TILT_STONE --snap-every 300
+      - name: Validate genuine nonzero PCM audio and image callbacks; note independent listening NOT_RUN
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,wave,struct,math,hashlib
+          p=pathlib.Path("build/issue15_libretro")
+          for mode in ("CAMPAIGN","FRI_SKOG"):
+              d=p/mode
+              result=json.loads((d/"result.json").read_text())
+              wav=d/"tia_audio.wav"
+              with wave.open(str(wav),"rb") as w:
+                  n=w.getnframes()
+                  raw=w.readframes(n)
+                  metrics={"mode":mode,"samples":n,"channels":w.getnchannels(),"rate":w.getframerate(),"seconds":n/w.getframerate(),"wav_sha256":hashlib.sha256(wav.read_bytes()).hexdigest(),"raw_nonzero":any(x!=0 for x in raw),"human_listening":"NOT_RUN","source":"REAL_STELLA_TIA_MIXER_LIBRETRO_CALLBACK"}
+              (d/"audio_metrics.json").write_text(json.dumps(metrics,indent=2)+"\n")
+              print(metrics)
+              assert result["status"]=="PASS" and n>10000 and metrics["raw_nonzero"],(result,metrics)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue15-real-STELLA-TIA-stereo-WAV-CAMPAIGN-FRI
+          path: |
+            build/issue15_libretro/CAMPAIGN/
+            build/issue15_libretro/FRI_SKOG/
+            build/issue15_libretro/CORE_SHA256SUMS
+          retention-days: 30
