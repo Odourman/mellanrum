@@ -1037,19 +1037,19 @@ PlaceObjects:
         asl
         asl
         clc
-        adc #7           ; logical stoneX 4 => x=71
+        adc #2           ; P1 S3 pixel footprint centered inside 16px cell
         ldx #1           ; P1 first symbol; second copy automatically x+64
         jsr PositionOne
-        ; M0 at cell+2 and BL at cell+12 visually bracket one 16px cell.
-        ; The S3 stone is P1 at cell+7..14, BETWEEN these two rails.
+        ; M0 at cell+0 and BL at cell+12 frame the full 16px cell.
+        ; P1 S3 content is centered INSIDE the two rails, no pixel overshoot.
         lda cursorX
         asl
         asl
         asl
         asl
         clc
-        adc #2
-        ldx #2           ; missile 0 left rail (2 physical pixels)
+        adc #0
+        ldx #2           ; M0 left rail, four physical pixels
         jsr PositionOne
         lda pending
         bne BallFrozen
@@ -1069,7 +1069,7 @@ BallXChosen:
         adc #12
         ldx #4           ; RESBL/HMBL: right rail or locked FIRE location
         jsr PositionOne
-        lda #$10        ; NUSIZ0 missile width=2, owl P0 size unchanged
+        lda #$20        ; NUSIZ0 missile width=4, owl P0 size unchanged
         sta NUSIZ0
         ; Select one of four *in-scene* 8-line two-column TIA glyphs.
         ldx #0
