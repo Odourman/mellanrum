@@ -15,9 +15,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y dasm
-      - name: Check all generated source data matches original
+      - name: Check reproducible Issue15 overlay against pinned source art and reference
         run: |
-          python3 scripts/generate_rom_data.py --original reference/rooms.json --graphics graphics --output rom/src/data.inc --check
+          python3 build_issue15.py
+          git diff --exit-code -- rom/src/main.asm rom/src/data.inc
           (cd reference && python3 -m unittest -q test_engine.py)
       - name: Build original Atari 2600 4K ROM with real DASM
         run: |
