@@ -49,6 +49,12 @@ jobs:
                   assert len(pcm)>10000 and any(pcm),(n,len(pcm))
           print("STRICT_ACTUAL_F6_STELLA_GAME_AND_PCM_PASS",json.dumps({'rom_sha256':r['rom_sha256'],'frames':r['emulated_frames'],'rooms':r['win_rooms']}))
           PY
+      - name: Archive exact source, authored rooms, emulators and test harnesses
+        if: always()
+        run: |
+          mkdir -p build/issue26
+          tar -czf build/issue26/ISSUE26_SOURCE_SNAPSHOT.tar.gz rom/src rom/f6 reference tests scripts docs .github/workflows
+          (cd build/issue26 && sha256sum ISSUE26_SOURCE_SNAPSHOT.tar.gz >> SHA256SUMS)
       - name: Upload entire exact-ROM and evidence, whether successful or failed
         if: always()
         uses: actions/upload-artifact@v4
