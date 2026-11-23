@@ -18,7 +18,7 @@ jobs:
         run: |
           set -euo pipefail
           git diff --name-only 56d70c316031bf55a5260e1fbbe0fe187c55f297 HEAD | tee /tmp/diff
-          if grep -Ev '^(pachinko_pr16/|.github/workflows/pachinko_pr16-)' /tmp/diff; then exit 8; fi
+          if grep -Ev '^(pachinko_pr16/|.github/workflows/pachinko-pr16-)' /tmp/diff; then exit 8; fi
           echo "45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7  rom/bin/mellanrum_ntsc.bin" | sha256sum -c -
       - name: Native DASM exact binary and 128B state map
         run: |
