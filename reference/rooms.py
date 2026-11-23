@@ -25,7 +25,18 @@ DATA=[
 ('III-04',3,'D',(1,3,0),(4,2),(8,3),1,'Stenen förnekar trädet','Stenen styr fasperioden, men inte ugglans vilja.'),
 ('III-05',3,'E',(1,3,0),(4,2),(8,3),0,'Det sista trädet','Alla tidigare regler sammanfaller.'),
 ]
+# Deliberately authored per-room vNext forest contour/exit resonance pattern.
+# Each act retains the signature woodcut silhouette but changes its live trees.
+GATE={'A':12,'B':20,'C':22,'D':8,'E':12}
+PATCH={2:{'A':17,'B':12,'C':13,'D':17,'E':18},
+       3:{'A':23,'B':27,'C':28,'D':23,'E':27}}
 ROOMS=[]
 for ident,act,pattern,owl,stone,exit,pol,title,description in DATA:
-    ROOMS.append(Room(ident,act,title,PATTERNS[pattern],owl,stone,exit,pol,description,description))
+    half=list(PATTERNS[pattern])
+    patch=PATCH.get(act,{}).get(pattern)
+    if patch is not None:
+        x,y=patch%5,patch//5
+        assert half[y][x]=='T', (ident,patch)
+        half[y]=half[y][:x]+'t'+half[y][x+1:]
+    ROOMS.append(Room(ident,act,title,tuple(half),owl,stone,exit,pol,description,description,gate_key=GATE[pattern]))
     ROOMS[-1].validate()
