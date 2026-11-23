@@ -1027,6 +1027,37 @@ SetColorsSound:
         sta COLUP0
         lda PaletteGlyph,x
         sta COLUP1
+        ; M0 marker shares P0's color on real TIA. Make its four states
+        ; readable in COLOR plus width while preserving the approved owl bitmap.
+        lda ackFrames
+        beq NoRecentMarkerEvent
+        ldx ackType
+        lda MarkerEventColor,x
+        sta COLUP0
+        jmp Sound
+NoRecentMarkerEvent:
+        ; The resonant tree responds to the cursor BEFORE FIRE. This is a
+        ; visual hint, not an extra win condition, RNG or invisible key press.
+        ldx room
+        lda RoomGateKey,x
+        sta workKey
+        jsr DecodeKey
+        lda cursorY
+        cmp workY
+        bne Sound
+        lda cursorX
+        cmp workX
+        beq MarkerOverResonance
+        cmp #5
+        bcc Sound
+        eor #$FF
+        clc
+        adc #10
+        cmp workX
+        bne Sound
+MarkerOverResonance:
+        lda #$1E              ; warm amber hint only on the correct mirrored tree
+        sta COLUP0
         jmp Sound
 TitleColors:
         lda #$A0
