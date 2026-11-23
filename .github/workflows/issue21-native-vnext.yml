@@ -1,0 +1,36 @@
+name: ISSUE21 vNext native DASM and model diagnostics
+on:
+  push:
+    branches: [romdev/issue21-vnext-16k-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-dasm:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native 6502 assembler
+        run: sudo apt-get update && sudo apt-get install -y dasm
+      - name: Build cartridge and exact native 6507 listing
+        run: |
+          mkdir -p build/issue21
+          dasm rom/src/main.asm -f3 -obuild/issue21/mellanrum_vnext_ntsc.bin -lbuild/issue21/mellanrum_vnext.lst -sbuild/issue21/mellanrum_vnext.sym
+          SIZE=$(wc -c < build/issue21/mellanrum_vnext_ntsc.bin)
+          echo "ROM_BYTES=$SIZE"
+          test "$SIZE" -le 16384
+          python3 scripts/check_rom.py build/issue21/mellanrum_vnext_ntsc.bin
+          sha256sum build/issue21/mellanrum_vnext_ntsc.bin | tee build/issue21/SHA256SUMS
+      - name: Run baseline compatibility model (not new vNext playability approval)
+        continue-on-error: true
+        run: |
+          python3 -m unittest discover -s reference -p test_engine.py -v
+          python3 reference/check_rooms.py
+      - name: Upload byte-exact product binary and native DASM evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue21-native-dasm-vnext-build
+          path: build/issue21/
+          retention-days: 30
