@@ -30,7 +30,7 @@ jobs:
       - name: Package exact source snapshot for offline model work
         run: |
           mkdir -p build/issue21
-          tar -czf build/issue21/vnext_source_snapshot.tar.gz reference rom scripts art_sources build_issue15.py
+          tar -czf build/issue21/vnext_source_snapshot.tar.gz reference rom scripts art_sources tests pachinko2 build_issue15.py
       - name: Upload byte-exact product binary and native DASM evidence
         if: always()
         uses: actions/upload-artifact@v4
