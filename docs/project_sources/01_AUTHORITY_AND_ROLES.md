@@ -4,7 +4,7 @@ Klass: Project Source / arbetshjälp. Verifiera alltid mot LIVE [AGENTS.md](http
 ## Bindande källhierarki
 1. Senaste **uttryckliga användarbeslut** för aktuellt scope, registrerade med datum/besluts-ID. Nya beslut om paus/återupptagande får inte ignoreras.
 2. Faktiskt **godkända MELLANRUM-original** i Drive och versions-/hashbundna överlämningar för speldesigncanon.
-3. \`CURRENT_PROJECT_STATE.md\` och \`SOURCE_REGISTRY.md\` som projektindex, inte fri rätt att ändra canon; kontrolleras mot livefakta.
+3. `CURRENT_PROJECT_STATE.md` och `SOURCE_REGISTRY.md` som projektindex, inte fri rätt att ändra canon; kontrolleras mot livefakta.
 4. GitHub commit/PR/ROM/bygg- och testbevis för **vad som implementerats och mätts**. Implementationsfakta kan inte ensamt besluta konstnärligt godkännande.
 5. Handoffs/specialistrapporter med datum och exakt commit.
 6. Extern forskning och andra spelprojekts erfarenheter = rådgivande.
@@ -40,9 +40,9 @@ En nyare källa med lägre rang upphäver inte automatiskt äldre godkänt origi
 ## Uppdragsdisciplin
 1. Identifiera *spel* och *roll* först. I ChatGPT-projektet finns flera Atari-projekt som inte får korsförorena varandras canon.
 2. Sätt exact source HEAD, ROM SHA, issue, leveranskriterier, tillåtna filtyper och förbud i varje specialistorder.
-3. Dokumentera beslutens datum, ändrad regel och supersession i \`DECISIONS.md\` när en faktisk ny användarorder föreligger.
+3. Dokumentera beslutens datum, ändrad regel och supersession i `DECISIONS.md` när en faktisk ny användarorder föreligger.
 4. Publicering av GitHub Issue/PR startar **inte** annan chatt automatiskt. Användaren måste själv initiera mottagaren eller använda ett aktivt verktyg med rätt auktorisation.
 5. Aldrig merge, tag, release eller vidare implementation enbart för att underlag, migrationsprompt, project source eller CI blir klart.
 
 ## Källkonflikt som ska hanteras
-\`AGENTS.md\` innehåller en historisk formulering om att gameplay-ROM ännu inte var auktoriserad. Den avser projektets tidiga gate och kan **inte** radera senare uttryckliga MEL-054/055/056-beslut. Men MEL-056 ger heller inte rätt att ignorera det **ännu senare** "Avbryt". Läs alltid beslut som en tids- och scopekedja, inte lösryckta meningar.
+`AGENTS.md` innehåller en historisk formulering om att gameplay-ROM ännu inte var auktoriserad. Den avser projektets tidiga gate och kan **inte** radera senare uttryckliga MEL-054/055/056-beslut. Men MEL-056 ger heller inte rätt att ignorera det **ännu senare** "Avbryt". Läs alltid beslut som en tids- och scopekedja, inte lösryckta meningar.
