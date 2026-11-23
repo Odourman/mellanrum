@@ -16,7 +16,7 @@ jobs:
         run: |
           mkdir -p build/issue21/counter
           dasm rom/src/main.asm -f3 -obuild/issue21/counter/game.bin -lbuild/issue21/counter/native.lst -sbuild/issue21/counter/native.sym
-          echo '6993474e6dfc6bc75a6e94a6fd700035955fe8880e18c8466d5af507504f6086  build/issue21/counter/game.bin' | sha256sum -c -
+          echo '18163c0435347695ee1cff5a4b6b19c80d280ec255eeb7f9b98711471ccde11c  build/issue21/counter/game.bin' | sha256sum -c -
           PYTHONPATH=reference python3 reference/issue21_audit.py
       - name: Real Stella/libretro core with true TIA sound, frames and RAM
         run: |

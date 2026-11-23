@@ -2,7 +2,7 @@
 """Frame-exact execution of an actual libretro Stella core, not a CPU model."""
 import argparse,ctypes as C,hashlib,json,os,pathlib,random,struct,time,wave,zlib
 COMMIT="ISSUE21_NEW_SHA_DEVELOPER"
-ROM_SHA="6993474e6dfc6bc75a6e94a6fd700035955fe8880e18c8466d5af507504f6086"
+ROM_SHA="18163c0435347695ee1cff5a4b6b19c80d280ec255eeb7f9b98711471ccde11c"
 class Info(C.Structure):
  _fields_=[("library_name",C.c_char_p),("library_version",C.c_char_p),("valid_extensions",C.c_char_p),("need_fullpath",C.c_bool),("block_extract",C.c_bool)]
 class Geometry(C.Structure):

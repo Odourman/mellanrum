@@ -5,7 +5,7 @@ Solutions from V5.1 are SCHEDULING HINTS, NOT assumed real emulator wins.
 """
 import argparse,hashlib,json,subprocess,time,sys,re
 from pathlib import Path
-SHA='6993474e6dfc6bc75a6e94a6fd700035955fe8880e18c8466d5af507504f6086'
+SHA='18163c0435347695ee1cff5a4b6b19c80d280ec255eeb7f9b98711471ccde11c'
 p=argparse.ArgumentParser();p.add_argument('--emulator',required=True);p.add_argument('--rom',required=True);p.add_argument('--rooms',default='reference/rooms.json');p.add_argument('--paths',required=True);p.add_argument('--out',default='build/pachinko/campaign');p.add_argument('--attempt',type=int,default=1);p.add_argument('--generate-only',action='store_true');args=p.parse_args()
 rom=Path(args.rom).resolve();em=Path(args.emulator).resolve();rooms=json.loads(Path(args.rooms).read_text());out=Path(args.out).resolve();out.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256(rom.read_bytes()).hexdigest()==SHA and len(rom.read_bytes())==4096
