@@ -1159,6 +1159,15 @@ SetShadowVisibility:
         sta moveTemp
         rts
 ShadowOnlyGame:
+        cmp #4
+        bne ShadowCampaign
+        ; Free-forest FIRE evokes negative space for 18 frames, no map edit.
+        lda ackFrames
+        beq ShadowGateDone
+        lda #2
+        sta shadowOn
+        rts
+ShadowCampaign:
         cmp #1
         bne ShadowGateDone
         lda presence
@@ -1522,18 +1531,11 @@ TitleGlyphDone:
         sta PF0
         sta PF1
         sta PF2
-        ldx #23
+        ; Three prior identical loops = exactly 103 blank scanlines.
+        ; Fold them into one to pay for the new FRI visual response.
+        ldx #103
 TitleGap:
-        sta WSYNC
-        dex
-        bne TitleGap
-        ; PF0/PF1/PF2 are already cleared at TitleGlyphDone.
-        ldx #25       ; preserve 262 NTSC lines after removing long icon kernel
 TitleBlankSelectionBand:
-        sta WSYNC
-        dex
-        bne TitleBlankSelectionBand
-        ldx #55
 TitleBottom:
         sta WSYNC
         dex
