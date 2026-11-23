@@ -804,13 +804,17 @@ TryOwlDirection:
         clc
         adc DeltaX,x
         cmp #10
-        bcs OwlTryNext
+        bcc CandidateXInRange
+        jmp OwlTryNext
+CandidateXInRange:
         sta candidateX
         lda owlY
         clc
         adc DeltaY,x
         cmp #8
-        bcs OwlTryNext
+        bcc CandidateYInRange
+        jmp OwlTryNext
+CandidateYInRange:
         sta candidateY
         jsr PassableCandidate
         bcc OwlTryNext
@@ -1036,9 +1040,13 @@ TitleColors:
 Sound:
         lda mode
         cmp #3
-        beq Silence
+        bne SoundNotCoda
+        jmp Silence
+SoundNotCoda:
         cmp #2
-        beq Silence
+        bne SoundNotWon
+        jmp Silence
+SoundNotWon:
         lda mode
         beq TitleDrone
         lda act
