@@ -1572,20 +1572,19 @@ HUDChoose:
         sta sprite0Ptr
         lda #>CursorIdle
         sta sprite0Ptr+1
-        ldy #7
-        ; Map the old selected column to the lower HUD whenever a FIRE
-        ; decision is outstanding. The full active reticle remains above.
-        ; The HUD retains the last FIRE column even after feedback fades;
-        ; an old selection remains a separated memory, never a reticle rail.
-        lda fireX
-        asl
-        asl
-        asl
-        asl
-        clc
-        adc #8
-        ldx #0
-        jsr PositionOne    ; starts its own WSYNC; no long post-WSYNC path
+        ; HUD has no HMOVE after RESP0, so only coarse timing is needed.
+        ; floor((16*fireX+8)/15) = fireX + (fireX>=7).
+        ; Carry marks the rightmost column; its RESP0 is one CPU cycle
+        ; earlier to keep the following WSYNC before the line boundary.
+        ldx fireX
+        cpx #7
+        bcc HUDCoarseReady
+        inx
+HUDCoarseReady:
+        cpx #10
+        sta WSYNC
+        jsr HUDCoarseDelay
+        sta RESP0
 HUDIcon8:
         sta WSYNC
         ; 8-line HUD encodes the old fireY as a solid horizontal stroke
@@ -1735,6 +1734,17 @@ SelectReload:
 SelectReloadRoom:
         jmp LoadRoom
 SelectReloadEnd:
+
+; Same RESP0 write cycle for columns 0..8; column 9 is 3 pixels earlier.
+; C is preserved by DEX/BPL/LDY/JSR. Branch-to-next gives 3/2 cycles.
+HUDCoarseDelay:
+        dex
+        bpl HUDCoarseDelay
+        ldy #7
+        bcc HUDCoarseEnd
+HUDCoarseEnd:
+        rts
+HUDCoarseDelayEnd:
 
         ; Every bank has the 6507 trampoline at the exact SAME address.
         ; $FFF6+X selects F6 bank 0..2, then execution falls into the selected
