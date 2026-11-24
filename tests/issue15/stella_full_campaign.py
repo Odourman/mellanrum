@@ -2,7 +2,7 @@
 """REAL Stella/libretro controller-only campaign. RAM is sampled READ-ONLY."""
 import argparse,hashlib,json,pathlib,re,time
 from libretro_stella_capture import Core,mapping_for,COMMIT,ROM_SHA
-READ_NAMES=["mode","room","act","geom","owlX","owlY","owlDir","stoneX","stoneY","exitX","exitY","polarity","phase","phaseAge","beat","beatFrames","introFrames","waitFrames","codaLo","codaHi","cursorX","cursorY","moveDir","moveWait","prevFire","prevSelect","pending","pendingKey","usedFire","slot0Key","slot0Due","slot1Key","slot1Due","presence","presenceEnd","intercepted"]
+READ_NAMES=["mode","room","act","renderDir","owlX","owlY","owlDir","stoneX","stoneY","exitX","exitY","polarity","phase","phaseAge","beat","beatFrames","introFrames","waitFrames","codaLo","codaHi","cursorX","cursorY","moveDir","moveWait","prevFire","prevSelect","pending","pendingKey","usedFire","slot0Key","slot0Due","slot1Key","slot1Due","presence","presenceEnd","intercepted"]
 def symbols(path):
  t=pathlib.Path(path).read_text();d={}
  for n,h in re.findall(r"(?m)^([A-Za-z]\w*)\s*=\s*\$([0-9A-Fa-f]+)\s*$",t):d[n]=int(h,16)

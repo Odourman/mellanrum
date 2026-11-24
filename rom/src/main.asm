@@ -13,6 +13,7 @@ COLUP1  = $07
 COLUPF  = $08
 COLUBK  = $09
 CTRLPF  = $0A
+REFP0   = $0B
 PF0     = $0D
 PF1     = $0E
 PF2     = $0F
@@ -45,7 +46,7 @@ mapRows     ds 8        ; current collision bits, 5 left-hand columns each
 mode        ds 1        ; 0 title, 1 campaign, 2 room done, 3 coda, 4 free forest
 room        ds 1        ; 0..14, original I-01..III-05
 act         ds 1
-geom        ds 1
+renderDir   ds 1        ; last successful owl movement, initialized on LoadRoom
 owlX        ds 1
 owlY        ds 1
 owlDir      ds 1
@@ -125,6 +126,7 @@ ClearRAM:
         sta CTRLPF           ; reflect 20 PF left bits
         lda #0
         sta NUSIZ0
+        sta REFP0
         lda #$04
         sta NUSIZ1       ; two far-separated S3 symbols, x=71 and x=135
         lda #0
@@ -505,7 +507,6 @@ LoadRoom:
         lda #72
         sta beatFrames
         ldx room
-        stx geom          ; RoomGeom was the identity 0..14
         lda RoomAct,x
         sta act
         lda #1            ; all fifteen approved starting columns are 1
@@ -516,6 +517,7 @@ LoadRoom:
         sta cursorY
         lda RoomOwlDir,x
         sta owlDir
+        sta renderDir
         lda #4            ; all fifteen stone columns are 4
         sta stoneX
         lda RoomStoneY,x
@@ -526,7 +528,6 @@ LoadRoom:
         sta exitY
         lda RoomPolarity,x
         sta polarity
-        ldx geom
         lda GeoMapLo,x
         sta mapPtr
         lda GeoMapHi,x
@@ -553,8 +554,8 @@ CopyMapStore:
         dey
         bpl CopyMap
         ; Original top six PF bytes are identical in all 15 room tables.
-        ; Reconstruct exact 48-byte pfbuf from 42 room bytes + six constants.
-        ldy #41
+        ; Reconstruct exact 48-byte pfbuf from 36 room bytes + shared top/bottom.
+        ldy #35
 CopyPF:
         lda (pfPtr),y
         sta pfbuf+6,y
@@ -564,6 +565,7 @@ CopyPF:
 CopyPFTop:
         lda CommonTopPF,y
         sta pfbuf,y
+        sta pfbuf+42,y    ; shared bottom row, identical in all 15 rooms
         dey
         bpl CopyPFTop
         rts
@@ -869,6 +871,7 @@ UpdateOwlCell:
         sta owlY
         lda candidateD
         sta owlDir
+        sta renderDir
         lda owlX
         cmp stoneX
         bne OwlVictoryCheck
@@ -898,6 +901,7 @@ AlreadyOnStone:
         sta owlY
         lda candidateD
         sta owlDir
+        sta renderDir
         jmp OwlVictoryCheck
 OwlTryNext:
         inc attempt
@@ -1291,7 +1295,27 @@ NoHUDSlot1:
         ldx presence
         lda PresenceHUD,x
         sta PF2
-        ldx #15
+        sta WSYNC        ; use first of 15 original top HUD waits
+        ldx renderDir
+        lda OwlReflect,x
+        sta REFP0
+        lda beatFrames
+        ldx #0
+        cmp #55
+        bcc OwlFrameReady
+        ldx #4
+        cmp #61
+        bcc OwlFrameReady
+        cmp #67
+        bcs OwlFrameReady
+        ldx #8
+OwlFrameReady:
+        txa
+        ora renderDir
+        tax
+        lda OwlFrameLo,x
+        sta workX        ; preselected low byte, stable until next frame
+        ldx #14
 Top16:
         sta WSYNC
         dex
@@ -1336,25 +1360,7 @@ NextRow:
         cmp #128
         bcc NoOwlOnRow
 OwlPresent:
-        ; 72 NTSC frames: B1 x6, B2 x6, B1 x6, B0 x54.
-        ; Beat timer counts downward; do not modify actual owl AI timing.
-        lda beatFrames
-        cmp #55
-        bcc OwlB0Frame
-        cmp #61
-        bcc OwlB1Frame
-        cmp #67
-        bcc OwlB2Frame
-OwlB1Frame:
-        ldx #1
-        bne OwlFrameReady
-OwlB2Frame:
-        ldx #2
-        bne OwlFrameReady
-OwlB0Frame:
-        ldx #0
-OwlFrameReady:
-        lda OwlFrameLo,x
+        lda workX
         sta sprite0Ptr
         lda #>OwlB0         ; all U3 wing frames reside in one ROM page
         sta sprite0Ptr+1
@@ -1567,6 +1573,7 @@ PolarityReady:
         ; continues to show the older pending ACCEPTED/QUEUED target.
         sta WSYNC
         ldx #0
+        stx REFP0        ; lower P0 feedback is never mirrored
         lda pending
         beq HUDCheckAck
         ldx #1           ; pending target persists after second denied FIRE
@@ -1630,6 +1637,7 @@ HUDBottom7:
 ; The previous icon band is deliberately blank; 192-line raster retained.
 DrawTitle:
         lda #0
+        sta REFP0
         sta CTRLPF           ; no mirroring, distinct L/R PF halves
         sta GRP0
         sta GRP1
