@@ -32,11 +32,15 @@
 | 15 independent room-specific genuine Stella idle 36,000-frame tests | **15/15 PASS, 0/15 passive wins** | [Actions #45428565608](https://github.com/Odourman/mellanrum/actions/runs/45428565608); 15 individual artifacts, new SHA checked |
 | 15 controller-reached Stella critical FIRE omission tests | **15/15 PASS bounded to original win+360f** | same-SHA results/script in handoff |
 
-The **complete 90-item ZIP** `MELLANRUM_ISSUE43_S3_ORANGE_RED_G07970_MAIN_III_FULL_EVIDENCE.zip` includes source snapshot/diff, old+new ROM with separate clear paths, authentic PNGs, 19 natural controller samples, raw Gopher CPU traces, 15 CI idle artifacts, 15 causal results, reproducible scripts, Stella/Gopher original artifacts, 89/89 validated SHA-256 manifest entries, ZIP CRC PASS. Provided to user in ROM DEVELOPMENT conversation. Do not invent a GitHub or Drive URL for the ZIP. Original individual evidence is available through linked GitHub Actions.
+The **complete 94-item ZIP** `MELLANRUM_ISSUE43_S3_ORANGE_RED_G07970_MAIN_III_FULL_EVIDENCE.zip` includes source snapshot/diff, old+new ROM with separate clear paths, authentic PNGs, 19 natural controller samples, raw Gopher CPU traces, 15 CI idle artifacts, 15 causal results, reproducible scripts, Stella/Gopher original artifacts, 93/93 validated SHA-256 manifest entries, ZIP CRC PASS. Provided to user in ROM DEVELOPMENT conversation. Do not invent a GitHub or Drive URL for the ZIP. Original individual evidence is available through linked GitHub Actions.
 
 ## CI failures separated from product behavior
 
 Legacy `.github/workflows/game.yml` runs Issue15 **4KiB** `build_issue15.py` and requires `git diff --exit-code` for the old source overlay, which rejects the authorized 16KiB F6 change. Legacy `title-presence-stella.yml` attempts a 4KiB visual diagnostic variant and fails DASM `Origin Reverse-indexed` at `$FF90`. Both **historical FAIL remain visible** and were scoped to **SKIPPED** on this Issue43 branch; skipped is **not** PASS. The actual native 16KiB F6 jobs and Stella/Gopher game tests are PASS.
+
+## Authentic short same-ROM video with TIA audio
+
+A **10-second** controller-only run of room II-02 was captured with the real Stella/libretro emulator from this exact ROM: 600 continuous native 160×228 frames, nearest-neighbor display scaling to 640×456 for mobile, H.264 60fps and the actual two-channel TIA PCM synchronized as AAC. No RAM POKE or synthetic slides. The original WAV, video file, ffprobe stream check, ROM SHA, and the reproducible capture script are in the full 94-item handoff ZIP under `AUTHENTIC_STELLA_VIDEO_TIA/` and `REPRO_SCRIPTS/`.
 
 ## Open gates
 
