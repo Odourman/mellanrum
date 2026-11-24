@@ -1,0 +1,62 @@
+name: Verification42 BFDEB targeted timing (independent)
+on:
+  push:
+    branches:
+      - verification/issue42-pr38-bfdeb-20261124
+    paths:
+      - verification/issue42/timing_native_gopher.py
+      - .github/workflows/verification42-p0-timing.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native-timing:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify unchanged pinned ROM and product source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code 6e9db179867234a19cce329c709170f2423ffbbb -- rom/src rom/f6 rom/bin
+          echo "bfdeb5308dcecc526e802cd95886b94e0ce4953628e7bc7190c5d49231deac06  rom/bin/MELLANRUM_16K_NTSC_F6.bin" | sha256sum -c -
+          test "$(git hash-object rom/bin/MELLANRUM_16K_NTSC_F6.bin)" = "51dc00b5ce8170b289acd0b4d997e0c6080b8f54"
+      - name: Fetch exact independently pinned original native Gopher2600 executable
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p runtime
+          curl -fLsS --retry 3 \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/14780574047/zip" \
+            -o runtime/gopher-artifact.zip
+          unzip -t runtime/gopher-artifact.zip
+          (cd runtime && unzip -qo gopher-artifact.zip)
+          echo "7b12dff57fcb73154122d2477f35d9c8ae8b344649bc0faa8ff6f5663c70470b  runtime/gopher2600" | sha256sum -c -
+          chmod +x runtime/gopher2600
+          cat runtime/gopher_source.txt runtime/gopher_version.txt
+      - name: Reproduce 8 real original-ROM Gopher CPU/WSYNC timing scenarios
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 verification/issue42/timing_native_gopher.py \
+            --gopher "${PWD}/runtime/gopher2600" \
+            --rom "${PWD}/rom/bin/MELLANRUM_16K_NTSC_F6.bin" \
+            --out "${PWD}/runtime/timing-evidence"
+          (cd runtime/timing-evidence && sha256sum -c SHA256SUMS)
+      - name: Preserve ORIGINAL raw CPU logs, controller/diagnostic inputs, and checksums
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification42-bfdeb-native-timing-raw
+          path: |
+            runtime/timing-evidence/
+            runtime/gopher_source.txt
+            runtime/gopher_version.txt
+          retention-days: 30
