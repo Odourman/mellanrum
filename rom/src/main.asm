@@ -552,12 +552,20 @@ CopyMapStore:
         sta mapRows,y
         dey
         bpl CopyMap
-        ldy #47
+        ; Original top six PF bytes are identical in all 15 room tables.
+        ; Reconstruct exact 48-byte pfbuf from 42 room bytes + six constants.
+        ldy #41
 CopyPF:
         lda (pfPtr),y
-        sta pfbuf,y
+        sta pfbuf+6,y
         dey
         bpl CopyPF
+        ldy #5
+CopyPFTop:
+        lda CommonTopPF,y
+        sta pfbuf,y
+        dey
+        bpl CopyPFTop
         rts
 
 ; Discrete logical owl beat. Strict ordering: FIRE, autonomous Presence,
@@ -1091,9 +1099,9 @@ MarkerAtNewCell:
         ldx #0           ; active pointer is neutral at a different cell
 MarkerStyleChosen:
         lda CursorPlayLo,x
-        sta markerPtr
+        sta candidateX       ; reuses non-kernel scratch, no new RIOT bytes
         lda CursorPlayHi,x
-        sta markerPtr+1
+        sta candidateY
         sta WSYNC
         sta HMOVE
 NoObjects:
@@ -1141,7 +1149,13 @@ NoSlowCarry:
         lda PaletteOwl,x
         sta COLUP0
         lda PaletteGlyph,x
-        sta COLUP1
+        sta COLUP1           ; original exit amber, retained for HUD/crown
+        sta workKey          ; render-only scratch, not used by game after tick
+        ldx polarity
+        beq StoneUsesAmber
+        lda #$46            ; legal NTSC reddish hue; confirm in real Stella
+StoneUsesAmber:
+        sta attempt          ; committed stone polarity color, no new RAM
         jmp PlayScore
 TitleColors:
         lda #$A0
@@ -1420,17 +1434,22 @@ NoSymbolBOnRow:
 SymbolBReady:
         ; fifth crown line: prepare M0 cursor gate (not game state).
         sta WSYNC
-        ; Both rails are gated on exactly the same visible logical row.
-        lda #0
-        sta candidateY
-        sta candidateX
+        ; Fifth crown line selects a pointer, not per-pixel mask gates.
+        ; BlankSprite is 9 bytes of zero for noncursor rows; four approved
+        ; original bitmap masks remain untouched. No new RAM or JSR.
         lda rowIndex
         cmp cursorY
-        bne MarkerGateDone
-        lda #2
-        sta candidateY
-        lda #4
-        sta candidateX
+        beq MarkerCurrentRow
+        lda #<BlankSprite
+        sta markerPtr
+        lda #>BlankSprite
+        sta markerPtr+1
+        jmp MarkerGateDone
+MarkerCurrentRow:
+        lda candidateX
+        sta markerPtr
+        lda candidateY
+        sta markerPtr+1
 MarkerGateDone:
         lda workY
         sta candidateD    ; current mask frame index for the forthcoming stem
@@ -1482,9 +1501,11 @@ NoStemShadow:
         lda #0
         sta ENABL
         sta ENAM0
+        lda attempt          ; seed P1-left stone color before first stem
         ldx #9
 Stem13:
         sta WSYNC
+        sta COLUP1          ; 3 cycles, ahead of first S3 at x66
         ldy SpriteRowIndex,x
         lda (sprite0Ptr),y
         sta GRP0
@@ -1492,21 +1513,22 @@ Stem13:
         sta GRP1          ; first P1 copy (glyph A)
         cpx #1           ; last blank sprite row must update PF bookkeeping
         beq StemLastFast  ; early, avoiding >76 cycles from post-loop bookkeeping
-        ; P1 glyph A fetches around beam c46-50; wait until after its right edge.
-        ; Exactly 28 cycles replace 14 NOPs: two separate marked rails.
-        ; packed bit1 = M0, bit2 = BL. Gated by real 8x20 row index.
-        ; Stone and mirrored tree cell have the SAME 16px target anchor.
+        ; One chosen sprite byte supplies BOTH original M0 and BL bits.
+        ; Gated via pointer during crown, not extra instructions on beam.
+        ; M0 update at original c35, BL update at original c48.
         lda (markerPtr),y
-        and candidateY
         sta ENAM0
-        lda (markerPtr),y
-        and candidateX
+        nop
+        nop
+        nop
+        nop
         lsr
         sta ENABL
-        nop
-        nop
+        lda workKey        ; 3+3 replaces original 2+2 NOPs (+2 cycles)
+        sta COLUP1          ; original amber before second S3 copy at x130
         lda (pfPtr),y
-        sta GRP1          ; second P1 copy, before x=135 fetch at c68
+        sta GRP1          ; second P1 copy must still precede x135 latch
+        lda attempt        ; seed NEXT line red/amber before DEX flags
         dex
         bne Stem13
 StemLastFast:
