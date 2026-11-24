@@ -1,4 +1,4 @@
-name: PR38 final raster fix 64183 – 15 real Stella idle checks
+name: PR38 UI coherent-reticle 46bc – 15 real Stella 600s idle
 on:
   push:
     branches: [romdev/mainii-freeforest-and-campaign-20261123]
@@ -25,13 +25,13 @@ jobs:
       - name: Download original exact native Stella executable+ROM+controller evidence
         uses: actions/download-artifact@v4
         with:
-          run-id: 45283852850
+          run-id: 45340122768
           name: mainii-experimental-F6-Stella15-FRI-evidence
           github-token: ${{ github.token }}
           path: build/evidence
       - name: Verify same native frozen ROM before running ANY frames
         run: |
-          echo '64183ad144370cc78cc770651bfcdd840584864c390c226fb20d52030c6d5405  build/evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
+          echo '46bc33c49a85e55037dfc37af496f51c0a215c04fed4f44ca4765a5088c24eb1  build/evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
           python3 - <<'PY'
           import json,pathlib,hashlib
           root=pathlib.Path('build/evidence')
