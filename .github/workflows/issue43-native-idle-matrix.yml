@@ -1,0 +1,51 @@
+name: Issue43 exact-SHA native Stella 15 x 600s idle matrix
+on:
+  push:
+    branches: [romdev/issue43-s3-polarity-feasibility-20261124]
+    paths: ['.github/workflows/issue43-native-idle-matrix.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  idle-each-room:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        room: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover exact native Stella/ROM/control witness
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45426587119
+          name: issue43-actual-stella-f6-s3-color-evidence
+          github-token: ${{ github.token }}
+          path: build/issue43evidence
+      - name: Strict exact-SHA and natural controller witness check
+        run: |
+          echo '07970f492ca9c8aa2f0445b00ce6a046624176db6ebaa7917d7392b7f6b43c2c  build/issue43evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          r=Path('build/issue43evidence')
+          obj=json.loads((r/'CAMPAIGN/result.json').read_text())
+          raw=(r/'MELLANRUM_16K_NTSC_F6.bin').read_bytes()
+          assert len(raw)==16384 and obj['rom_sha256']==hashlib.sha256(raw).hexdigest()
+          assert obj['win_rooms']==list(range(15))
+          assert (r/'stella_libretro.so').exists()
+          print('ISSUE43_STELLA_NATIVE_IDLE_INPUT_SHA_PASS',obj['rom_sha256'])
+          PY
+      - name: 36000 NTSC frames genuine Stella no input after reached room
+        run: |
+          python3 tests/issue32/pr38_idle_one_room.py --core build/issue43evidence/stella_libretro.so --rom build/issue43evidence/MELLANRUM_16K_NTSC_F6.bin --events build/issue43evidence/CAMPAIGN/controller_frame_events.json --room ${{ matrix.room }} --out build/issue43-idle-${{ matrix.room }}
+      - name: Archive room-specific actual 36000 frame result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue43-native-Stella-idle-room-${{ matrix.room }}
+          path: build/issue43-idle-${{ matrix.room }}/
+          retention-days: 30
