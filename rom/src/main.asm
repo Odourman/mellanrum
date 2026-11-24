@@ -552,8 +552,7 @@ CopyMapStore:
         sta mapRows,y
         dey
         bpl CopyMap
-        ; Original top six PF bytes are identical in all 15 room tables.
-        ; Reconstruct exact 48-byte pfbuf from 42 room bytes + six constants.
+        ; Literal top border common to every room. Reconstruct exactly.
         ldy #41
 CopyPF:
         lda (pfPtr),y
@@ -1099,9 +1098,9 @@ MarkerAtNewCell:
         ldx #0           ; active pointer is neutral at a different cell
 MarkerStyleChosen:
         lda CursorPlayLo,x
-        sta candidateX       ; reuses non-kernel scratch, no new RIOT bytes
+        sta markerPtr
         lda CursorPlayHi,x
-        sta candidateY
+        sta markerPtr+1
         sta WSYNC
         sta HMOVE
 NoObjects:
@@ -1149,13 +1148,13 @@ NoSlowCarry:
         lda PaletteOwl,x
         sta COLUP0
         lda PaletteGlyph,x
-        sta COLUP1           ; original exit amber, retained for HUD/crown
-        sta workKey          ; render-only scratch, not used by game after tick
-        ldx polarity
+        sta COLUP1           ; exit retains exact approved PAL for this frame
+        sta workKey          ; source-safe reuse of preexisting scratch
+        ldx polarity         ; actual committed polarity, not input transient
         beq StoneUsesAmber
-        lda #$46            ; legal NTSC reddish hue; confirm in real Stella
+        lda #$46            ; NTSC red; independently assess at 160x228
 StoneUsesAmber:
-        sta attempt          ; committed stone polarity color, no new RAM
+        sta attempt          ; no extra RAM
         jmp PlayScore
 TitleColors:
         lda #$A0
@@ -1203,6 +1202,8 @@ CodaColorsSound:
         sta COLUP0
         lda #$26
         sta COLUP1
+        sta workKey          ; exact original coda P1 color, both copies
+        sta attempt
         lda #$0C
         sta AUDC0
         lda #$1E
@@ -1434,22 +1435,17 @@ NoSymbolBOnRow:
 SymbolBReady:
         ; fifth crown line: prepare M0 cursor gate (not game state).
         sta WSYNC
-        ; Fifth crown line selects a pointer, not per-pixel mask gates.
-        ; BlankSprite is 9 bytes of zero for noncursor rows; four approved
-        ; original bitmap masks remain untouched. No new RAM or JSR.
+        ; Both rails are gated on exactly the same visible logical row.
+        lda #0
+        sta candidateY
+        sta candidateX
         lda rowIndex
         cmp cursorY
-        beq MarkerCurrentRow
-        lda #<BlankSprite
-        sta markerPtr
-        lda #>BlankSprite
-        sta markerPtr+1
-        jmp MarkerGateDone
-MarkerCurrentRow:
-        lda candidateX
-        sta markerPtr
-        lda candidateY
-        sta markerPtr+1
+        bne MarkerGateDone
+        lda #2
+        sta candidateY
+        lda #4
+        sta candidateX
 MarkerGateDone:
         lda workY
         sta candidateD    ; current mask frame index for the forthcoming stem
@@ -1501,36 +1497,35 @@ NoStemShadow:
         lda #0
         sta ENABL
         sta ENAM0
-        lda attempt          ; seed P1-left stone color before first stem
+        lda attempt          ; color at upcoming row start
         ldx #9
 Stem13:
         sta WSYNC
-        sta COLUP1          ; 3 cycles, ahead of first S3 at x66
+        sta COLUP1           ; committed stone red/orange for first P1 copy
         ldy SpriteRowIndex,x
         lda (sprite0Ptr),y
         sta GRP0
         lda (sprite1Ptr),y
         sta GRP1          ; first P1 copy (glyph A)
-        cpx #1           ; last blank sprite row must update PF bookkeeping
-        beq StemLastFast  ; early, avoiding >76 cycles from post-loop bookkeeping
-        ; One chosen sprite byte supplies BOTH original M0 and BL bits.
-        ; Gated via pointer during crown, not extra instructions on beam.
-        ; M0 update at original c35, BL update at original c48.
+        dex                 ; same 9-line sequence, move decrement earlier
+        beq StemLastFast    ; x=0 means original terminal x=1 now complete
+        ; P1 glyph A fetches around beam c46-50; wait until after its right edge.
+        ; Exactly 28 cycles replace 14 NOPs: two separate marked rails.
+        ; packed bit1 = M0, bit2 = BL. Gated by real 8x20 row index.
+        ; Stone and mirrored tree cell have the SAME 16px target anchor.
         lda (markerPtr),y
+        and candidateY
         sta ENAM0
-        nop
-        nop
-        nop
-        nop
+        lda (markerPtr),y
+        and candidateX
         lsr
         sta ENABL
-        lda workKey        ; 3+3 replaces original 2+2 NOPs (+2 cycles)
-        sta COLUP1          ; original amber before second S3 copy at x130
+        lda workKey        ; original exit amber, no extra JSR
+        sta COLUP1          ; recolor only the SECOND P1 copy
         lda (pfPtr),y
-        sta GRP1          ; second P1 copy must still precede x135 latch
-        lda attempt        ; seed NEXT line red/amber before DEX flags
-        dex
-        bne Stem13
+        sta GRP1          ; keep x+64 exit glyph at its original position
+        lda attempt        ; seed next left-copy color
+        jmp Stem13          ; one 3-cycle branch; DEX was moved earlier
 StemLastFast:
         lda pfIndex
         clc
