@@ -1579,7 +1579,21 @@ HUDPositionX:
         jsr PositionOne    ; starts its own WSYNC; no long post-WSYNC path
 HUDIcon8:
         sta WSYNC
+        ; 8-line HUD encodes the old fireY as a solid horizontal stroke
+        ; at its 0..7 row. Together with fireX-derived P0 positioning this
+        ; is a separate 2-D pending-target locator, NOT the live reticle.
+        ; The seven other raster lines keep the approved feedback glyph.
+        lda pending
+        beq HUDNoQueuedRow
+        tya
+        eor #7
+        cmp fireY
+        bne HUDNoQueuedRow
+        lda #$FF
+        bne HUDGlyphReady
+HUDNoQueuedRow:
         lda (sprite0Ptr),y
+HUDGlyphReady:
         sta GRP0
         dey
         bpl HUDIcon8
