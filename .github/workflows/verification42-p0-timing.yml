@@ -42,6 +42,10 @@ jobs:
           (cd runtime && unzip -qo gopher-artifact.zip)
           echo "7b12dff57fcb73154122d2477f35d9c8ae8b344649bc0faa8ff6f5663c70470b  runtime/gopher2600" | sha256sum -c -
           chmod +x runtime/gopher2600
+          sudo apt-get update -qq
+          sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64 libpulse0 libsamplerate0
+          ldd runtime/gopher2600 | tee runtime/ldd.txt
+          ! grep -q "not found" runtime/ldd.txt
           cat runtime/gopher_source.txt runtime/gopher_version.txt
       - name: Reproduce 8 real original-ROM Gopher CPU/WSYNC timing scenarios
         shell: bash
