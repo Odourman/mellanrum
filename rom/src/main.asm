@@ -1299,22 +1299,7 @@ NoHUDSlot1:
         ldx renderDir
         lda OwlReflect,x
         sta REFP0
-        lda beatFrames
-        ldx #0
-        cmp #55
-        bcc OwlFrameReady
-        ldx #4
-        cmp #61
-        bcc OwlFrameReady
-        cmp #67
-        bcs OwlFrameReady
-        ldx #8
-OwlFrameReady:
-        txa
-        ora renderDir
-        tax
-        lda OwlFrameLo,x
-        sta workX        ; preselected low byte, stable until next frame
+        jsr PrepareOwlFrame ; use the same budgeted top HUD line
         ldx #14
 Top16:
         sta WSYNC
@@ -1716,6 +1701,26 @@ CodaSoundTail:
         sta AUDV0
         lda #0
         sta AUDV1
+        rts
+
+; RenderPlay depth is one; this call adds at most one (2 total).
+PrepareOwlFrame:
+        lda beatFrames
+        ldx #0
+        cmp #55
+        bcc OwlFrameReady
+        ldx #4
+        cmp #61
+        bcc OwlFrameReady
+        cmp #67
+        bcs OwlFrameReady
+        ldx #8
+OwlFrameReady:
+        txa
+        ora renderDir
+        tax
+        lda OwlFrameLo,x
+        sta workX        ; preselected low byte, stable until next frame
         rts
 
         include "rom/src/data.inc"

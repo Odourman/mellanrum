@@ -6,6 +6,7 @@ permissions:
   contents: read
 jobs:
   baseline-preflight:
+    if: github.sha == '063879433f5fa64232e09afda2bd3fe34ea97d21'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:

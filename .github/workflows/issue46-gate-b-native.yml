@@ -18,6 +18,8 @@ jobs:
           python3 rom/f6/build_f6.py --out build/issue46
           python3 rom/f6/build_f6.py --out build/issue46-rebuild
           cmp build/issue46/MELLANRUM_16K_NTSC_F6.bin build/issue46-rebuild/MELLANRUM_16K_NTSC_F6.bin
+          cmp rom/bin/MELLANRUM_16K_NTSC_F6.bin build/issue46/MELLANRUM_16K_NTSC_F6.bin
+          echo '5b8315512bf274398c3d2f4622dc96e081d1481d93b2c8adaf6411de2e2a0ed5  build/issue46/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
       - if: always()
         uses: actions/upload-artifact@v4
         with:
