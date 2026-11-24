@@ -1051,16 +1051,9 @@ PlaceObjects:
         adc #0
         ldx #2           ; M0 left rail, four physical pixels
         jsr PositionOne
-        lda pending
-        bne BallFrozen
-        lda ackFrames
-        beq BallCurrent
-BallFrozen:
-        lda fireX        ; queued/ack target stays visible when cursor moves
-        jmp BallXChosen
-BallCurrent:
+        ; BOTH TIA rails belong to the LIVE pointer, never a pending target.
+        ; A previously selected cell is indicated separately in the lower HUD.
         lda cursorX
-BallXChosen:
         asl
         asl
         asl
@@ -1071,11 +1064,31 @@ BallXChosen:
         jsr PositionOne
         lda #$20        ; NUSIZ0 missile width=4, owl P0 size unchanged
         sta NUSIZ0
-        ; Select one of four *in-scene* 8-line two-column TIA glyphs.
+        ; Current pointer and previous FIRE target are distinct concepts.
+        ; A rejected new FIRE is displayed at the current pointer.
+        ; A queued/committed action is only drawn on the in-scene pointer
+        ; while the pointer still occupies the ORIGINAL fireX/fireY.
+        ; Otherwise the old choice is shown by a separate HUD glyph.
         ldx #0
         lda ackFrames
+        bne MarkerAckActive
+        lda pending
         beq MarkerStyleChosen
+        ldx #1           ; queued, not yet committed
+        jmp MarkerCheckFireXY
+MarkerAckActive:
         ldx ackType
+        cpx #2           ; denial concerns the NEW attempted cursor cell
+        beq MarkerStyleChosen
+MarkerCheckFireXY:
+        lda cursorX
+        cmp fireX
+        bne MarkerAtNewCell
+        lda cursorY
+        cmp fireY
+        beq MarkerStyleChosen
+MarkerAtNewCell:
+        ldx #0           ; active pointer is neutral at a different cell
 MarkerStyleChosen:
         lda CursorPlayLo,x
         sta markerPtr
@@ -1407,28 +1420,15 @@ NoSymbolBOnRow:
 SymbolBReady:
         ; fifth crown line: prepare M0 cursor gate (not game state).
         sta WSYNC
-        ; Independently gate the moving M0 and the frozen BL target.
+        ; Both rails are gated on exactly the same visible logical row.
         lda #0
         sta candidateY
         sta candidateX
         lda rowIndex
         cmp cursorY
-        bne MarkerM0Ready
+        bne MarkerGateDone
         lda #2
         sta candidateY
-MarkerM0Ready:
-        lda pending
-        bne MarkerBLFrozen
-        lda ackFrames
-        beq MarkerBLCurrent
-MarkerBLFrozen:
-        lda fireY
-        jmp MarkerBLRow
-MarkerBLCurrent:
-        lda cursorY
-MarkerBLRow:
-        cmp rowIndex
-        bne MarkerGateDone
         lda #4
         sta candidateX
 MarkerGateDone:
@@ -1537,25 +1537,46 @@ PolarityReady:
         sta PF2
         lda #$44
         sta PF1
-        ; Prepare page and Y BEFORE PositionOne's WSYNC. On a
-        ; positive ack the old preparation crossed cycle 76 and added
-        ; one unintended NTSC scanline (Gopher 261/262 mixture).
-        ; Never do more than ~70 cycles between this WSYNC and HUDIcon8.
-        lda #>CursorIdle    ; all four HUD glyphs reside in one ROM page
-        sta sprite0Ptr+1
-        ldy #7
-        lda #72
+        ; Fixed, deliberately budgeted HUD preparation raster line.
+        ; BOTH in-scene rails follow the live cursor. When another FIRE
+        ; remains queued, this separated icon is anchored HORIZONTALLY
+        ; below its former column (fireX), never mixed into the reticle.
+        ; A second rejected FIRE renders a local in-scene X, while HUD
+        ; continues to show the older pending ACCEPTED/QUEUED target.
+        sta WSYNC
         ldx #0
-        jsr PositionOne
-        lda ackFrames
-        beq HUDNeutral
-        ldx ackType
+        lda pending
+        beq HUDCheckAck
+        ldx #1           ; pending target persists after second denied FIRE
         bne HUDChoose
-HUDNeutral:
-        ldx #0
+HUDCheckAck:
+        lda ackFrames
+        beq HUDChoose
+        ldx ackType
 HUDChoose:
         lda CursorSpriteLo,x
         sta sprite0Ptr
+        lda #>CursorIdle
+        sta sprite0Ptr+1
+        ldy #7
+        ; Map the old selected column to the lower HUD whenever a FIRE
+        ; decision is outstanding. The full active reticle remains above.
+        lda pending
+        ora ackFrames
+        beq HUDIdleX
+        lda fireX
+        jmp HUDPositionX
+HUDIdleX:
+        lda #4           ; classic central neutral HUD location
+HUDPositionX:
+        asl
+        asl
+        asl
+        asl
+        clc
+        adc #8
+        ldx #0
+        jsr PositionOne    ; starts its own WSYNC; no long post-WSYNC path
 HUDIcon8:
         sta WSYNC
         lda (sprite0Ptr),y
@@ -1564,7 +1585,7 @@ HUDIcon8:
         bpl HUDIcon8
         lda #0
         sta GRP0
-        ldx #6             ; one explicit NTSC line replaces legacy ack overrun
+        ldx #5             ; HUD preparation now has one explicit WSYNC
 HUDBottom7:
         sta WSYNC
         dex
