@@ -1561,14 +1561,9 @@ HUDChoose:
         ldy #7
         ; Map the old selected column to the lower HUD whenever a FIRE
         ; decision is outstanding. The full active reticle remains above.
-        lda pending
-        ora ackFrames
-        beq HUDIdleX
+        ; The HUD retains the last FIRE column even after feedback fades;
+        ; an old selection remains a separated memory, never a reticle rail.
         lda fireX
-        jmp HUDPositionX
-HUDIdleX:
-        lda #4           ; classic central neutral HUD location
-HUDPositionX:
         asl
         asl
         asl
