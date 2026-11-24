@@ -24,8 +24,8 @@ Unzip evidence ZIP from Verification chat **into a directory preserving all rela
 
 ```bash
 python stella_verify.py                    # Stella 15/15 SOURCE_GUIDED, 19,652 frames
-python stella_idle.py 0                    # index selected room as supported by script
-python stella_counterfactual.py 0          # index selected room as supported by script
+python stella_idle.py --rooms 0,1,2,3,4 --workers 4   # continue batches up to 14
+python stella_counterfactual.py --rooms 0,1,2,3,4 --workers 4  # continue all 15
 python stella_fri50k.py                   # 50,010 actual free-forest frames
 python stella_beat_wrap.py                # 26,000 consecutive frames, beat rollover
 python stella_telemetry.py                # full per-frame RAM observation
