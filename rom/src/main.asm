@@ -1148,14 +1148,8 @@ NoSlowCarry:
         lda PaletteOwl,x
         sta COLUP0
         lda PaletteGlyph,x
-        sta COLUP1           ; exit retains exact approved PAL for this frame
-        sta workKey          ; source-safe reuse of preexisting scratch
-        ldx polarity         ; actual committed polarity, not input transient
-        beq StoneUsesAmber
-        lda #$46            ; NTSC red; independently assess at 160x228
-StoneUsesAmber:
-        sta attempt          ; no extra RAM
-        jmp PlayScore
+        sta COLUP1           ; exit retains exact approved color
+        jmp StonePaletteTail  ; relocate color choice, save pre-kernel page timing
 TitleColors:
         lda #$A0
         sta COLUBK
@@ -1204,18 +1198,7 @@ CodaColorsSound:
         sta COLUP1
         sta workKey          ; exact original coda P1 color, both copies
         sta attempt
-        lda #$0C
-        sta AUDC0
-        lda #$1E
-        sta AUDF0
-        lda codaHi
-        asl
-        clc
-        adc #1
-        sta AUDV0
-        lda #0
-        sta AUDV1
-        rts
+        jmp CodaSoundTail   ; same actions, relocated behind visual kernel
 Silence:
         lda #0
         sta AUDV0
@@ -1493,7 +1476,6 @@ NoWideCrownShadow:
         ora ShadowStemOr,x
         and ShadowStemAnd,x
 NoStemShadow:
-        nop                 ; diagnostic beam alignment: baseline branch crossed a page
         sta PF2
         lda #0
         sta ENABL
@@ -1680,6 +1662,30 @@ TitleBottom:
         sta WSYNC
         dex
         bne TitleBottom
+        rts
+
+; Preserve all existing SetColorsSound/coda semantics, just move code bytes
+; after the critical PF2 first-stem page boundary. No extra RAM or stack.
+StonePaletteTail:
+        sta workKey
+        ldx polarity
+        beq StoneUsesAmber
+        lda #$46
+StoneUsesAmber:
+        sta attempt
+        jmp PlayScore
+CodaSoundTail:
+        lda #$0C
+        sta AUDC0
+        lda #$1E
+        sta AUDF0
+        lda codaHi
+        asl
+        clc
+        adc #1
+        sta AUDV0
+        lda #0
+        sta AUDV1
         rts
 
         include "rom/src/data.inc"
