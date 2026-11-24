@@ -1,0 +1,69 @@
+name: Verification50 RC1 independently compile native DASM twice
+on:
+  push:
+    branches:
+      - verification/issue50-rc1-20261124
+    paths:
+      - .github/workflows/verification50-native-rc1.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-parity-rc1:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Assert original RC1 PR49 product frozen
+        run: |
+          set -euo pipefail
+          git cat-file -e d013a0f82621d46ad12674a4a8e944bf005cd9c3^{commit}
+          git diff --exit-code d013a0f82621d46ad12674a4a8e944bf005cd9c3 -- rom/src rom/f6 rom/bin
+          test "$(git hash-object rom/bin/MELLANRUM_16K_NTSC_F6.bin)" = "afce29944cce726fa0f935ed3104abc954e7e6da"
+          echo "456005ed691860b32c44b79f2a71666f622b005f5a798eadf9b549c59cff13bd  rom/bin/MELLANRUM_16K_NTSC_F6.bin" | sha256sum -c -
+      - name: Install native DASM
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y dasm
+          command -v dasm
+      - name: Two independent fresh native four-bank assemblies and byte parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 rom/f6/build_f6.py --out build/verification50A | tee buildA.log
+          python3 rom/f6/build_f6.py --out build/verification50B | tee buildB.log
+          cmp build/verification50A/MELLANRUM_16K_NTSC_F6.bin build/verification50B/MELLANRUM_16K_NTSC_F6.bin
+          cmp build/verification50A/MELLANRUM_16K_NTSC_F6.bin rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path("build")
+          expect=["4f1fefc7513d5c0aef2d1c2a406b77975e59fc60e0a3361fa34455b4c669c49f",
+            "8d49d78a7f7ea98d1638693767de146b54b7b97673eb5f077fbf9c0554e3a1e8",
+            "6b82511ba23726be41aa5f7a4e8c2555f5e039ee6fc2ec6a1e0774117cfffbfc",
+            "46855dddaefd3de616e41e61f9e0fc6c921d16983800a2dd514239df610080cb"]
+          for stem in ("verification50A","verification50B"):
+            out=root/stem;ROM=(out/"MELLANRUM_16K_NTSC_F6.bin").read_bytes()
+            assert len(ROM)==16384
+            assert hashlib.sha256(ROM).hexdigest()=="456005ed691860b32c44b79f2a71666f622b005f5a798eadf9b549c59cff13bd"
+            for i in range(4):
+              bank=(out/f"bank{i}.bin").read_bytes()
+              assert bank==ROM[i*4096:(i+1)*4096] and hashlib.sha256(bank).hexdigest()==expect[i]
+              assert bank[-4:]==(bytes.fromhex("9a ff 9a ff") if i<3 else bytes.fromhex("00 f0 00 f0"))
+          (root/"verification50-result.json").write_text(json.dumps({"status":"PASS","rom_sha256":hashlib.sha256(ROM).hexdigest(),"two_independent_native_builds":True,"all_4_bank_hashes_match":True,"git_blob_matches":True,"original_product_files_unchanged":True},indent=2))
+          PY
+          (cd build && sha256sum verification50A/*.bin verification50B/*.bin > verification50_SHA256SUMS)
+      - name: Preserve native listings, .sym, ROMs, hashes and stdout
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: independent-verification50-native-rc1
+          path: |
+            build/verification50A/
+            build/verification50B/
+            build/verification50-result.json
+            build/verification50_SHA256SUMS
+            buildA.log
+            buildB.log
+          retention-days: 30
