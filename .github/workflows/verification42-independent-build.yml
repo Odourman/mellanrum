@@ -1,0 +1,65 @@
+name: Verification42 independent native DASM/F6 byte-for-byte build
+on:
+  push:
+    branches:
+      - verification/issue42-pr38-bfdeb-20261124
+    paths:
+      - .github/workflows/verification42-independent-build.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  independently-assemble:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify original PR38 product source remains immutable
+        run: |
+          git cat-file -e 6e9db179867234a19cce329c709170f2423ffbbb^{commit}
+          git diff --exit-code 6e9db179867234a19cce329c709170f2423ffbbb -- rom/src rom/f6 rom/bin
+          test "$(git hash-object rom/bin/MELLANRUM_16K_NTSC_F6.bin)" = "51dc00b5ce8170b289acd0b4d997e0c6080b8f54"
+      - name: Install actual native DASM assembler (ubuntu apt)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y dasm
+          command -v dasm
+          dasm -v || true
+      - name: Independent four-bank native assembly and parity checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/verification42
+          for i in 0 1 2; do
+            dasm "rom/f6/bank${i}_score.asm" -f3 "-obuild/verification42/bank${i}.bin" "-lbuild/verification42/bank${i}.lst" "-sbuild/verification42/bank${i}.sym"
+            test "$(wc -c < "build/verification42/bank${i}.bin")" -eq 4096
+          done
+          dasm rom/src/main.asm -f3 -obuild/verification42/bank3.bin -lbuild/verification42/bank3.lst -sbuild/verification42/bank3.sym
+          test "$(wc -c < build/verification42/bank3.bin)" -eq 4096
+          cat build/verification42/bank{0,1,2,3}.bin > build/verification42/verification42_16k_f6.bin
+          cmp -s build/verification42/verification42_16k_f6.bin rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          python3 - <<'PY'
+          import pathlib,hashlib,json
+          out=pathlib.Path('build/verification42')
+          blob=(out/'verification42_16k_f6.bin').read_bytes()
+          expect=['4f1fefc7513d5c0aef2d1c2a406b77975e59fc60e0a3361fa34455b4c669c49f','8d49d78a7f7ea98d1638693767de146b54b7b97673eb5f077fbf9c0554e3a1e8','6b82511ba23726be41aa5f7a4e8c2555f5e039ee6fc2ec6a1e0774117cfffbfc','58411650362d2bd377a85b44fbb1cf3ee9f87d35b1ab26170c1d2efd8b0f9cf5']
+          assert len(blob)==16384
+          assert hashlib.sha256(blob).hexdigest()=='bfdeb5308dcecc526e802cd95886b94e0ce4953628e7bc7190c5d49231deac06'
+          for i in range(4):
+              b=blob[i*4096:i*4096+4096]
+              assert hashlib.sha256(b).hexdigest()==expect[i],i
+              assert b[-4:]==(b'\x9a\xff\x9a\xff' if i<3 else b'\x00\xf0\x00\xf0'),i
+          obj={'status':'PASS','source_head':'6e9db179867234a19cce329c709170f2423ffbbb','product_sha256':hashlib.sha256(blob).hexdigest(),'banks_sha256':expect,'size':len(blob),'native_dasm':True,'checked_in_binary_parity':True}
+          (out/'result.json').write_text(json.dumps(obj,indent=2)+'\n')
+          print(json.dumps(obj,indent=2))
+          PY
+          (cd build/verification42 && sha256sum bank{0,1,2,3}.bin verification42_16k_f6.bin > SHA256SUMS)
+      - name: Upload independent exact-SHA native assembly
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification42-independent-native-F6
+          path: build/verification42
+          retention-days: 30
