@@ -1,4 +1,4 @@
-name: PR38 UI coherent-reticle 46bc – 15 real Stella 600s idle
+name: PR38 UI two-axis HUD bfdeb – 15 native Stella idle 600s
 on:
   push:
     branches: [romdev/mainii-freeforest-and-campaign-20261123]
@@ -25,13 +25,13 @@ jobs:
       - name: Download original exact native Stella executable+ROM+controller evidence
         uses: actions/download-artifact@v4
         with:
-          run-id: 45340122768
+          run-id: 45341893964
           name: mainii-experimental-F6-Stella15-FRI-evidence
           github-token: ${{ github.token }}
           path: build/evidence
       - name: Verify same native frozen ROM before running ANY frames
         run: |
-          echo '46bc33c49a85e55037dfc37af496f51c0a215c04fed4f44ca4765a5088c24eb1  build/evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
+          echo 'bfdeb5308dcecc526e802cd95886b94e0ce4953628e7bc7190c5d49231deac06  build/evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
           python3 - <<'PY'
           import json,pathlib,hashlib
           root=pathlib.Path('build/evidence')
