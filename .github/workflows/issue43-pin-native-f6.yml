@@ -1,0 +1,87 @@
+name: Issue43 pin exact stone-only F6 ROM after native DASM and real Stella
+on:
+  push:
+    branches: [romdev/issue43-s3-polarity-feasibility-20261124]
+    paths:
+      - '.github/workflows/issue43-pin-native-f6.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pin-verified-native-rom:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native DASM and Stella dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm curl unzip
+      - name: Build true 4 x 4096 byte F6 ROM
+        run: |
+          python3 rom/f6/build_f6.py --out build/issue43pin
+          python3 -m unittest discover -s reference -p test_engine.py -v
+          python3 reference/check_rooms.py
+      - name: Verify exact new SHA and unchanged musical score banks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          b=Path('build/issue43pin/MELLANRUM_16K_NTSC_F6.bin').read_bytes()
+          assert len(b)==16384,len(b)
+          sha=hashlib.sha256(b).hexdigest()
+          assert sha=='07970f492ca9c8aa2f0445b00ce6a046624176db6ebaa7917d7392b7f6b43c2c',sha
+          expected=[
+            '4f1fefc7513d5c0aef2d1c2a406b77975e59fc60e0a3361fa34455b4c669c49f',
+            '8d49d78a7f7ea98d1638693767de146b54b7b97673eb5f077fbf9c0554e3a1e8',
+            '6b82511ba23726be41aa5f7a4e8c2555f5e039ee6fc2ec6a1e0774117cfffbfc',
+            'd4061eda4a50ba9b18f925eb30f935dbd2599764ff53b881548961b1ae79e239']
+          assert [hashlib.sha256(b[i*4096:(i+1)*4096]).hexdigest() for i in range(4)]==expected
+          print('ISSUE43_NATIVE_F6_SAME_SHA_AND_ORIGINAL_SCORE_BANKS_PASS',sha)
+          PY
+      - name: Confirm same exact new ROM plays 15 rooms and coda in real Stella
+        run: |
+          curl -fsSL --retry 4 --retry-delay 3 -o build/issue43pin/stella.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue43pin/stella.zip -d build/issue43pin
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue43pin/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/stella_full_campaign.py --core build/issue43pin/stella_libretro.so --rom build/issue43pin/MELLANRUM_16K_NTSC_F6.bin --sym build/issue43pin/bank3.sym --rooms reference/rooms.json --out build/issue43pin/CAMPAIGN --frames 26000 --audio-frames 0
+      - name: Pin the verified binary only to Issue43 branch, never protected PR38
+        run: |
+          test "$GITHUB_REF" = 'refs/heads/romdev/issue43-s3-polarity-feasibility-20261124'
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          p=Path('build/issue43pin/MELLANRUM_16K_NTSC_F6.bin')
+          raw=p.read_bytes()
+          sha=hashlib.sha256(raw).hexdigest()
+          r=json.loads(Path('build/issue43pin/CAMPAIGN/result.json').read_text())
+          assert sha=='07970f492ca9c8aa2f0445b00ce6a046624176db6ebaa7917d7392b7f6b43c2c' and r['rom_sha256']==sha,(sha,r.get('rom_sha256'))
+          assert r['status']=='PASS' and r['win_rooms']==list(range(15)),r
+          assert r['full_coda_first_frame'] is not None and r['back_to_title_frame']-r['full_coda_first_frame']>=700,r
+          Path('rom/bin/MELLANRUM_16K_NTSC_F6.bin').write_bytes(raw)
+          Path('docs/issue43/PINNED_EXACT_NATIVE_ROM.md').write_text(
+            '# Issue43 native F6 orange/red stone-only diagnostic prototype\n\n'
+            'Implementation source commit: eaa6b97f9313cb0c49f39b3f4d301da601df638d\n\n'
+            '16,384 byte F6 ROM SHA-256: '+sha+'\n\n'
+            'DASM and real Stella 15/15 + coda PASS. Same-row sprite color pixel audit and Gopher are separate evidence.\n'
+            'Prototype only. Independent Verification / Pachinko and physical/human approval NOT_RUN. NO MERGE/RELEASE.\n')
+          print('ISSUE43_PIN_NEW_ROM_SHA',sha)
+          PY
+          git config user.name "MELLANRUM native ROM pin CI"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rom/bin/MELLANRUM_16K_NTSC_F6.bin docs/issue43/PINNED_EXACT_NATIVE_ROM.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Issue43: pin exact authentic DASM + Stella verified F6 color prototype"
+            git push origin HEAD:refs/heads/romdev/issue43-s3-polarity-feasibility-20261124
+          fi
+      - name: Publish native exact SHA and Stella evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue43-pinned-new-SHA-native-Stella-evidence
+          path: |
+            build/issue43pin/MELLANRUM_16K_NTSC_F6.bin
+            build/issue43pin/ROM_16K_BUILD.json
+            build/issue43pin/SHA256SUMS
+            build/issue43pin/CAMPAIGN/result.json
+          retention-days: 30

@@ -1,0 +1,763 @@
+--- a/rom/src/main.asm
++++ b/rom/src/main.asm
+@@ -94,6 +94,7 @@
+ pfPtr       ds 2
+ moveTemp    ds 1
+ soundStep   ds 1
++shadowOn    ds 1        ; render-only: 0 normal / 1 warning / 2 active
+ 
+         SEG code
+         ORG $F000
+@@ -142,6 +143,7 @@
+         jsr ReadInput
+         jsr GameFrame
+         jsr SetColorsSound
++        jsr SetShadowVisibility
+         jsr PlaceObjects
+ WaitVBlank:
+         lda INTIM
+@@ -1067,6 +1069,30 @@
+         sta AUDV1
+         rts
+ 
++ ; Render-only silhouette gate, 24 frames on / 40 frames off (~0.4 s glimpses).
++ ; Active intrusion and early warning have different PF behavior; no collision writes.
++SetShadowVisibility:
++        lda #0
++        sta shadowOn
++        lda mode
++        cmp #1
++        bne ShadowGateDone
++        lda presence
++        cmp #1
++        beq ShadowGateTime
++        cmp #2
++        bne ShadowGateDone
++ShadowGateTime:
++        sta shadowOn
++        lda soundStep
++        and #$3F
++        cmp #24
++        bcc ShadowGateDone
++        lda #0
++        sta shadowOn
++ShadowGateDone:
++        rts
++
+ ; NTSC display: 16 top status lines, 8*20 gameplay rows, 16 bottom lines.
+ ; Crowns are 6 lines, stems 14; P0/P1 use safe lower-band raster slots.
+ RenderPlay:
+@@ -1122,6 +1148,12 @@
+         sta PF1
+         iny
+         lda pfbuf,y
++        ldx shadowOn
++        beq NoCrownShadow
++        ldx rowIndex
++        ora ShadowCrownOr,x
++        and ShadowCrownAnd,x
++NoCrownShadow:
+         sta PF2
+         lda #0
+         sta GRP0
+@@ -1172,6 +1204,26 @@
+         sta WSYNC
+         dex
+         bne CrownLast3
++        ; Precompute BL/M0 gating on the final crown scanline, before stem.
++        ; Render-only scratch. Frees CPU for the fleeting PF void mask.
++        lda #0
++        sta candidateX
++        sta candidateY
++        lda rowIndex
++        cmp stoneY
++        bne StoneGatingReady
++        lda #2
++        sta candidateX
++StoneGatingReady:
++        lda rowIndex
++        cmp exitY
++        bne ExitGatingReady
++        lda mode
++        cmp #4
++        beq ExitGatingReady
++        lda #2
++        sta candidateY
++ExitGatingReady:
+         ; stem first line: register change + BL/M0 gating
+         sta WSYNC
+         ldy pfIndex
+@@ -1185,22 +1237,18 @@
+         sta PF1
+         iny
+         lda pfbuf,y
++        ldx shadowOn
++        cpx #2              ; warning: incomplete crown only, no full void
++        bne NoStemShadow
++        ldx rowIndex
++        ora ShadowStemOr,x
++        and ShadowStemAnd,x
++NoStemShadow:
+         sta PF2
+-        lda rowIndex
+-        cmp stoneY
+-        bne NoStoneRow
+-        lda #2
++        lda candidateX
+         sta ENABL
+-NoStoneRow:
+-        lda rowIndex
+-        cmp exitY
+-        bne NoExitRow
+-        lda mode
+-        cmp #4
+-        beq NoExitRow
+-        lda #2
++        lda candidateY
+         sta ENAM0
+-NoExitRow:
+         ldx #13
+ Stem13:
+         sta WSYNC
+@@ -1245,12 +1293,14 @@
+         bne Bottom16
+         rts
+ 
+-; Title text is a deliberately vertical typographic split: MEL / LAN / RUM,
+-; fourth word indicates KAM (campaign) or FRI (goal-less). Mirror is intentional.
++; Only legible title word: MELLANRUM. 40 PF bits, 9 letters in one line.
++; Unmirrored 20+20 PF scanline rewrite; no other text.
++; Two abstract modes below: left rooted triangle = campaign, right open fork = FRI SKOG.
++; Bright half selects mode, dim half is inactive. SELECT/FIRE logic unchanged.
++; Visible lines: 32 + 56 + 24 + 24 + 56 = exact 192.
+ DrawTitle:
+-        lda #1
+-        sta CTRLPF
+-        lda #0
++        lda #0
++        sta CTRLPF           ; no mirroring, distinct L/R PF halves
+         sta GRP0
+         sta GRP1
+         sta ENABL
+@@ -1258,70 +1308,103 @@
+         sta PF0
+         sta PF1
+         sta PF2
++        ldx #32
++TitleTop:
++        sta WSYNC
++        dex
++        bne TitleTop
++        ldy #0
+         ldx #8
+-TitleTop8:
+-        sta WSYNC
++TitleGlyphLine:
++        sta WSYNC
++        lda TitleLeftPF0,y
++        sta PF0
++        lda TitleLeftPF1,y
++        sta PF1
++        lda TitleLeftPF2,y
++        sta PF2
++        nop
++        nop
++        nop
++        nop
++        lda TitleRightPF0,y
++        sta PF0
++        lda TitleRightPF1,y
++        sta PF1
++        lda TitleRightPF2,y
++        sta PF2
+         dex
+-        bne TitleTop8
+-        lda #0
+-        sta pfIndex
+-TitleNextWord:
+-        ldx pfIndex
+-        cpx #3
+-        bne PickTitleWord
+-        lda menu
+-        beq PickTitleWord
+-        ldx #4
+-PickTitleWord:
+-        lda TitleWordLo,x
+-        sta pfPtr
+-        lda TitleWordHi,x
+-        sta pfPtr+1
+-        ldy #0
+-        lda #7
+-        sta rowIndex
+-TitleGlyphRow:
+-        sta WSYNC
+-        lda (pfPtr),y
+-        sta PF0
++        bne TitleGlyphLine
+         iny
+-        lda (pfPtr),y
+-        sta PF1
+-        iny
+-        lda (pfPtr),y
+-        sta PF2
+-        iny
+-        ldx #4
+-TitleHold4:
+-        sta WSYNC
+-        dex
+-        bne TitleHold4
+-        dec rowIndex
+-        bne TitleGlyphRow
+-        inc pfIndex
+-        lda pfIndex
+-        cmp #4
+-        beq TitleFinish
++        cpy #7
++        beq TitleGlyphDone
++        ldx #8
++        jmp TitleGlyphLine
++TitleGlyphDone:
+         lda #0
+         sta PF0
+         sta PF1
+         sta PF2
+-        ldx #12
+-TitleGap12:
++        ldx #23
++TitleGap:
+         sta WSYNC
+         dex
+-        bne TitleGap12
+-        jmp TitleNextWord
+-TitleFinish:
++        bne TitleGap
++        ; Text-free menu: brighter tree triangle vs open branches.
++        lda menu
++        bne TitleFreeSelected
++        lda #$B6
++        sta sprite0Ptr     ; left selected
++        lda #$34
++        sta sprite1Ptr     ; right inactive
++        jmp TitleMenuReady
++TitleFreeSelected:
++        lda #$34
++        sta sprite0Ptr
++        lda #$B6
++        sta sprite1Ptr
++TitleMenuReady:
++        ldx #0
++TitleMenuLine:
++        ldy TitleMenuY,x
++        sta WSYNC
++        lda sprite0Ptr
++        sta COLUPF
++        lda TitleMenuLeftPF2,y
++        sta PF2
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
++        lda sprite1Ptr
++        sta COLUPF
++        lda TitleMenuRightPF2,y
++        sta PF2
++        inx
++        cpx #24
++        bne TitleMenuLine
++TitleMenuDone:
+         lda #0
+         sta PF0
+         sta PF1
+         sta PF2
+-        ldx #8
+-TitleBottom8:
++        ldx #55
++TitleBottom:
+         sta WSYNC
+         dex
+-        bne TitleBottom8
++        bne TitleBottom
+         rts
+ 
+         include "rom/src/data.inc"
+--- a/rom/src/data.inc
++++ b/rom/src/data.inc
+@@ -119,22 +119,30 @@
+         dc.b <CursorIdle,<CursorAck,<CursorDenied,<CursorIntercept
+ CursorSpriteHi:
+         dc.b >CursorIdle,>CursorAck,>CursorDenied,>CursorIntercept
+-TitleMEL:
+-        dc.b $00,$00,$00,$00,$AE,$01,$00,$E8,$01,$00,$EC,$01,$00,$A8,$01,$00
+-        dc.b $AE,$07,$00,$00,$00
+-TitleLAN:
+-        dc.b $00,$00,$00,$00,$84,$05,$00,$8A,$07,$00,$8E,$07,$00,$8A,$07,$00
+-        dc.b $EA,$05,$00,$00,$00
+-TitleRUM:
+-        dc.b $00,$00,$00,$00,$CA,$05,$00,$AA,$07,$00,$CA,$07,$00,$AA,$05,$00
+-        dc.b $AE,$05,$00,$00,$00
+-TitleKAM:
+-        dc.b $00,$00,$00,$00,$A4,$05,$00,$AA,$07,$00,$CE,$07,$00,$AA,$05,$00
+-        dc.b $AA,$05,$00,$00,$00
+-TitleFRI:
+-        dc.b $00,$00,$00,$00,$EC,$07,$00,$8A,$02,$00,$CC,$02,$00,$8A,$02,$00
+-        dc.b $8A,$07,$00,$00,$00
+-TitleWordLo:
+-        dc.b <TitleMEL,<TitleLAN,<TitleRUM,<TitleKAM,<TitleFRI
+-TitleWordHi:
+-        dc.b >TitleMEL,>TitleLAN,>TitleRUM,>TitleKAM,>TitleFRI
++TitleLeftPF0:
++        dc.b $00,$40,$C0,$C0,$40,$40,$00
++TitleRightPF0:
++        dc.b $00,$40,$D0,$D0,$D0,$50,$00
++TitleLeftPF1:
++        dc.b $00,$BA,$A2,$B2,$A2,$BB,$00
++TitleRightPF1:
++        dc.b $00,$B2,$AA,$B2,$AA,$AB,$00
++TitleLeftPF2:
++        dc.b $00,$84,$44,$C4,$44,$5D,$00
++TitleRightPF2:
++        dc.b $00,$15,$1D,$1D,$15,$15,$00
++TitleMenuLeftPF2:
++        dc.b $18,$3C,$7E
++TitleMenuRightPF2:
++        dc.b $42,$5A,$42
++TitleMenuY:
++        dc.b $00,$00,$00,$00,$00,$00,$00,$00,$01,$01,$01,$01,$01,$01,$01,$01
++        dc.b $02,$02,$02,$02,$02,$02,$02,$02
++ShadowCrownOr:
++        dc.b $00,$00,$33,$15,$13,$00,$00,$00
++ShadowCrownAnd:
++        dc.b $FF,$FF,$3F,$1F,$3F,$FF,$FF,$FF
++ShadowStemOr:
++        dc.b $00,$00,$11,$11,$10,$20,$00,$00
++ShadowStemAnd:
++        dc.b $FF,$FF,$1F,$1F,$1F,$3F,$FF,$FF
+--- a/scripts/generate_rom_data.py
++++ b/scripts/generate_rom_data.py
+@@ -76,14 +76,31 @@
+         'U':['101','101','101','101','111'],'K':['101','101','110','101','101'],
+         'F':['111','100','110','100','100'],'I':['111','010','010','010','111'],
+     }
+-    for word in ['MEL','LAN','RUM','KAM','FRI']:
+-        pf=[]
+-        for y in range(7):
+-            mid=''.join((font[c][y-1] if 1<=y<=5 else '000')+'0' for c in word)
+-            bits='0000'+mid+'0000'
+-            pf+=pfpack(bits)
+-        byte('Title'+word,pf)
+-    labeladdr('TitleWord',['TitleMEL','TitleLAN','TitleRUM','TitleKAM','TitleFRI'])
++    # One uninterrupted 9-character word across the FULL 40 PF pixels. A right-half
++    # TIA PF rewrite on every glyph scanline is required; CTRLPF=0 repeats by default.
++    # 3x5 source font x 9 chars + one zero spacer each + 2px left/right margin.
++    word='MELLANRUM'
++    left=[[],[],[]];right=[[],[],[]]
++    for y in range(7):
++        bits='00'+''.join((font[c][y-1] if 1<=y<=5 else '000')+'0' for c in word)+'00'
++        assert len(bits)==40
++        l=pfpack(bits[:20]);r=pfpack(bits[20:])
++        for idx in range(3):left[idx].append(l[idx]);right[idx].append(r[idx])
++    for i in range(3): byte(f'TitleLeftPF{i}',left[i]);byte(f'TitleRightPF{i}',right[i])
++    # Two NO-TEXT symbols: a tree-like triangle on the left and two open stems
++    # on the right. Selected mode is the brighter half, chosen by SELECT.
++    left_icons=['00011000','00111100','01111110']
++    right_icons=['01000010','01011010','01000010']
++    # Only PF2 is needed at the two distant icon positions (x12..19 / x32..39).
++    byte('TitleMenuLeftPF2',[pfpack('000000000000'+i)[2] for i in left_icons])
++    byte('TitleMenuRightPF2',[pfpack('000000000000'+i)[2] for i in right_icons])
++    byte('TitleMenuY',[i for i in range(3) for _ in range(8)])
++    # A negative central notch, outlined only by transitory conifer branches.
++    # Physically drawn PF OR+AND masks never enter the collision map or pfbuf.
++    byte('ShadowCrownOr', [0,0,0x33,0x15,0x13,0,0,0])
++    byte('ShadowCrownAnd',[0xFF,0xFF,0x3F,0x1F,0x3F,0xFF,0xFF,0xFF])
++    byte('ShadowStemOr',  [0,0,0x11,0x11,0x10,0x20,0,0])
++    byte('ShadowStemAnd', [0xFF,0xFF,0x1F,0x1F,0x1F,0x3F,0xFF,0xFF])
+     result='\n'.join(out)+'\n'
+     path=pathlib.Path(args.output)
+     if args.check:
+--- a/.github/workflows/game.yml
++++ b/.github/workflows/game.yml
+@@ -38,6 +38,8 @@
+           python3 scripts/check_playfield.py
+           python3 scripts/check_input.py
+           python3 scripts/check_frame_budget.py
++      - name: Title exact MELLANRUM and Presence no-physics-change developer tests
++        run: python3 scripts/check_title_presence.py
+       - name: Frame-level CPU/RIOT/WSYNC development trace
+         run: |
+           python3 scripts/cpu_trace.py > build/cpu_trace.txt
+--- /dev/null
++++ b/.github/workflows/title-presence-stella.yml
+@@ -0,0 +1,44 @@
++name: MELLANRUM title Presence real Stella visual capture
++on:
++  push:
++    branches: [main, 'romdev/**']
++  workflow_dispatch:
++permissions:
++  contents: read
++jobs:
++  visual-real-stella:
++    runs-on: ubuntu-24.04
++    steps:
++      - uses: actions/checkout@v4
++        with:
++          persist-credentials: false
++      - name: Install real DASM Stella Pillow and Xvfb
++        run: |
++          sudo apt-get update
++          sudo apt-get install -y dasm stella xvfb xdotool python3-pil
++      - name: Build new production 4K Atari ROM using native DASM
++        run: |
++          mkdir -p build
++          dasm rom/src/main.asm -f3 -obuild/mellanrum_ntsc.bin -lbuild/mellanrum_ntsc.lst -sbuild/mellanrum_ntsc.sym
++          python3 scripts/check_rom.py build/mellanrum_ntsc.bin
++          cp build/mellanrum_ntsc.bin build/native_dasm.bin
++          python3 scripts/assemble_check.py rom/src/main.asm -o build/mellanrum_ntsc.bin
++          cmp build/native_dasm.bin build/mellanrum_ntsc.bin
++          python3 scripts/check_title_presence.py
++      - name: Observe title + all three III intrusion rooms in genuine Stella images
++        shell: bash
++        run: |
++          chmod +x scripts/capture_visual_evidence.sh
++          xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash scripts/capture_visual_evidence.sh
++      - name: Upload full Stella evidence including PNG variants, SHA, ROM and assembler listing
++        if: always()
++        uses: actions/upload-artifact@v4
++        with:
++          name: mell-title-presence-real-stella-developer-evidence
++          path: |
++            build/visual/
++            build/mellanrum_ntsc.bin
++            build/mellanrum_ntsc.lst
++            build/mellanrum_ntsc.sym
++          if-no-files-found: warn
++          retention-days: 30
+--- /dev/null
++++ b/scripts/check_title_presence.py
+@@ -0,0 +1,78 @@
++#!/usr/bin/env python3
++"""New source/6507 developer checks for title and visual Presence.
++Does NOT replace screenshot review in Stella/Gopher2600 or independent verification.
++"""
++from pathlib import Path
++import re,sys
++ROOT=Path(__file__).resolve().parents[1]
++sys.path.insert(0,str(ROOT/'scripts'))
++from cpu_trace import load
++from check_rom_vs_model import new_room,call
++
++asm=(ROOT/'rom/src/main.asm').read_text()
++data=(ROOT/'rom/src/data.inc').read_text()
++assert 'TitleMEL:' not in data and 'TitleKAM:' not in data and 'TitleFRI:' not in data
++assert 'TitleLeftPF0' in asm and 'TitleRightPF2' in asm
++assert "lda menu" in asm and "TitleFreeSelected" in asm
++
++def tab(name):
++    m=re.search(r'^'+re.escape(name)+r':\s*\n((?:\s+dc\.b [^\n]+\n)+)',data,re.M)
++    assert m,name
++    return [int(s[1:],16) for s in re.findall(r'\$[A-Fa-f0-9]{2}',m.group(1))]
++def r4(n):return int(f'{n:04b}'[::-1],2)
++def bits(p):
++    a,b,c=p
++    return ''.join(f'{n:04b}' for n in [r4(a>>4),b>>4,b&15,r4(c&15),r4(c>>4)])
++
++src_font={'M':['101','111','111','101','101'],'E':['111','100','110','100','111'],
++'L':['100','100','100','100','111'],'A':['010','101','111','101','101'],
++'N':['101','111','111','111','101'],'R':['110','101','110','101','101'],
++'U':['101','101','101','101','111']}
++for y in range(7):
++    got=bits([tab('TitleLeftPF'+str(i))[y] for i in range(3)])+bits([tab('TitleRightPF'+str(i))[y] for i in range(3)])
++    want='00'+''.join((src_font[ch][y-1] if 1<=y<=5 else '000')+'0' for ch in 'MELLANRUM')+'00'
++    assert got==want,(y,got,want)
++assert len(tab('TitleMenuLeftPF2'))==3 and len(tab('TitleMenuRightPF2'))==3
++assert not any(k in data for k in ('TitleWordLo:', 'TitleWordHi:','TitleKAM:','TitleFRI:'))
++
++# Console SELECT is covered by check_input.py; check video title in real CPU model.
++c=load(str(ROOT/'build/mellanrum_ntsc.bin'),str(ROOT/'build/mellanrum_ntsc.sym'))
++c.run_to_frame(4)
++assert all(t==19912 for t,_,_ in c.frame_samples[1:]),c.frame_samples
++assert c.ram('menu')==0
++c.input_swchb=0xfd;c.run_to_frame(6);assert c.ram('menu')==1
++c.input_swchb=0xff;c.run_to_frame(8);assert c.ram('menu')==1
++assert c.frame_samples[-1][0]==19912
++print('TITLE_EXACT_WORD_PASS: 9 connected glyphs, no other textual words, SELECT preserved; 262 scanlines developer CPU')
++
++# Shadow is gated by the precise original state machine. Cases include all three active rooms.
++for room,warn,active1,after in [(12,1,2,4),(13,0,1,3),(14,2,3,5)]:
++    for tick,state in [(max(0,warn-1),0 if warn>0 else 1),(warn,1),(active1,2),(active1+1,2),(after,3)]:
++        c=new_room(room);c.write(c.syms['beat'],tick);call(c,'UpdatePresence')
++        assert c.ram('presence')==state,(room,tick,c.ram('presence'),state)
++        c.write(c.syms['soundStep'],0);call(c,'SetShadowVisibility')
++        assert c.ram('shadowOn')==(state if state in (1,2) else 0),(room,tick,'gate ON')
++        c.write(c.syms['soundStep'],33);call(c,'SetShadowVisibility')
++        assert c.ram('shadowOn')==0,(room,tick,'gate OFF')
++        c.write(c.syms['soundStep'],0);call(c,'SetShadowVisibility')
++        before=(bytes(c.mem[0x80:0x80+48]),bytes(c.mem[0xB0:0xB8]))
++        pf2=[]
++        oldwrite=c.write
++        def logwrite(addr,val):
++            if addr==0x0F:pf2.append((c.ram('rowIndex'),val))
++            oldwrite(addr,val)
++        c.write=logwrite
++        call(c,'RenderPlay',limit=150000)
++        afterrender=(bytes(c.mem[0x80:0x80+48]),bytes(c.mem[0xB0:0xB8]))
++        assert before==afterrender,(room,tick,'render mutated physics/PF model')
++        assert len(pf2)>=16,(room,tick,'no PF2 scanline updates')
++        if state==2:
++            # Compare exact same room/tick in invisible interval. No gameplay state changed.
++            d=new_room(room);d.write(d.syms['beat'],tick);call(d,'UpdatePresence');d.write(d.syms['soundStep'],33);call(d,'SetShadowVisibility')
++            normal=[];old=d.write
++            def lognormal(addr,val):
++                if addr==0x0F:normal.append((d.ram('rowIndex'),val))
++                old(addr,val)
++            d.write=lognormal;call(d,'RenderPlay',limit=150000)
++            assert pf2!=normal,(room,tick,'shadow not visible at PF2 TIA register')
++print('PRESENCE_RENDER_PASS: exact windows III-03/04/05; visual register delta; pfbuf and collision map invariant')
+--- /dev/null
++++ b/scripts/make_visual_evidence_rom.py
+@@ -0,0 +1,37 @@
++#!/usr/bin/env python3
++"""Construct transparently instrumented 6507 emulator-only ROM for observing an exact room/tick.
++
++Product ROM never includes these instructions. DEBUG image uses unchanged product
++RenderPlay, phase, TIA colors, shadow, and collision geometry. Its Reset stanza
++sets a V5.1 source room and Presence beat before execution begins.
++
++The instrumented binary is NOT a substitute for frame-exact product ROM replay.
++"""
++import argparse,pathlib
++ROOT=pathlib.Path(__file__).resolve().parents[1]
++p=argparse.ArgumentParser();p.add_argument('--room',type=int,required=True);p.add_argument('--beat',type=int,required=True);p.add_argument('--output',required=True)
++a=p.parse_args();assert 0<=a.room<=14;assert 0<=a.beat<=7
++s=(ROOT/'rom/src/main.asm').read_text()
++key='        sta ENABL\n\nFrame:'
++assert s.count(key)==1
++inject=f'''        sta ENABL
++        ; EMULATOR EVIDENCE VARIANT: only the Reset start state is instrumented.
++        ; TIA/video, owl, collision, collision map and Presence code are unmodified.
++        lda #{a.room}
++        sta room
++        lda #1
++        sta mode
++        jsr LoadRoom
++        lda #{a.beat}
++        sta beat
++        jsr UpdatePresence
++        lda #0
++        sta introFrames
++        sta soundStep
++        lda #$FE             ; hold room/tick in image-capture window (< 4 s)
++        sta beatFrames
++
++Frame:'''
++s=s.replace(key,inject,1)
++out=pathlib.Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(s)
++print(f'EVIDENCE_VARIANT room={a.room} beat={a.beat} product ASM untouched; variant={out}')
+--- /dev/null
++++ b/scripts/capture_visual_evidence.sh
+@@ -0,0 +1,60 @@
++#!/usr/bin/env bash
++# Actual Stella / real 6507+TIA software emulator, Xvfb. Capture multiple frames
++# per room so intermittent 24-on/40-off rendering is demonstrably observable.
++set -euo pipefail
++mkdir -p build/visual/shots build/visual/variants
++export SDL_AUDIODRIVER=dummy
++export SDL_VIDEODRIVER=x11
++export DISPLAY="${DISPLAY:-:99}"
++
++capture_one() {
++  local file="$1" label="$2" with_select="${3:-0}"
++  echo "RUN_REAL_STELLA $label $file"
++  stella -video software -fullscreen 0 -tia.zoom 3 -sssingle 0 -ss1x 1 \
++      -snapsavedir "${PWD}/build/visual/shots" "$file" \
++      > "build/visual/${label}.stella.log" 2>&1 &
++  local pid=$! win=''
++  for k in $(seq 1 20); do
++      win=$(xdotool search --onlyvisible --pid "$pid" | head -1 || true)
++      if [[ -z "$win" ]]; then win=$(xdotool search --onlyvisible --name 'Stella' | head -1 || true); fi
++      if [[ -n "$win" ]]; then break; fi
++      if ! kill -0 "$pid" 2>/dev/null; then break; fi
++      sleep 0.5
++  done
++  if [[ -z "$win" ]]; then
++    echo "EMULATOR_WINDOW_FAIL $label"
++    cat "build/visual/${label}.stella.log"
++    kill "$pid" 2>/dev/null || true
++    return 1
++  fi
++  xdotool windowfocus --sync "$win"
++  # 0.2s intervals span a complete 64-frame visual gate at 60 Hz.
++  for k in $(seq 1 12); do
++    xdotool key --clearmodifiers F12
++    sleep 0.18
++  done
++  if [[ "$with_select" == 1 ]]; then
++    xdotool key --clearmodifiers F1 # Stella console SELECT; real UI, not simulated
++    sleep 0.4
++    xdotool key --clearmodifiers F12
++  fi
++  kill "$pid" 2>/dev/null || true
++  wait "$pid" 2>/dev/null || true
++  local count
++  count=$(find build/visual/shots -maxdepth 1 -type f -iname "$(basename "${file%.bin}")*.png" | wc -l)
++  echo "EMULATOR_CAPTURE_COUNT $label $count"
++  if (( count < 3 )); then cat "build/visual/${label}.stella.log";return 1;fi
++}
++
++capture_one build/mellanrum_ntsc.bin TITLE 1
++for spec in '12 0 III03_before' '12 1 III03_warning' '12 2 III03_active' '12 4 III03_after' \
++            '13 0 III04_warning' '13 1 III04_active' '13 3 III04_after' \
++            '14 1 III05_before' '14 2 III05_warning' '14 3 III05_active' '14 5 III05_after'; do
++  read -r room tick label <<< "$spec"
++  python3 scripts/make_visual_evidence_rom.py --room "$room" --beat "$tick" --output "build/visual/variants/${label}.asm"
++  dasm "build/visual/variants/${label}.asm" -f3 -o"build/visual/variants/${label}.bin" -l"build/visual/variants/${label}.lst"
++  test "$(wc -c < "build/visual/variants/${label}.bin")" -eq 4096
++  capture_one "build/visual/variants/${label}.bin" "$label"
++done
++( cd build/visual && find shots variants -type f \( -name '*.png' -o -name '*.bin' \) -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS )
++python3 scripts/check_visual_captures.py
+--- /dev/null
++++ b/scripts/check_visual_captures.py
+@@ -0,0 +1,33 @@
++#!/usr/bin/env python3
++"""Check real screenshots exist and visual region differs on/off (not aesthetic acceptance)."""
++from PIL import Image,ImageChops
++from pathlib import Path
++import collections
++p=Path('build/visual/shots')
++labels=['III03_before','III03_warning','III03_active','III03_after',
++        'III04_warning','III04_active','III04_after',
++        'III05_before','III05_warning','III05_active','III05_after']
++images={}
++for label in labels:
++    files=sorted(p.glob(label+'*.png'))
++    assert len(files)>=3,(label,len(files))
++    images[label]=[Image.open(f).convert('RGB') for f in files]
++    assert all(x.width>=160 and x.height>=192 for x in images[label])
++print('EMULATOR_PNG_FILES_PRESENT',sum(len(x) for x in images.values()))
++# Actual TIA framebuffer evidence, not just PNG file existence.
++# Compare snapshots of ONE fixed room and logical beat. In the variants only
++# soundStep's 24-on/40-off visual gate advances; owl, stone, collisions and
++# stored PF/cursor geometry are held stable by an explicitly marked Reset stub.
++# This verifies that the actual emulator raster visibly changes with the gate.
++for id in ['III03','III04','III05']:
++    for state,minimum in [('active',500),('warning',200)]:
++        im=images[id+'_'+state]
++        box=(im[0].width//3,im[0].height//4,2*im[0].width//3,3*im[0].height//4)
++        diffs=[]
++        for a in im[1:]:
++            diff=ImageChops.difference(im[0].crop(box),a.crop(box))
++            count=sum(any(px) for px in diff.getdata())
++            diffs.append(count)
++        assert max(diffs,default=0)>=minimum,(id,state,diffs)
++        print('STELLA_REAL_PF_GLIMPSE_PASS',id,state,'changed_pixels_at_least',max(diffs))
++print('EMULATOR_CAPTURE_PASS: real-Stella selected room/tick ON-OFF frames; NOT full product joystick replay or artistic certification')
+--- /dev/null
++++ b/docs/ROMDEV_TITLE_PRESENCE_REVISION_2026-11-22.md
+@@ -0,0 +1,35 @@
++# ROM DEVELOPMENT: MAIN title + Presence change order (Issue #8)
++
++**Authority:** `docs/MAIN_TO_ROMDEV_TITLE_AND_PRESENCE_2026-11-22.md` on `main`; limited to two approved visual revisions. This handoff documents implementation and developer tests, not MAIN art acceptance, Pachinko 2.0 or independent Verification. PR remains Draft/unmerged. No changes to 15 original `reference/rooms.json` rooms or V5.1 physics.
++
++## A: Title only MELLANRUM
++
++- Exact horizontal word `MELLANRUM` in a 9-character, 3×5 bespoke block font, two-pixel margins in the **full 40-bit TIA playfield**; 40-bit rows generated deterministically by `scripts/generate_rom_data.py`, two halves output within each scanline using late PF register rewrites. `CTRLPF=0` only for title, restored to mirrored `CTRLPF=1` during gameplay.
++- Removed all old `TitleMEL/LAN/RUM/KAM/FRI` tables. No other rendered text is present in the title renderer. Menu remains same two modes and original console controls (SELECT toggles / FIRE starts).
++- Two abstract non-text forms beneath title: left green conifer-like triangle = KAMPANJ; right open branch shape = FRI SKOG. Bright versus dim indicates selection. Their design requires learning; they are distinguishable by position and luminance but not written labels.
++- Video scanline accounting in local full 6502 CPU/RIOT/WSYNC model: title 262 NTSC lines. The title raster's explicit 32/56/23/24/55 WSYNC holds plus two blank boundary wraps fit the 192-line visible interval. The full word is unchanged by menu selection. Both icon halves switch PF color after the left PF2 pixels finish (~cycle 50), before right PF2 pixels start (~cycle 66). Real Stella screenshots are an additional separately identified layer of evidence.
++
++## B: Presence as render-only between-tree negative space
++
++- `SetShadowVisibility` runs once in VBlank. Uses **existing authoritative V5.1** `presence` states: 1 warning and 2 active; 0 normal / 3 release produce no silhouette. A deterministic `soundStep & 63 < 24` visual gate produces a 24-frame glimpse / 40-frame absence (~0.4 s visible, ~0.67 s absent at NTSC 60 Hz), not random flashes.
++- `ShadowCrownOr/And` and `ShadowStemOr/And` tables shape a visually temporary central forest interruption between reflected pines, with a narrowed void with disconnected edges, while central PF2 bits that resembled paired eyes in the first real Stella capture have been removed. No anatomical face or eyes are intended. WARNING shows fragments of crown only; ACTIVE also carves lower band fragments. TIA uses existing `PF2` register; P0 owl, P1 cursor, BL stone and M0 exit are untouched.
++- New `shadowOn` at zero page follows ONLY `presence` and `soundStep`; it does not enter `PassableCandidate`, `mapRows`, `pfbuf`, the echo queue, phase, stone logic, exit or any collision rule. `CrownLast3` precomputes BL/M0 enable scratch to keep stem/PF write in the existing scanline. No extra sprite, hitbox or AI.
++- Does not add strobing or jumpscare. Warning, active and release still separately encoded in `PresenceHUD` and sound.
++- Any judgment of how *recognizable/ambiguous* the shadow looks is **artistic review**, not CI success.
++
++## Testing boundaries and reproducibility
++
++1. Original `reference/rooms.json` and GRAPHICS V5.1 source geometry remain byte-identical; original packages are separately hashed and CRC-validated in previous `docs/PROVENANCE.md`.
++2. `python scripts/generate_rom_data.py --original reference/rooms.json --graphics graphics --output rom/src/data.inc --check` ensures generated bytes match originals.
++3. `python scripts/check_title_presence.py` exercises actual 6507 code for title SELECT and physical `PF2` writes during real V5.1 warning/active/release states for III-03, III-04, III-05 and checks the entire 48-byte playfield buffer and collision map unchanged after rendering.
++4. `python scripts/check_frame_budget.py`, `python scripts/check_input.py`, `python scripts/check_rom_vs_model.py`, `python scripts/check_playfield.py`, reference unit tests: developer CPU + model, not a hardware emulator.
++5. Real DASM and native byte comparison in GitHub Actions `game.yml` and core CI. Separate `title-presence-stella.yml` builds the uninstrumented ROM and captures actual Stella PNG. To observe precise Presence windows, `scripts/make_visual_evidence_rom.py` creates **explicitly instrumented Reset-only test variants**, one per original room/beat; **these variant hashes differ from production ROM**. The unchanged game rendering path is exercised in the real emulator. This is NOT frame-exact campaign replay and is not independent verification.
++6. Recheck 262-line actual emulator raster timing, collision overlays and all frame-indexed user replay in Pachinko 2.0 / independent Verification, as specifically required by MAIN; never transfer the baseline old ROM hash's PASS to the revised ROM.
++
++## Status and decision
++
++- Developer source/model checks: PASS, see `ISSUE8_TEST_MATRIX_2026-11-22.md`; [native test Actions 45072844664](https://github.com/Odourman/mellanrum/actions/runs/45072844664).
++- Native DASM and ROM SHA: PASS, 4096 bytes SHA256 `a9531d5bbbff033711fbe54f8688b8e0259640e0a9a284c8ab585eea415c0bd5`, downloaded Actions artifact and byte-compared to local candidate.
++- Stella screenshots: PASS for observable title/menu and perceptible on/off negative-space gap in III-03/04/05 using declared instrumented room/tick variants; see [Stella Actions 45072837947](https://github.com/Odourman/mellanrum/actions/runs/45072837947). MAIN art acceptance remains pending.
++- PAL/physical Atari, audio listening, full frame-indexed fifteen-room emulator replay: **NOT_RUN / not claimed**.
++- No merge/release; return immutable commit, SHA, code, PNG artifact references to MAIN for its acceptance gate.
+--- /dev/null
++++ b/docs/ISSUE8_TEST_MATRIX_2026-11-22.md
+@@ -0,0 +1,56 @@
++# MELLANRUM / ROM DEVELOPMENT – Issue #8 implementation and evidence handoff
++
++**Date:** 2026-11-22. **Status:** `NATIVE_DASM_BUILD_PASS` + `DEVELOPER_MODEL_PASS` + `STELLA_VISUAL_OBSERVED`. **Not:** independent Verification, complete real-emulator campaign PASS, hardware approval, merge or release.
++
++## Authority, immutable code and build
++
++- Binding authorization: [MAIN order](https://github.com/Odourman/mellanrum/blob/main/docs/MAIN_TO_ROMDEV_TITLE_AND_PRESENCE_2026-11-22.md) and [Issue #8](https://github.com/Odourman/mellanrum/issues/8).
++- Base ROM: GitHub draft PR #4, source commit `8bdecde79a6bc1ecb804484d5d257f4f1a99b052`, SHA-256 `ec791333da37613ec99ea70b2a983ecc1666b4e576211ece41a8e40bd14cbaed`.
++- Revised PRODUCT source code commit: `6f6319be31985ea9009b7c21988f2977f1509e46` on `romdev/fullgame-20261122`. Subsequent evidence/docs-only commits preserve the identical product bytes unless explicitly noted.
++- Revised ROM: `rom/bin/mellanrum_ntsc.bin` / `build/mellanrum_ntsc.bin`; **4,096 bytes**, standard 4 KiB NTSC, **SHA-256 `a9531d5bbbff033711fbe54f8688b8e0259640e0a9a284c8ab585eea415c0bd5`**.
++- [Native DASM and development tests](https://github.com/Odourman/mellanrum/actions/runs/45072844664): SUCCESS. The exact native DASM ROM was downloaded from artifact `14773519887`, ZIP CRC good, bytes matched local developer assembler ROM. Current source data generator and source geometry remain exact.
++- [Existing static+native optional DASM CI](https://github.com/Odourman/mellanrum/actions/runs/45072844641): SUCCESS.
++- [Existing Stella boot smoke](https://github.com/Odourman/mellanrum/actions/runs/45072844669): SUCCESS.
++- [New real Stella multi-screenshot run](https://github.com/Odourman/mellanrum/actions/runs/45072837947): SUCCESS; artifact `14773997555` includes **145 PNG frames**, 11 explicitly instrumented room/beat variants, PNGs, assembler listings, ROM hashes, and raw Stella logs. Original ZIP CRC verified.
++
++## Exact approved changes
++
++A. The TITLE displays precisely one full word, **MELLANRUM**, on a single horizontal line, encoded as 40-bits per glyph row and drawn by real TIA left/right PF register updates. Existing SELECT toggles KAMPANJ/FRI SKOG and FIRE starts the selected mode. The game does **not** draw textual KAM/FRI words. Two non-text conifer/branch symbols are distinguished by selected bright vs dim color. Genuine Stella screenshots: `evidence/issue8/title_campaign.png`, `evidence/issue8/title_free_forest.png`, `evidence/issue8/STELLA_TITLE_TWO_MODES_CONTACT_SHEET.png`.
++
++B. During V5.1 foreshadow and active Presence states, a *purely visual* 24-frame on/40-frame off interruption of PF2 sculpts a short-lived hollow, incomplete, eye-less gap between reflected conifer silhouettes. Warning uses only crowns, active uses crown+stem; release returns to normal. No new enemy sprite, TIA object, AI, hitbox, collision-map write, phase change, echo change, stone-state rule change, joystick change, exit rule or randomness. Live TIA PF register updates in actual Stella evidenced for **III-03, III-04, III-05**.
++
++## Test matrix (source-derived / real-emulator distinctions)
++
++| Test | Result | How checked / limitations |
++|---|---|---|
++| Original reference source unit tests | **PASS 20/20** | Python reference only; source `rooms.json` unchanged |
++| Original 15 geometry and solution witnesses | **PASS 15/15** | CPU 6507 developer machine code vs Python oracle |
++| Additional deterministic/randomized development tests | **PASS 225 runs / 4352 ticks** | Not real emulator button replays |
++| Dynamic mirrored tree operations | **PASS 20** | `check_playfield.py`; actual `pfbuf` byte checks |
++| Title exact word data | **PASS** | `check_title_presence.py` reconstructs all 40 PF bits / 9 glyphs; no extra title word tables |
++| SELECT/FIRE/RESET and original two modes | **PASS** | Original developer `check_input.py`; SELECT mode changes also pictured in Stella; frame-exact real gameplay input not proven |
++| Presence scheduled warning/active/release | **PASS** | `check_title_presence.py` cases for III-03/04/05, existing authoritative `UpdatePresence` unchanged |
++| Presence renderer does not alter map or collision geometry | **PASS** | 48-byte `pfbuf`, 8-byte `mapRows` snapshot compare before/after `RenderPlay` |
++| Title & 15 room developer raster | **PASS** | Developer 6502/RIOT/WSYNC model observed stable 262 NTSC scanlines; *not independent Stella raster analyzer* |
++| Native production ROM, SHA, byte equality | **PASS** | Real DASM in Actions vs separate Python subset assembler; 4096 bytes |
++| Actual Stella title, exactly one readable word | **OBSERVED PASS** | Uninstrumented production ROM screenshot, single horizontal `MELLANRUM` and no other on-screen words |
++| Actual Stella menu selection | **OBSERVED PASS** | `xdotool F1` SELECT changes active visual icon, single word stays unchanged |
++| Actual Stella Presence III-03/04/05 | **OBSERVED PASS** | Real TIA frames of *instrumented Reset-only room/tick variants*; paired active off/on at same room and tick plus after |
++| Actual Stella visible pixel change | **PASS** | Central-forest on/off delta: III-03 **1616**, III-04 **1518**, III-05 **2022** pixels in identical game state; warning stage delta 680/582/662 |
++| Actual Stella full 15-room campaign with real joystick replay | **NOT_RUN** | Separate Pachinko 2.0 and independent Verification required |
++| Real emulator TIA scanline and collision-register analyzer | **NOT_RUN** | Only developer cycle model plus Stella observation, not pixel-accurate timing certification |
++| Audition of actual Atari sound / WAV measurement | **NOT_RUN** | Audio logic was unchanged; no new audio evidence claimed |
++| PAL / original physical Atari | **NOT_IMPLEMENTED / NOT_RUN** | NTSC candidate only |
++| Independent VERIFICATION, artistic acceptance, release | **PENDING** | MAIN / Pachinko 2.0 / separate Verification |
++
++## Reproducible visual method and important caveat
++
++The `scripts/make_visual_evidence_rom.py` test generator takes the **same production assembler source** and creates a **separate instrumented Reset variant** for each targeted source room and logical tick. The variant initializes `room`, `mode`, `beat`, calls original `LoadRoom` and `UpdatePresence`, and holds normal owl beat countdown for the screenshot window. **Its code / hash differ from the ordinary product ROM**, but the original TIA raster code, original material geometry, and dynamic shadow renderer are unchanged. Real Stella 6.7+ running on Xvfb draws and saves the PNGs via F12; there is no fabricated graphics screenshot. Two frames from the same active tick prove the 24-on/40-off visual gate works. These variants are **not** proof that a complete player-run campaign navigated to those states.
++
++The annotated contact sheets place labels *outside* the original 320×228 screenshots; the 16 individual source PNGs are byte-unchanged from Stella's artifact and include SHA-256 in `evidence/issue8/README.md`. `scripts/check_visual_captures.py` now requires substantial actual center-screen pixel differences for active + warning states, not just file existence.
++
++## Artistic/technical deviations and outstanding gates
++
++The silhouette is deliberately a central **geometric negative-space tear**, not a separate creature, face or eyes; reflection retains a formal symmetry. Whether it is disturbing and sufficiently incomplete is **MAIN's artistic decision**, not something Python can certify. No fourth material object appears, and no screen-flash. The title's two icons are nonverbal and do not explain their semantic meaning on-screen; external manual/packaging must document left=campaign, right=free forest. Title frame under developer model remains exactly 262 scanlines, though two blank boundary wraps occur in the visible-title routine.
++
++**Do not merge or release without separate MAIN authorization.** The old full-system/Pachinko report applies only to original SHA and must be rerun against `a9531d5b...`, with independent Verification separately performed for the exact commit and ROM bytes.

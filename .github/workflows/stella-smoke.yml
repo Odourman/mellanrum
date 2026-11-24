@@ -1,0 +1,38 @@
+name: MELLANRUM Stella actual emulator boot smoke
+on:
+  push:
+    branches: [main, 'romdev/**']
+  pull_request:
+  workflow_dispatch:
+jobs:
+  stella-ntsc-boot:
+    # Issue26 uses the strict real-F6 workflow; this historical job rebuilds
+    # 4K Issue15 source and must not run against an unrelated 16K candidate.
+    if: ${{ !startsWith(github.ref, 'refs/heads/romdev/issue26-') && !startsWith(github.head_ref, 'romdev/issue26-') && !startsWith(github.ref, 'refs/heads/romdev/issue32-') && !startsWith(github.head_ref, 'romdev/issue32-') && !startsWith(github.ref, 'refs/heads/romdev/mainii-') && !startsWith(github.head_ref, 'romdev/mainii-') }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install real DASM and real Stella emulator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm stella xvfb xdotool
+      - name: Build native DASM ROM
+        run: |
+          mkdir -p build
+          dasm rom/src/main.asm -f3 -obuild/mellanrum_ntsc.bin
+          test "$(wc -c < build/mellanrum_ntsc.bin)" -eq 4096
+      - name: Boot actual Stella in an Xvfb software-rendered display; capture PNG
+        shell: bash
+        run: |
+          chmod +x scripts/stella_smoke.sh
+          xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' bash scripts/stella_smoke.sh
+      - name: Upload genuine Stella screenshots and emulator output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mell-stella-actual-emulator-boot-captures
+          path: build/stella/
+          if-no-files-found: warn
+          retention-days: 30

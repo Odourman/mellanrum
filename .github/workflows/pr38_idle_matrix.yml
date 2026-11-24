@@ -1,0 +1,52 @@
+name: PR38 UI two-axis HUD bfdeb – 15 native Stella idle 600s
+on:
+  push:
+    branches: [romdev/mainii-freeforest-and-campaign-20261123]
+    paths:
+      - '.github/workflows/pr38_idle_matrix.yml'
+      - 'tests/issue32/pr38_idle_one_room.py'
+      # Version-specific replay: source changes require a new exact-ROM pin,
+      # not silently reusing this matrix against a different product SHA.
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  idle-one-room:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        room: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download original exact native Stella executable+ROM+controller evidence
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45341893964
+          name: mainii-experimental-F6-Stella15-FRI-evidence
+          github-token: ${{ github.token }}
+          path: build/evidence
+      - name: Verify same native frozen ROM before running ANY frames
+        run: |
+          echo 'bfdeb5308dcecc526e802cd95886b94e0ce4953628e7bc7190c5d49231deac06  build/evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path('build/evidence')
+          j=json.loads((root/'CAMPAIGN/result.json').read_text())
+          s=hashlib.sha256((root/'MELLANRUM_16K_NTSC_F6.bin').read_bytes()).hexdigest()
+          assert j['rom_sha256']==s and j['win_rooms']==list(range(15)),j
+          assert (root/'stella_libretro.so').exists()
+          PY
+      - name: Actually simulate 36000 quiet NTSC frames from controller-reached state
+        run: |
+          python3 tests/issue32/pr38_idle_one_room.py --core build/evidence/stella_libretro.so --rom build/evidence/MELLANRUM_16K_NTSC_F6.bin --events build/evidence/CAMPAIGN/controller_frame_events.json --room ${{ matrix.room }} --out build/idle_room_${{ matrix.room }}
+      - name: Upload this room's actual input-same-ROM idle evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr38-real-stella-idle-room-${{ matrix.room }}
+          path: build/idle_room_${{ matrix.room }}/
+          retention-days: 30

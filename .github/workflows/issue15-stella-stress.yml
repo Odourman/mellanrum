@@ -1,0 +1,59 @@
+name: ISSUE15 seeded authentic Stella adversarial input and 50000-frame FRI longevity
+on:
+  push:
+    branches: [romdev/issue15-complete-u3-s3-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stress-stella:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Native ROM identity and actual Stella/libretro core binary
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm curl unzip
+          mkdir -p build/issue15_stella_stress
+          dasm rom/src/main.asm -f3 -obuild/issue15_stella_stress/native.bin
+          cmp build/issue15_stella_stress/native.bin rom/bin/mellanrum_ntsc.bin
+          echo '45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7  build/issue15_stella_stress/native.bin' | sha256sum -c -
+          curl -fsSL --retry 4 --retry-delay 2 -o build/issue15_stella_stress/stella_libretro.so.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue15_stella_stress/stella_libretro.so.zip -d build/issue15_stella_stress
+          sha256sum build/issue15_stella_stress/stella_libretro.so > build/issue15_stella_stress/CORE_SHA256SUMS
+      - name: Reproducible adversarial 3-profile actual input sessions (7 500 frames) and 50 000-frame FRI long-run
+        run: |
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue15_stella_stress/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/issue15_stella_stress/BOG --frames 2500 --seed 2407 --profile BOG --left B --snap-every 500 --sample-every 250 --audio-frames 0
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue15_stella_stress/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/issue15_stella_stress/CLOG --frames 2500 --seed 7731 --profile CLOG --left B --snap-every 500 --sample-every 250 --audio-frames 0
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue15_stella_stress/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/issue15_stella_stress/TILT_FIRE --frames 2500 --seed 1234 --profile TILT_FIRE --left B --snap-every 500 --sample-every 250 --audio-frames 0
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue15_stella_stress/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --out build/issue15_stella_stress/LONG_50K --frames 50000 --seed 9979 --profile TILT_STONE --left B --snap-every 5000 --sample-every 2500 --audio-frames 0
+      - name: Check real 6507 frame callbacks, FRI mode and no 50k-frame crash
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path("build/issue15_stella_stress")
+          totals=0
+          for name,count in (("BOG",2500),("CLOG",2500),("TILT_FIRE",2500),("LONG_50K",50000)):
+              d=root/name
+              obj=json.loads((d/"result.json").read_text())
+              assert obj["status"]=="PASS" and obj["video_callbacks"]==count and obj["emulated_frames"]==count,obj
+              rows=[json.loads(s) for s in (d/"read_only_ram.jsonl").read_text().splitlines()]
+              assert rows and all(bytes.fromhex(s["raw_ram_hex"])[0xb8-0x80]==4 for s in rows if s["frame"]>=142),(name,rows[:3])
+              result={"case":name,"frames":count,"status":"PASS","core_sha256":obj["core"]["core_sha256"],"rom_sha256":obj["rom_sha256"],"read_only_ram_snapshots":len(rows),"mode4_after_start":True}
+              (d/"strict_stress_result.json").write_text(json.dumps(result,indent=2)+"\n")
+              print("REAL_STELLA_FRI_STRESS_PASS",json.dumps(result))
+              totals+=count
+          assert totals==57500
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue15-real-STELLA-FRI-adversarial-57500-frames
+          path: |
+            build/issue15_stella_stress/BOG/
+            build/issue15_stella_stress/CLOG/
+            build/issue15_stella_stress/TILT_FIRE/
+            build/issue15_stella_stress/LONG_50K/
+            build/issue15_stella_stress/CORE_SHA256SUMS
+          retention-days: 30
