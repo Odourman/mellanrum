@@ -1,0 +1,28 @@
+name: Issue46 Gate B native F6 build and tooling
+on:
+  push:
+    branches: [romdev/issue46-u3-direction-20261124]
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm
+          mkdir -p build/issue46
+          cp "$(command -v dasm)" build/issue46/dasm
+          dasm || true
+          python3 rom/f6/build_f6.py --out build/issue46
+          python3 rom/f6/build_f6.py --out build/issue46-rebuild
+          cmp build/issue46/MELLANRUM_16K_NTSC_F6.bin build/issue46-rebuild/MELLANRUM_16K_NTSC_F6.bin
+          cmp rom/bin/MELLANRUM_16K_NTSC_F6.bin build/issue46/MELLANRUM_16K_NTSC_F6.bin
+          echo '5b8315512bf274398c3d2f4622dc96e081d1481d93b2c8adaf6411de2e2a0ed5  build/issue46/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue46-native-build
+          path: build/issue46/
+          retention-days: 30

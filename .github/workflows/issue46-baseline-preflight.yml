@@ -1,0 +1,82 @@
+name: Issue46 read-only native baseline and isolated graphics preparation
+on:
+  push:
+    branches: [romdev/issue46-u3-direction-20261124]
+permissions:
+  contents: read
+jobs:
+  baseline-preflight:
+    if: github.sha == '063879433f5fa64232e09afda2bd3fe34ea97d21'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild unchanged PR44 native DASM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm
+          dasm || true
+          python3 rom/f6/build_f6.py --out build/issue46-baseline
+          echo '07970f492ca9c8aa2f0445b00ce6a046624176db6ebaa7917d7392b7f6b43c2c  build/issue46-baseline/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
+          cmp rom/bin/MELLANRUM_16K_NTSC_F6.bin build/issue46-baseline/MELLANRUM_16K_NTSC_F6.bin
+      - name: Isolated data-only probe, never integrated into the game
+        run: |
+          mkdir -p build/issue46-preflight
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, re
+          root=Path('build/issue46-baseline')
+          out=Path('build/issue46-preflight')
+          bank=(root/'bank3.bin').read_bytes()
+          assert hashlib.sha256(bank).hexdigest()=='d4061eda4a50ba9b18f925eb30f935dbd2599764ff53b881548961b1ae79e239'
+          sym={m[1]:int(m[2],16) for m in re.finditer(r'(?m)^([A-Za-z_][\w.]*)\s+([a-fA-F0-9]{4})\b',(root/'bank3.sym').read_text())}
+          def data(k,n):
+              i=sym[k]-0xf000
+              return bank[i:i+n]
+          common=data('CommonTopPF',6)
+          assert common==bytes.fromhex('F0 FF FF 60 66 66')
+          payload=bytearray()
+          for i in range(15):
+              old=data('GeoPF'+str(i),42)
+              assert old[-6:]==common
+              new=old[:36]
+              assert common+new+common==common+old
+              payload.extend(new)
+          oracle={
+              'RIGHT':['18 7E DB F7 F7 7E 7E 24','18 7E DB F7 F7 FF BD 24','18 7E DB F7 F7 FF FF 24'],
+              'LEFT':['18 7E DB EF EF 7E 7E 24','18 7E DB EF EF FF BD 24','18 7E DB EF EF FF FF 24'],
+              'UP':['38 7E 5F E6 FE 5F 7E 38','3E 7C 5F E6 FE 5F 7C 3E','3E 7E 5F E6 FE 5F 7E 3E'],
+              'DOWN':['1C 7E FA 7F 67 FA 7E 1C','7C 3E FA 7F 67 FA 3E 7C','7C 7E FA 7F 67 FA 7E 7C']}
+          frames={}
+          for i in range(3):
+              raw=data('OwlB'+str(i),9)
+              assert raw[-1]==0
+              m=[[int(bool(v&(128>>x))) for x in range(8)] for v in raw[:8][::-1]]
+              tr={'RIGHT':m,'LEFT':[row[::-1] for row in m],'UP':[[m[x][7-y] for x in range(8)] for y in range(8)],'DOWN':[[m[7-x][y] for x in range(8)] for y in range(8)]}
+              for k,mat in tr.items():
+                  mask=bytes(sum(b<<(7-x) for x,b in enumerate(row)) for row in mat)
+                  assert mask==bytes.fromhex(oracle[k][i])
+                  frames[k,i]=mask[::-1]+b'\x00'
+          for k in ('DOWN','UP'):
+              for i in range(3):
+                  payload.extend(frames[k,i])
+          assert len(payload)==594
+          src='        processor 6502\n        SEG data\n        ORG $F000\n'
+          src+=''.join('        dc.b '+','.join(f'${b:02X}' for b in payload[i:i+18])+'\n' for i in range(0,len(payload),18))
+          # Use direct format, avoid shell expansion: heredoc is quoted.
+          (out/'isolated_data.asm').write_text(src)
+          (out/'expected.bin').write_bytes(payload)
+          (out/'preflight.json').write_text(json.dumps({'status':'SOURCE_ONLY_PASS','rooms_exact':15,'masks_exact':12,'gross_saved':90,'rotated_bytes':54,'isolated_payload_bytes':594,'product_integration':'NOT_STARTED'},indent=2))
+          PY
+          dasm build/issue46-preflight/isolated_data.asm -f3 -obuild/issue46-preflight/isolated_data.bin -lbuild/issue46-preflight/isolated_data.lst -sbuild/issue46-preflight/isolated_data.sym
+          cmp build/issue46-preflight/expected.bin build/issue46-preflight/isolated_data.bin
+          git diff --exit-code -- rom/
+          echo 'EXACT_BASELINE_BUILD_AND_ISOLATED_DATA_PASS (not a new game ROM)'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue46-baseline-and-source-only-data
+          path: |
+            build/issue46-baseline/
+            build/issue46-preflight/
+          retention-days: 30
