@@ -1493,6 +1493,7 @@ NoWideCrownShadow:
         ora ShadowStemOr,x
         and ShadowStemAnd,x
 NoStemShadow:
+        nop                 ; diagnostic beam alignment: baseline branch crossed a page
         sta PF2
         lda #0
         sta ENABL
