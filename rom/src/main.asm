@@ -200,7 +200,7 @@ NotReset:
         beq AfterSelect     ; SELECT on title has no mode effect
         cmp #3
         beq AfterSelect
-        jsr LoadRoom       ; full state rewind on SELECT, same mode
+        jsr SelectReload   ; rewind completed or active campaign room; preserve FRI mode
         jmp AfterSelect
 SelectReleased:
         lda #0
@@ -1724,6 +1724,17 @@ OwlFrameReady:
         rts
 
         include "rom/src/data.inc"
+
+; Issue48: SELECT must not leave mode=2 (room won) after resetting the room.
+; A is still mode from ReadInput's CMP #3. Tail jump retains old JSR depth.
+; Placed in existing padding so every existing renderer/score PC stays fixed.
+SelectReload:
+        cmp #2
+        bne SelectReloadRoom
+        dec mode
+SelectReloadRoom:
+        jmp LoadRoom
+SelectReloadEnd:
 
         ; Every bank has the 6507 trampoline at the exact SAME address.
         ; $FFF6+X selects F6 bank 0..2, then execution falls into the selected

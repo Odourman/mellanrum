@@ -9,7 +9,7 @@ jobs:
   visual-real-stella:
     # Issue26 uses the strict real-F6 workflow; this historical job rebuilds
     # 4K Issue15 source and must not run against an unrelated 16K candidate.
-    if: ${{ !startsWith(github.ref, 'refs/heads/romdev/issue26-') && !startsWith(github.head_ref, 'romdev/issue26-') && !startsWith(github.ref, 'refs/heads/romdev/issue32-') && !startsWith(github.head_ref, 'romdev/issue32-') && !startsWith(github.ref, 'refs/heads/romdev/mainii-') && !startsWith(github.ref, 'refs/heads/romdev/issue43-') && !startsWith(github.head_ref, 'romdev/issue43-') && !startsWith(github.ref, 'refs/heads/romdev/issue46-') && !startsWith(github.head_ref, 'romdev/issue46-') }}
+    if: ${{ !startsWith(github.ref, 'refs/heads/romdev/issue26-') && !startsWith(github.head_ref, 'romdev/issue26-') && !startsWith(github.ref, 'refs/heads/romdev/issue32-') && !startsWith(github.head_ref, 'romdev/issue32-') && !startsWith(github.ref, 'refs/heads/romdev/mainii-') && !startsWith(github.ref, 'refs/heads/romdev/issue43-') && !startsWith(github.head_ref, 'romdev/issue43-') && !startsWith(github.ref, 'refs/heads/romdev/issue46-') && !startsWith(github.head_ref, 'romdev/issue46-') && !startsWith(github.ref, 'refs/heads/romdev/issue48-') && !startsWith(github.head_ref, 'romdev/issue48-') }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4

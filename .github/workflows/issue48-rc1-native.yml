@@ -1,0 +1,28 @@
+name: Issue48 RC1 native F6 build and tooling
+on:
+  push:
+    branches: [romdev/issue48-final-polish-rc1-20261124]
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm
+          mkdir -p build/issue46
+          cp "$(command -v dasm)" build/issue46/dasm
+          dasm || true
+          python3 rom/f6/build_f6.py --out build/issue46
+          python3 rom/f6/build_f6.py --out build/issue46-rebuild
+          cmp build/issue46/MELLANRUM_16K_NTSC_F6.bin build/issue46-rebuild/MELLANRUM_16K_NTSC_F6.bin
+          cmp rom/bin/MELLANRUM_16K_NTSC_F6.bin build/issue46/MELLANRUM_16K_NTSC_F6.bin
+          echo '716459958f82b49306dc9339d87c2d7566d498f920ea1054f6c2043299f4aa9e  build/issue46/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue48-rc1-native-build
+          path: build/issue46/
+          retention-days: 30
