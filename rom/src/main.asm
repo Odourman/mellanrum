@@ -1496,8 +1496,10 @@ Stem13:
         sta GRP0
         lda (sprite1Ptr),y
         sta GRP1          ; first P1 copy (glyph A)
-        cpx #1           ; last blank sprite row must update PF bookkeeping
-        beq StemLastFast  ; early, avoiding >76 cycles from post-loop bookkeeping
+        ; Four cycles: preserve *exact* M0/BL/HUD and S3 beam positions.
+        ; X=1 is executed via the isolated blank-line tail below.
+        nop
+        nop
         ; One chosen sprite byte supplies BOTH original M0 and BL bits.
         ; Gated via pointer during crown, not extra instructions on beam.
         ; M0 update at original c35, BL update at original c48.
@@ -1513,9 +1515,22 @@ Stem13:
         sta COLUP1          ; original amber before second S3 copy at x130
         lda (pfPtr),y
         sta GRP1          ; second P1 copy must still precede x135 latch
-        lda attempt        ; seed NEXT line red/amber before DEX flags
+        lda attempt        ; seed next visible line without late red exit bleed
         dex
-        bne Stem13
+        cpx #1
+        bne Stem13           ; 75 cycles worst normal, next line WSYNC
+        ; The X=1 SpriteRowIndex entry is blank for both U3 and S3.
+        ; Skip the unnecessary early COLUP1 write on that last blank line,
+        ; keeping original first-HUD-PF1 update cycle unchanged.
+StemLastBlank:
+        sta WSYNC
+        ldy SpriteRowIndex,x
+        lda (sprite0Ptr),y
+        sta GRP0
+        lda (sprite1Ptr),y
+        sta GRP1
+        nop                  ; last line exactly 28 cycles to StemLastFast
+        jmp StemLastFast
 StemLastFast:
         lda pfIndex
         clc
