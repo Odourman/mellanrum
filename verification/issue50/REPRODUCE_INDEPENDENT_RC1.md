@@ -10,31 +10,32 @@ Main report: `INDEPENDENT_VERIFICATION_REPORT.md`. Machine status: `TEST_MATRIX.
 
 ## What is inside
 
-- `SOURCE_REFERENCE`: the immutable ROM byte source, source ASM/Python build tooling, original replay *controller-only* witness and its provenance. Source-guided replay is NOT independent puzzle discovery. Includes historical PR47, PR44 ROMs **only for regression**, not as RC1 candidates.
-- `TOOLS`: authentic pinned native DASM, Gopher2600, Stella/libretro binaries (original upstream provenance in report). No font assets.
-- `BUILD_A` / `BUILD_B`: two genuinely independent full native builds (ROM, four banks, listing `.lst`, symbols `.sym`, build stdout).
-- `GOPHER_FULL`: the new full genuine 19,780-frame Gopher controller-only execution, >20,000 all-frame 262 raster observations, 18,190 F6 score bank events and original full stdout.
-- `STELLA_CAMPAIGN`, `NATURAL_ROOM_STATES`: verifier-owned complete campaign/coda/restart, original 1× PNGs, serialized room-start states for authentic idle/causal/recovery tests.
-- `IDLE`, `CAUSAL`, `RECOVERY`, `HUD_GOPHER`, `FRI_STRESS`, `U3_RUNTIME`, `SYMBOL_PAIRS`, `MARKER_FORCED`: original test JSON/logs and native emulator screenshots. Forced diagnostic RAM tests are labeled in results and cannot count as controller-only natural play.
-- `AUDIO_RC1`, `AUDIO_PR47`, `AUDIO_PR44`: real **same-core separate OS-process** original PCM/WAV, screenshot checkpoints, and exact PCM hashes. `AUDIO_COMPARE` 13 pairs of comparison WAV excerpts (RIOT/API provenance in report).
-- `STELLA_VIDEO`: **independently recorded** 50-second sample H264/AAC from the same live Stella run (not the whole campaign), genuine TIA output.
-- `TEST_SCRIPTS`: Python sources, including archived original common libretro adapter and a reference controller witness.
+- `src_archive/`: the immutable ROM byte source, source ASM/Python build tooling, original replay *controller-only* witness and its provenance. Source-guided replay is NOT independent puzzle discovery. Includes historical PR47, PR44 ROMs **only for regression**, not as RC1 candidates.
+- `src_archive/TOOLS/`: authentic pinned native DASM, Gopher2600, Stella/libretro binaries (original upstream provenance in report). No font assets.
+- `buildA/` / `buildB/`: two genuinely independent full native builds (ROM, four banks, listing `.lst`, symbols `.sym`, build stdout).
+- `gopher_full/`: the new full genuine 19,780-frame Gopher controller-only execution, >20,000 all-frame 262 raster observations, 18,190 F6 score bank events and original full stdout.
+- `emulator_RC1/`, `room_states/`: verifier-owned complete campaign/coda/restart, original 1× PNGs, serialized room-start states for authentic idle/causal/recovery tests.
+- `idle/`, `causal/`, `recovery/`, `hud_tests/`, `fri_50000/`, `fri_wrap/`, `visual_independent/`, `symbol_pairs/`, `markers/`: original test JSON/logs and native emulator screenshots. Forced diagnostic RAM tests are labeled in results and cannot count as controller-only natural play.
+- `fresh_RC1/`, `fresh_PR47/`, `fresh_PR44/`: real **same-core separate OS-process** original PCM/WAV, screenshot checkpoints, and exact PCM hashes. `audio_comparison/` 13 pairs of comparison WAV excerpts (RIOT/API provenance in report).
+- `video/`: **independently recorded** 50-second sample H264/AAC from the same live Stella run (not the whole campaign), genuine TIA output.
+- Verifier-owned Python scripts are at ZIP root; original common adapter and known controller witness under `src_archive/`.
 - `SHA256SUMS`: authoritative complete archive-member SHA manifest excluding itself. Every listed entry must pass. `sha256sum -c SHA256SUMS` from the extraction directory. ZIP CRC passed at packaging.
 
 ## Reproduce from same Linux environment
 
-Scripts were executed with root directory `/mnt/data/RC1_INDEPENDENT`; to rerun exactly, place the extracted contents at that root, then reconstruct the nested `src_archive` paths as below or edit each script's constant `P` to the extraction root (a diagnostic-only path edit, not a game ROM change):
+Scripts were executed with root directory `/mnt/data/RC1_INDEPENDENT`; extract the ZIP into that directory to reproduce **the same absolute paths**. The artifact already includes **all necessary `src_archive/` source, original tools, ROM and SOURCE_GUIDED replay files**. The ZIP's embedded README incorrectly mentions a separate `SOURCE_REFERENCE` folder; it does not exist and **no reconstruction is needed**. This corrected GitHub document supersedes that paragraph of the embedded ZIP README; ZIP bytes/hashes are unchanged. For alternative extraction paths change each verifier-side diagnostic script's constant `P` to point to your extraction root, without changing the product ROM.
 
-- `src_archive/CANDIDATE/MELLANRUM_RC1_NTSC_F6.bin` from `SOURCE_REFERENCE/CANDIDATE/`
-- `src_archive/TOOLS/` from `TOOLS/`
-- `src_archive/SOURCE/` from `SOURCE_REFERENCE/SOURCE/`
-- `src_archive/REFERENCE_PR47/` from `SOURCE_REFERENCE/REFERENCE_PR47/`
-- `src_archive/REFERENCE_PR44/` from `SOURCE_REFERENCE/REFERENCE_PR44/`
-- `src_archive/EVIDENCE/ALLFRAME/commands.txt` from `SOURCE_REFERENCE/EVIDENCE/ALLFRAME/commands.txt`
+From `/mnt/data/RC1_INDEPENDENT/src_archive/SOURCE/`:
 
-In `src_archive/SOURCE/`, set `PATH="$PWD/../../TOOLS:$PATH"` and run `python rom/f6/build_f6.py --out ../../buildA` and again to `buildB`. Compare with `SOURCE_REFERENCE/CANDIDATE/MELLANRUM_RC1_NTSC_F6.bin`.
+```bash
+export PATH="/mnt/data/RC1_INDEPENDENT/src_archive/TOOLS:$PATH"
+python rom/f6/build_f6.py --out /mnt/data/RC1_INDEPENDENT/rebuildA
+python rom/f6/build_f6.py --out /mnt/data/RC1_INDEPENDENT/rebuildB
+cmp /mnt/data/RC1_INDEPENDENT/rebuildA/MELLANRUM_16K_NTSC_F6.bin /mnt/data/RC1_INDEPENDENT/src_archive/CANDIDATE/MELLANRUM_RC1_NTSC_F6.bin
+cmp /mnt/data/RC1_INDEPENDENT/rebuildA/MELLANRUM_16K_NTSC_F6.bin /mnt/data/RC1_INDEPENDENT/rebuildB/MELLANRUM_16K_NTSC_F6.bin
+```
 
-For Gopher full replay: `python TEST_SCRIPTS/independent_gopher_full.py` with original pinned native tool, original ROM, `SOURCE_REFERENCE/EVIDENCE/ALLFRAME/commands.txt`; this test took minutes, generated original 16 MB stdout and JSON. For Stella: `python TEST_SCRIPTS/independent_stella.py`; `python TEST_SCRIPTS/make_native_room_states.py`, `python TEST_SCRIPTS/run_15_idle.py`, `run_15_causal.py`, `run_15_recovery.py` and `independent_pcm_one.py RC1/PR47/PR44` in separate OS processes. See each script for exact CLI and its immutable SOURCE_GUIDED controller preconditions. Avoid using historical *invalid preliminary* `independent_pcm_compare.py` from this developer session (not included). Preserve distinct paths for source/diagnostic vs product proof.
+From extraction root, run `python independent_gopher_full.py`, `python independent_stella.py`, `python make_native_room_states.py`, `python run_15_idle.py`, `python run_15_causal.py`, `python run_15_recovery.py`. For reproducible PCM, invoke `python independent_pcm_one.py RC1`, then `python independent_pcm_one.py PR47`, then `python independent_pcm_one.py PR44` in three **separate OS processes**. Some runners depend on complete original source relative paths, captured inside `src_archive`; see their code. Original known replay traces: `src_archive/REFERENCE_PR47/CAMPAIGN/controller_frame_events.json` and `src_archive/EVIDENCE/ALLFRAME/commands.txt`. They are independently replayed inputs, NOT verifier-discovered puzzle solutions.
 
 ## Explicit unresolved gates
 
