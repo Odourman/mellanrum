@@ -1480,11 +1480,11 @@ NoStemShadow:
         lda #0
         sta ENABL
         sta ENAM0
-        lda attempt          ; color at upcoming row start
+        lda attempt          ; seed S3-A before first WSYNC without beam shift
+        sta COLUP1           ; baseline marker writes keep original cycles
         ldx #9
 Stem13:
         sta WSYNC
-        sta COLUP1           ; committed stone red/orange for first P1 copy
         ldy SpriteRowIndex,x
         lda (sprite0Ptr),y
         sta GRP0
@@ -1507,8 +1507,9 @@ Stem13:
         sta COLUP1          ; recolor only the SECOND P1 copy
         lda (pfPtr),y
         sta GRP1          ; keep x+64 exit glyph at its original position
-        lda attempt        ; seed next left-copy color
-        jmp Stem13          ; one 3-cycle branch; DEX was moved earlier
+        lda attempt        ; after second S3-B copy, on this scanline
+        sta COLUP1          ; arm stone color for NEXT scanline
+        jmp Stem13          ; preserve original ENAM0/ENABL cycle positions
 StemLastFast:
         lda pfIndex
         clc
