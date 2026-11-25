@@ -1,0 +1,13 @@
+{
+  "experiment": "A1_SENTINEL",
+  "baseline": "LAB_STACK_INLINE_PADDED_B",
+  "baseline_rom_sha256": "8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b",
+  "baseline_main_sha256": "3246d67a40470454eb56c38f2f4c32fb34ccb4ff38ed796ccb10cf00a647d53e",
+  "variant_main_sha256": "ae3e2eab95d0eb7aae8d7ba05dccb61e4c3243ff337e64be830ae5fefa6b3160",
+  "rom_sha256": "97f0377383934ce8dd9867b221c3b9ccccdcc2220b50dc2036ea041bf4c7268f",
+  "mapper": "F6 4x4096",
+  "rom_bytes": 16384,
+  "status": "DIAGNOSTIC_ONLY; BUILD_PASS + SENTINEL_PASS",
+  "limitation": "not product/timer ROM",
+  "dasm_sha256": "cfb23732297a4fe1c8d4a78d44206037d97733aedb2772503bbf029a4aa91291"
+}
