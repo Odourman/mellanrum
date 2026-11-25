@@ -1,0 +1,96 @@
+--- LAB/main.asm
++++ C2/main.asm
+@@ -67,8 +67,8 @@
+ cursorY     ds 1
+ moveDir     ds 1
+ moveWait    ds 1
+-prevFire    ds 1
+-prevSelect  ds 1
++inputFlags  ds 1        ; C2: bit0=prevFire, bit1=prevSelect
++timerSlotC2 ds 1        ; former prevSelect byte $D1, keeps later addresses fixed
+ pending     ds 1        ; 0 none 1 tree 2 stone
+ pendingKey  ds 1        ; reflected group index, 0..39
+ usedFire    ds 1        ; one accepted FIRE/beat
+@@ -120,8 +120,7 @@
+         sta slot1Key
+         lda #0
+         sta mode
+-        sta prevFire
+-        sta prevSelect
++        sta inputFlags
+         lda #1
+         sta CTRLPF           ; reflect 20 PF left bits
+         lda #0
+@@ -186,16 +185,20 @@
+         lda #0
+         sta mode
+         sta pending
+-        sta prevFire
++        lda inputFlags
++        and #$FE
++        sta inputFlags
+         rts
+ NotReset:
+         lda SWCHB
+         and #2
+         bne SelectReleased
+-        lda prevSelect
++        lda inputFlags
++        and #2
+         bne AfterSelect
+-        lda #1
+-        sta prevSelect
++        lda inputFlags
++        ora #2
++        sta inputFlags
+         lda mode
+         beq AfterSelect     ; SELECT on title has no mode effect
+         cmp #3
+@@ -203,15 +206,18 @@
+         jsr SelectReload   ; rewind completed or active campaign room; preserve FRI mode
+         jmp AfterSelect
+ SelectReleased:
+-        lda #0
+-        sta prevSelect
++        lda inputFlags
++        and #$FD
++        sta inputFlags
+ AfterSelect:
+         lda INPT4
+         bmi FireReleased
+-        lda prevFire
++        lda inputFlags
++        and #1
+         bne ReadMovement
+-        lda #1
+-        sta prevFire
++        lda inputFlags
++        ora #1
++        sta inputFlags
+         lda mode
+         beq StartMode
+         cmp #2
+@@ -237,8 +243,9 @@
+         sta ackFrames
+         rts
+ FireReleased:
+-        lda #0
+-        sta prevFire
++        lda inputFlags
++        and #$FE
++        sta inputFlags
+         jmp ReadMovement
+ StartMode:
+         lda SWCHB
+@@ -496,8 +503,9 @@
+         sta presenceEnd
+         sta intercepted
+         sta moveWait
+-        lda #1
+-        sta prevFire
++        lda inputFlags
++        ora #1
++        sta inputFlags
+         lda #$FF
+         sta slot0Key
+         sta slot1Key
