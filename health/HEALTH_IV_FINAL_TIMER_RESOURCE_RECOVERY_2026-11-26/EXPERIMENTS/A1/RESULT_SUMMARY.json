@@ -1,0 +1,113 @@
+{
+  "roms": {
+    "baseline": "8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b",
+    "A1": "68f945ade7441ea8c59b4ccdecf216af8a06d399e8b38e0162e7c6f788af0def",
+    "A1C": "eb6689f62b1d7e0cc2609eab6c836c78a52ec78a02a9ea1a228fb09311cc1294"
+  },
+  "stella": "8.0_pre 8dd5600, core sha256 2130ed1153cef66ef3f34bf9063f675f1f3342bc18320eb9ae5101743e3042df",
+  "replay_frames": 19652,
+  "input_intervals": 295,
+  "room_wins_baseline": [
+    916,
+    2441,
+    3678,
+    4411,
+    5792,
+    6813,
+    7618,
+    8495,
+    9804,
+    10753,
+    13430,
+    15603,
+    16408,
+    17357,
+    18882
+  ],
+  "room_wins_A1": [
+    916,
+    2441,
+    3678,
+    4411,
+    5792,
+    6813,
+    7618,
+    8495,
+    9804,
+    10753,
+    13430,
+    15603,
+    16408,
+    17357,
+    18882
+  ],
+  "A1_frame_hashes": {
+    "frames_baseline": 19652,
+    "frames_variant": 19652,
+    "mismatched_frame_hashes": 19220,
+    "equal_frame_hashes": 432
+  },
+  "A1_sampled_image_difference": {
+    "checkpoint_frame": 17,
+    "pixels": 8,
+    "coordinates": [
+      [
+        60,
+        40
+      ],
+      [
+        61,
+        40
+      ],
+      [
+        62,
+        40
+      ],
+      [
+        63,
+        40
+      ],
+      [
+        60,
+        180
+      ],
+      [
+        61,
+        180
+      ],
+      [
+        62,
+        180
+      ],
+      [
+        63,
+        180
+      ]
+    ]
+  },
+  "A1_pcm": {
+    "params": "_wave_params(nchannels=2, sampwidth=2, framerate=31440, nframes=10297124, comptype='NONE', compname='not compressed')",
+    "baseline_pcm_bytes": 41188496,
+    "variant_pcm_bytes": 41188496,
+    "differing_pcm_bytes": 28,
+    "baseline_pcm_sha256": "ac35c19bfb388fe83699d18f0bc47d713a89e75fe8c7c191a8deb951eba56d3b",
+    "variant_pcm_sha256": "88942e630e74acce1db7732429c1b51548819bd0d45293d34484a3233eed4fde"
+  },
+  "A1C_frame_hashes": {
+    "frames_baseline": 19652,
+    "frames_variant": 19652,
+    "mismatched_frame_hashes": 0,
+    "equal_frame_hashes": 19652
+  },
+  "A1C_pcm": {
+    "params": "_wave_params(nchannels=2, sampwidth=2, framerate=31440, nframes=10297124, comptype='NONE', compname='not compressed')",
+    "baseline_pcm_bytes": 41188496,
+    "variant_pcm_bytes": 41188496,
+    "differing_pcm_bytes": 1935416,
+    "baseline_pcm_sha256": "ac35c19bfb388fe83699d18f0bc47d713a89e75fe8c7c191a8deb951eba56d3b",
+    "variant_pcm_sha256": "e26fab41876fd390c557c2aa140836876250b0f7ef1626b126a335bf5fbd18f5"
+  },
+  "human_audibility": "NOT_RUN",
+  "gopher": "NOT_RUN",
+  "timer_candidate": "NONE"
+}
