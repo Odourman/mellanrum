@@ -1,0 +1,16 @@
+
+Complete. (0)
+
+Complete. (0)
+
+Complete. (0)
+segment: code ff90                    vs current org: ff9b
+
+rom/src/main.asm (1764): error: Origin Reverse-indexed.
+
+Traceback (most recent call last):
+  File "/workspace/scratch/c1a21baf9747/timer_lab/HEALTH_IV/EXPERIMENTS/B1/SOURCE/rom/f6/build_f6.py", line 17, in <module>
+    subprocess.run(cmd,cwd=root,check=True)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['dasm', 'rom/src/main.asm', '-f3', '-o/workspace/scratch/c1a21baf9747/timer_lab/HEALTH_IV/EXPERIMENTS/B1/BUILD/native/bank3.bin', '-l/workspace/scratch/c1a21baf9747/timer_lab/HEALTH_IV/EXPERIMENTS/B1/BUILD/native/bank3.lst', '-s/workspace/scratch/c1a21baf9747/timer_lab/HEALTH_IV/EXPERIMENTS/B1/BUILD/native/bank3.sym']' returned non-zero exit status 18.
