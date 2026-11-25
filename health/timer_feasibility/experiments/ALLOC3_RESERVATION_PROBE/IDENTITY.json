@@ -1,0 +1,10 @@
+{
+  "experiment_id": "ALLOC3_RESERVATION_PROBE",
+  "classification": "DIAGNOSTIC_LAYOUT_ONLY_INVALID_AS_GAME_ROM",
+  "base_rom_sha256": "8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b",
+  "source_change": "Added timerFrames/timerSeconds/timerMinutes DS 1 declarations immediately before SEG code.",
+  "native_dasm_exit": 0,
+  "static_gate": "FAIL: addresses $F6,$F7,$F8; $F6-$F7 are protected stack reserve; $F8 is active stack area.",
+  "not_a_timer_implementation": true,
+  "rom_sha256": "8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b"
+}
