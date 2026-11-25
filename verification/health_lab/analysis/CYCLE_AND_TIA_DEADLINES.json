@@ -1,0 +1,102 @@
+{
+  "rom_sha_rc1": "456005ed691860b32c44b79f2a71666f622b005f5a798eadf9b549c59cff13bd",
+  "rom_sha_lab": "8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b",
+  "model_vs_emulation": "native actual bus positions for title; original native listing for index/domain arithmetic",
+  "title": {
+    "valid_y": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "new_pagecross_y": [
+      2,
+      3
+    ],
+    "shifts": 64,
+    "scanlines_involved": [
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99
+    ],
+    "colorclock_delta": 3,
+    "tia_register_operations_per_rom": 408,
+    "pf_actual_write_deadline_margin_colorclocks": {
+      "early_PF2": 50,
+      "right_PF0": 37,
+      "right_PF1": 32,
+      "right_PF2": 43
+    },
+    "native_stella_1x_160x228_pixel_differences": 0,
+    "status": "PASS_BOUNDED"
+  },
+  "owl_branch": {
+    "op": "BCS OwlTryNext",
+    "RC1": {
+      "PC": "F4FC",
+      "target": "F567",
+      "taken_page_cross": true
+    },
+    "LAB": {
+      "PC": "F4FE",
+      "target": "F569",
+      "taken_page_cross": false
+    },
+    "taken_delta_cycles": -1,
+    "natural_taken_witness": "NOT_CAPTURED",
+    "status": "PASS_CONDITIONAL/INCONCLUSIVE_NATURAL_TAKEN"
+  },
+  "indexed_new_valid_pagecrosses": [
+    {
+      "instruction": "TitleLeftPF2,Y",
+      "indexes": [
+        2,
+        3
+      ],
+      "delta_cpu_cycles": 1,
+      "location": "title"
+    },
+    {
+      "instruction": "GeoMapHi,X",
+      "indexes": [
+        1,
+        2
+      ],
+      "delta_cpu_cycles": 1,
+      "location": "room load during VBLANK"
+    },
+    {
+      "instruction": "RoomStoneY,X",
+      "indexes": [
+        4,
+        5
+      ],
+      "delta_cpu_cycles": 1,
+      "location": "room load during VBLANK"
+    }
+  ],
+  "total_changed_index_sets": 58,
+  "outside_valid_domain": 55,
+  "ordinary_stem13_cycles_including_wsync": 75,
+  "ordinary_stem13_margin_cycles": 1,
+  "terminal_y": 8,
+  "full_all_path_proof": "INCONCLUSIVE",
+  "room_load_timer_all_path_phase_proof": "INCONCLUSIVE",
+  "observed_all_15_stella_and_gopher_no_new_functional_regression": true
+}
