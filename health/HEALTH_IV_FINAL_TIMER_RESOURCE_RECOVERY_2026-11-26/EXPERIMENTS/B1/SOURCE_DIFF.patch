@@ -1,0 +1,60 @@
+--- LAB/main.asm
++++ B1/main.asm
+@@ -92,7 +92,8 @@
+ rowIndex    ds 1
+ sprite0Ptr  ds 2
+ sprite1Ptr  ds 2
+-mapPtr      ds 2
++timerSlotB  ds 1        ; B1: former mapPtr low byte
++timerSlotC  ds 1        ; B1: former mapPtr high byte
+ pfPtr       ds 2
+ moveTemp    ds 1
+ soundStep   ds 1
+@@ -392,8 +393,13 @@
+         tax
+         lda BitMask,x
+         sta moveTemp
++        ldx room
++        lda GeoMapLo,x
++        sta pfPtr
++        lda GeoMapHi,x
++        sta pfPtr+1
+         ldy cursorY
+-        lda (mapPtr),y
++        lda (pfPtr),y
+         and moveTemp
+         beq FireDenied
+         ; cursorX >=5 must be mirrored before group-index formation.
+@@ -529,19 +535,15 @@
+         lda RoomPolarity,x
+         sta polarity
+         lda GeoMapLo,x
+-        sta mapPtr
+-        lda GeoMapHi,x
+-        sta mapPtr+1
+-        lda GeoPFLo,x
+         sta pfPtr
+-        lda GeoPFHi,x
++        lda GeoMapHi,x
+         sta pfPtr+1
+         ldy #7
+ CopyMap:
+         ; 15*8 ROM bytes recovered: source blocked masks were exactly
+         ; source tree bits OR 1 in interior, $1F on border rows.
+         ; Keep mutable collision byte-for-byte identical to prior ROM.
+-        lda (mapPtr),y
++        lda (pfPtr),y
+         ora #1
+         cpy #0
+         beq CopyWall
+@@ -553,6 +555,10 @@
+         sta mapRows,y
+         dey
+         bpl CopyMap
++        lda GeoPFLo,x
++        sta pfPtr
++        lda GeoPFHi,x
++        sta pfPtr+1
+         ; Original top six PF bytes are identical in all 15 room tables.
+         ; Reconstruct exact 48-byte pfbuf from 36 room bytes + shared top/bottom.
+         ldy #35
