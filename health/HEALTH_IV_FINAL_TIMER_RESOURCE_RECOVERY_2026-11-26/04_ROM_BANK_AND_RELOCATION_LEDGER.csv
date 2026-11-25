@@ -1,0 +1,10 @@
+bank_or_region,baseline_usage,before_HEALTH_IV_gap,A1_result,experiment impact,protected contracts
+Bank 0,3840 score bytes + runtime to $FF8A,live music/data; not general free space,unchanged SHA 4f1fefc7513d5c0aef2d1c2a406b77975e59fc60e0a3361fa34455b4c669c49f,no new code/data,FF90 trampoline and FFF6/FFF9 hotspots retained
+Bank 1,3840 score bytes + runtime to $FF86,live music/data; not general free space,unchanged SHA 8d49d78a7f7ea98d1638693767de146b54b7b97673eb5f077fbf9c0554e3a1e8,no new code/data,FF90 trampoline and FFF6/FFF9 hotspots retained
+Bank 2,3840 score bytes + runtime to $FF86,live music/data; not general free space,unchanged SHA 6b82511ba23726be41aa5f7a4e8c2555f5e039ee6fc2ec6a1e0774117cfffbfc,no new code/data,FF90 trampoline and FFF6/FFF9 hotspots retained
+Bank 3 code pre-trampoline,HUDCoarseDelayEnd=$FF8F; one byte gap per prior listing,one byte before FF90,HUDCoarseDelayEnd=$FF8B; $FF8B-$FF8F gives five bytes contiguous,A1 saved 4 code bytes but shifted later data/code addresses; CMP cycle changed,FF90/FF9A trampoline/reset; no relocation of hotspots
+Bank 3 after coda,CodaPaletteEnd=$FFF3; safe gap documented as 3 bytes,3 isolated safe bytes,unchanged,No code/font fits,FFF6-$FFF9 hotspots and FFFC vectors immutable
+B1 build,requested recomputed GeoMap pointer into pfPtr,requires ~11 additional bytes vs original,Build reaches FF9B; 11 B overflow,BUILD_FAIL,FF90 fixed
+A1+B1 build,above plus 4-byte A1 reduction,expected combined candidate,Build reaches FF97; 7 B overflow,BUILD_FAIL,FF90 fixed
+C2 bitpack build,flag mask/update sequences,1 byte freed at D1 with addresses preserved,Build reaches FF9F; 15 B overflow,BUILD_FAIL,FF90 fixed
+R2 RLE,11520 score source bytes,not runtime ROM free space,2334 bytes offline encoding; decoder unbuilt,NOT_COUNTED_AS_ROM_GAIN,no TIA score timing or bank state changes tested
