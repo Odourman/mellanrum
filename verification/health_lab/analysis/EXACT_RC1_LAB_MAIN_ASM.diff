@@ -1,1 +1,45 @@
-The requested file reference is not currently visible. Use files.search or files.list to rediscover the file, then retry with a returned ref_id or file_id.
+--- RC1/rom/src/main.asm
++++ LAB/rom/src/main.asm
+@@ -789,26 +789,30 @@
+ NoFireAction:
+         rts
+ 
+-; Convert 0..39 reflected cell key to x=0..4 / y=0..7.
+-DecodeKey:
++; Toggle true collision bit and both reflected PF 6/14-band bytes.
++; Masks are the exact T <-> t XOR according to GRAPHICS V5.1 cell table.
++ToggleTree:
++; Inline DecodeKey to remove one live JSR frame. Six NOPs replace the
++; original JSR+RTS 12-cycle envelope so downstream TIA/audio timing matches.
++DecodeKeyInline:
+         lda workKey
+         ldx #0
+-DecodeLoop:
++DecodeLoopInline:
+         cmp #5
+-        bcc DecodedKey
++        bcc DecodedKeyInline
+         sec
+         sbc #5
+         inx
+-        bne DecodeLoop
+-DecodedKey:
++        bne DecodeLoopInline
++DecodedKeyInline:
+         sta workX
+         stx workY
+-        rts
+-
+-; Toggle true collision bit and both reflected PF 6/14-band bytes.
+-; Masks are the exact T <-> t XOR according to GRAPHICS V5.1 cell table.
+-ToggleTree:
+-        jsr DecodeKey
++        nop
++        nop
++        nop
++        nop
++        nop
++        nop
+         ldy workY
+         ldx workX
+         lda mapRows,y
