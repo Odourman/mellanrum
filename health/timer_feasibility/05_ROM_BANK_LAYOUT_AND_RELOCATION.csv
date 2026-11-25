@@ -1,0 +1,6 @@
+Bank,Current role,Known free contiguous bytes,Timer change,Result
+0,Live soundtrack/interpreter/F6 trampoline,Not general free space,None,Untouched
+1,Live soundtrack/interpreter/F6 trampoline,Not general free space,None,Untouched
+2,Live soundtrack/interpreter/F6 trampoline,Not general free space,None,Untouched
+3,Game code/data/F6 entries/coda,4 isolated gap bytes,No timer routine/font,No relocation measured
+F6 entries/hotspots/vectors,Protected contracts,0,No changes,Preserved
