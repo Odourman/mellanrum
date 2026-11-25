@@ -1,0 +1,19 @@
+# Handoff till MAIN IV — slutlig riktad LAB-verifiering, 2026-11-25
+
+**Disposition:** `FINAL_TARGETED_VERIFICATION_PASS_BOUNDED`, separat `GLOBAL_ALL_PATH_TIMING_INCONCLUSIVE`, `FRI_RAW_PCM_STRICT_AB_INCONCLUSIVE`, `HUMAN_AND_PHYSICAL_NOT_RUN`. **Inget nytt reproducerat LAB-specifikt releaseblockerande fel.** Detta är ett avslutat, ändligt oberoende verifieringsuppdrag, inte RC2-acceptans.
+
+**Låsta ROM:** RC1 `456005ed691860b32c44b79f2a71666f622b005f5a798eadf9b549c59cff13bd`; LAB `8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b`; F6 NTSC 16,384 B. PR49 fortfarande Draft/unmerged HEAD `d013a0f82621d46ad12674a4a8e944bf005cd9c3`. Produktkällor oförändrade.
+
+**Nya risker stängda inom faktiska fall:**
+
+- **Naturlig bank1 komplett `PASS_BOUNDED`:** äkta akt II-01 frame5880 samma controllerprefix på RC1/LAB; outer `JSR $FF90`, CPU busread `$FFF7` bank3→1, faktiskt inner JSR med stack writes `$01FB/$01FA`, CPU busread `$FFF9` bank1→3, `$FF99` RTS till korrekt versionsspecifikt caller PC, SP `$FD→FB→F9→FB→FD`. Inga stackwrites `$01F5..$01F7`, båda 262. Ett andra naturligt bank1-tillstånd NOT_RUN. RC1 felaktig breakpoint-pilot omkörd med rätt PC, inte ROM-defekt.
+- **Fyra naturliga giltiga indexed reads** I-02/I-03/I-05/II-01, frames964/2497/4483/5872: RC1 4→LAB 5 CPU-cykler; nya fulla A/B-busspår visar första `INTIM=0x0C`, väntans exit SL34 CL88, VBLANK-off SL35 CL−53, första PF0/PF1/PF2 exakt samma data/beamläge, 262 per fall. One-cycle cost absorberas av timer-väntan; inte global all-path-bevis.
+- **Naturligt tagen OwlTryNext** FRI frame2142: RC1 4→LAB 3 CPU-cykler, full ny A/B-continuation; samma WaitVBlank/INTIM och synliga PF/262. **NY VIKTIG NYANS:** sex riktiga AUDC/AUDF/AUDV-skrivningar med *samma värde* sker **tre färgklockor tidigare i LAB** i den bildrutan, före synkronisering. Mätt verklig intern ljudtimingskillnad, inget bevisat hörbart fel. Absolut busstime parity får ej påstås.
+- **x9 och terminal:** verkligt låst fireX9, LAB/RC1 262 mot PR47 negativ 263. Ytterligare 10 fokuserade LAB-scanlinje-/RESP0-prov: ett naturligt, nio tydligt RAM-forcerade, samtliga 262 och RESP0 SL214 CL151. Tidigare ordinarie Stem13 75/76 och x9 HUD 76/76 gäller endast källgiltiga villkor. Global samtidiga terminala Närvaro-/eko-/FIRE-deadlines INCONCLUSIVE.
+- **FRI ljudorakel:** fyra nya separata Stella-processer ×2400 frames med exakt samma controllersekvens och 1,257,076 stereo PCM-frames/run. Same-ROM RC1-paret skiljer 694,036/2,514,152 int16-värden; LAB-paret 752,110/2,514,152. A/B-strikt PCM kan inte attribueras. Sann TIA-registertidsförskjutning ovan står separat från denna mätosäkerhet.
+
+**Tidigare oberoende:** 15/15 Stella+Gopher, 19,652/19,652 bilder och 20,594,248 PCM int16 lika i full kampanj, 540,000 idle, 15× kausal/SELECT, giltig CFG fem→fyra JSR med två reserverade byte. PACHINKO 105×2 profilstress. Dessa *upprepades inte* och deras SHA/scope är bevarat.
+
+**Min rekommendation:** användaren kan **välja LAB som oförändrad teknisk experimentbas för ett separat framtida tidtagarfeasibility**, eftersom verkliga två stackbyte-reserven och mätbara timingkonsekvenser väger positivt inom utförd scope; behåll RC1 som fryst produkt tills separat beslut. Berätta om de sex −3-colorclock ljudskrivningarna, HUD x9 utan CPU-marginal, GLOBAL_TIMING och FRI_PCM INCONCLUSIVE. Ingen timerimplementation, RC2, merge, tagg eller release; mänsklig I-05/art/audio och fysisk Atari/RetroN77 förblir NOT_RUN.
+
+Fullständiga råbevis, testmatris, kommandon, ROM-hashar och källsnapshot finns i den SHA256-kontrollerade ZIP-leveransen samt GitHub:s separata verifieringsgren. `01_FINAL_TARGETED_VERIFICATION_REPORT.md` är tekniskt facit för slutleveransen.
