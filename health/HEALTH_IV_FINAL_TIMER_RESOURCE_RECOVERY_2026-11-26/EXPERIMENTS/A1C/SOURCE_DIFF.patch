@@ -1,0 +1,40 @@
+--- LAB/main.asm
++++ A1C/main.asm
+@@ -52,7 +52,7 @@
+ owlDir      ds 1
+ stoneX      ds 1
+ stoneY      ds 1
+-exitX       ds 1
++timerSlotA  ds 1        ; A1C: former exitX byte reserved for timer experiment
+ exitY       ds 1
+ polarity    ds 1
+ phase       ds 1
+@@ -522,8 +522,6 @@
+         sta stoneX
+         lda RoomStoneY,x
+         sta stoneY
+-        lda #8            ; all fifteen exit columns are 8
+-        sta exitX
+         lda RoomExitY,x
+         sta exitY
+         lda RoomPolarity,x
+@@ -920,7 +918,8 @@
+         cmp #4
+         beq OwlMoved
+         lda owlX
+-        cmp exitX
++        cmp #8
++        nop                 ; restore one-cycle CMP zp -> immediate delta
+         bne OwlMoved
+         lda owlY
+         cmp exitY
+@@ -998,7 +997,8 @@
+         beq PassYes
+ TryExitOverride:
+         lda candidateX
+-        cmp exitX
++        cmp #8
++        nop                 ; restore one-cycle CMP zp -> immediate delta
+         bne CheckTreeCell
+         lda candidateY
+         cmp exitY
