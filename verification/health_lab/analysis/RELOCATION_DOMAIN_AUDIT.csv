@@ -1,0 +1,59 @@
+old_pc,new_pc,instruction,old_base,new_base,source_domain,source_reason,new_cross_all_byte_indices,lost_cross_all_byte_indices,new_cross_within_valid_domain,lost_cross_within_valid_domain,new_extra_cpu_cycles_at_valid_indices,valid_domain_bounded,outcome
+F1AC,F1AC,"adc deltax,x",FA67,FA69,0..3,Direction from input/logic masked to 0..3,"[151, 152]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F1B8,F1B8,"adc deltay,x",FA6B,FA6D,0..3,Direction 0..3,"[147, 148]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F1EF,F1EF,"lda bitmask,x",FA73,FA75,0..4,Editable 5 mirrored tree columns (0..4),"[139, 140]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F20B,F20B,"adc groupbase,y",FA78,FA7A,0..7,cursorY bounded to 0..7,"[134, 135]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2B8,F2B8,"lda roomact,x",FABE,FAC0,0..14,"LoadRoom X=room, source room 0..14","[64, 65]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2C3,F2C3,"lda roomowly,x",FADC,FADE,0..14,LoadRoom X=room,"[34, 35]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2CA,F2CA,"lda roomowldir,x",FAEB,FAED,0..14,LoadRoom X=room,"[19, 20]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2D5,F2D5,"lda roomstoney,x",FAFA,FAFC,0..14,LoadRoom X=room,"[4, 5]",[],"[4, 5]",[],1,True,NEW_VALID_+1_INDEXED_READ_COST
+F2DE,F2DE,"lda roomexity,x",FB09,FB0B,0..14,LoadRoom X=room,"[245, 246]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2E3,F2E3,"lda roompolarity,x",FACD,FACF,0..14,LoadRoom X=room,"[49, 50]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2E8,F2E8,"lda geomaplo,x",FDEE,FDF0,0..14,LoadRoom X=room,"[16, 17]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2ED,F2ED,"lda geomaphi,x",FDFD,FDFF,0..14,LoadRoom X=room,"[1, 2]",[],"[1, 2]",[],1,True,NEW_VALID_+1_INDEXED_READ_COST
+F2F2,F2F2,"lda geopflo,x",FE0C,FE0E,0..14,LoadRoom X=room,"[242, 243]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F2F7,F2F7,"lda geopfhi,x",FE1B,FE1D,0..14,LoadRoom X=room,"[227, 228]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F31E,F31E,"lda commontoppf,y",FB54,FB56,0..5,CopyPFTop Y5..0,"[170, 171]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F342,F342,"lda roomactive,x",FB45,FB47,0..14,Presence X=room,"[185, 186]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F3CB,F3CB,"lda roomwarning,x",FB36,FB38,0..14,Presence X=room,"[200, 201]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F3DE,F3DE,"sbc roomactive,x",FB45,FB47,0..14,Presence X=room,"[185, 186]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4B8,F4BA,"eor bitmask,x",FA73,FA75,0..4,Editable 5 mirrored tree columns (0..4),"[139, 140]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4BE,F4C0,"lda pfbase,y",FA80,FA82,0..7,workY from valid key0..39 = y0..7,"[126, 127]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4C2,F4C4,"adc upperpfoffset,x",FA88,FA8A,0..4,workX from key0..39 0..4,"[118, 119]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4C9,F4CB,"eor uppertoggle,x",FA92,FA94,0..4,workX 0..4,"[108, 109]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4D1,F4D3,"lda pfbase,y",FA80,FA82,0..7,workY from valid key0..39 = y0..7,"[126, 127]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4D5,F4D7,"adc lowerpfoffset,x",FA8D,FA8F,0..4,workX 0..4,"[113, 114]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4DC,F4DE,"eor lowertoggle,x",FA97,FA99,0..4,workX 0..4,"[103, 104]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4EC,F4EE,"adc turnoffset,x",FA6F,FA71,0..3,MoveOwl attempt 0..3,"[143, 144]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F4F7,F4F9,"adc deltax,x",FA67,FA69,0..3,Direction from input/logic masked to 0..3,"[151, 152]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F503,F505,"adc deltay,x",FA6B,FA6D,0..3,Direction 0..3,"[147, 148]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F587,F589,"lda roomgate,x",FB18,FB1A,0..14,Exit check X=room,"[230, 231]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F614,F616,"and bitmask,x",FA73,FA75,0..4,Editable 5 mirrored tree columns (0..4),"[139, 140]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F68F,F691,"lda cursorplaylo,x",FEB4,FEB6,0..3,ackType 0..3,"[74, 75]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F694,F696,"lda cursorplayhi,x",FEB8,FEBA,0..3,ackType 0..3,"[70, 71]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F6CC,F6CE,"lda palettebg,x",FAAA,FAAC,0..3,Act/palette <=3,"[84, 85]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F6D5,F6D7,"eor palettepf,x",FAAF,FAB1,0..3,Act/palette <=3,"[79, 80]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F6DA,F6DC,"lda paletteowl,x",FAB4,FAB6,0..3,Act/palette <=3,"[74, 75]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F6DF,F6E1,"lda paletteglyph,x",FAB9,FABB,0..3,Act/palette <=3,"[69, 70]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F7C4,F7C6,"lda presencehud,x",FAA6,FAA8,0..3,Presence 0..3,"[88, 89]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F7CD,F7CF,"lda owlreflect,x",FE90,FE92,0..3,renderDir 0..3,"[110, 111]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F850,F852,"ora shadowcrownor,x",FF0A,FF0C,0..23,"Presence glyph shift 0,8,16 plus logical 8 rows","[244, 245]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F853,F855,"and shadowcrownand,x",FF22,FF24,0..23,"Presence glyph shift 0,8,16 plus logical 8 rows","[220, 221]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F8CE,F8D0,"ora shadowcrownor,x",FF0A,FF0C,0..23,"Presence glyph shift 0,8,16 plus logical 8 rows","[244, 245]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F8D1,F8D3,"and shadowcrownand,x",FF22,FF24,0..23,"Presence glyph shift 0,8,16 plus logical 8 rows","[220, 221]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F8FA,F8FC,"ora shadowstemor,x",FF3A,FF3C,0..23,"Presence glyph shift 0,8,16 plus logical 8 rows","[196, 197]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F8FD,F8FF,"and shadowstemand,x",FF52,FF54,0..23,"Presence glyph shift 0,8,16 plus logical 8 rows","[172, 173]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F910,F912,"ldy spriterowindex,x",FA9C,FA9E,1..9,Stem X=9..2 or terminal X=1,"[98, 99]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F939,F93B,"ldy spriterowindex,x",FA9C,FA9E,1..9,Stem X=9..2 or terminal X=1,"[98, 99]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F98A,F98C,"lda cursorspritelo,x",FEDC,FEDE,0..3,ackType 0..3,"[34, 35]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F9E8,F9EA,"lda titleleftpf0,y",FEE0,FEE2,0..6,TitleGlyphLine Y0..6,"[30, 31]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F9ED,F9EF,"lda titleleftpf1,y",FEEE,FEF0,0..6,TitleGlyphLine Y0..6,"[16, 17]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+F9F2,F9F4,"lda titleleftpf2,y",FEFC,FEFE,0..6,TitleGlyphLine Y0..6,"[2, 3]",[],"[2, 3]",[],1,True,NEW_VALID_+1_INDEXED_READ_COST
+F9FB,F9FD,"lda titlerightpf0,y",FEE7,FEE9,0..6,TitleGlyphLine Y0..6,"[23, 24]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+FA00,FA02,"lda titlerightpf1,y",FEF5,FEF7,0..6,TitleGlyphLine Y0..6,"[9, 10]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+FA05,FA07,"lda titlerightpf2,y",FF03,FF05,0..6,TitleGlyphLine Y0..6,"[251, 252]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+FA61,FA63,"lda owlframelo,x",FE84,FE86,0..11,"RenderDir0..3 OR wing offset 0,4,8","[122, 123]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+FFA2,FFA2,"lda roomextra,x",FB27,FB29,0..14,Exit extra X=room,"[215, 216]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+FFAD,FFAD,"lda roomextra,x",FB27,FB29,0..14,Exit extra X=room,"[215, 216]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+FFB8,FFB8,"lda roomextra,x",FB27,FB29,0..14,Exit extra X=room,"[215, 216]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
+FFCB,FFCB,"lda roomextra,x",FB27,FB29,0..14,Exit extra X=room,"[215, 216]",[],[],[],0,True,NO_VALID_INDEX_PENALTY_CHANGE
