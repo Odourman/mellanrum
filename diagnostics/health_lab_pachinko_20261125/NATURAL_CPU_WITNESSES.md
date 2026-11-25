@@ -13,7 +13,7 @@ Original Gopher2600 v0.57.2 (binary SHA `cca432ce75589d806b4d52ae48b76501e74dd4d
 
 Using native Gopher controller-only source-guided transport to genuine room loads, **without RAM POKE**:
 - `GeoMapHi,X` PC `$F2ED`: room index1 frame964, index2 frame2497, **RC1 4 / LAB 5 CPU cycles** in both.
-- `RoomStoneY,X` PC `$F2D5`: room index4 frame4483, **RC1 4 / LAB 5 CPU cycles**. Full sampled frame 262 lines in both. Room index5 is a separate pending/NOT_RUN target until its own valid log exists.
+- `RoomStoneY,X` PC `$F2D5`: room index4 frame4483 and index5 frame5872, **RC1 4 / LAB 5 CPU cycles** in both, with full sampled frames at 262 lines in both. All four valid page-cross indices now have natural independent controller witnesses; full global VBLANK timer/first visible TIA deadline remains INCONCLUSIVE.
 
 These are disjoint room index domains, *not* two penalties on one LoadRoom. Calls occur during VBLANK before RIOT timer wait. Detailed all-path timer-phase budget is not proven.
 
