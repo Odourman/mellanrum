@@ -1,0 +1,13 @@
+{
+  "experiment": "A1C",
+  "baseline": "LAB_STACK_INLINE_PADDED_B",
+  "baseline_rom_sha256": "8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b",
+  "baseline_main_sha256": "3246d67a40470454eb56c38f2f4c32fb34ccb4ff38ed796ccb10cf00a647d53e",
+  "variant_main_sha256": "6f9da50dc67fc0f5b70f88104ea6cfc05ffcafa079a384ab572ae2937c1a7db3",
+  "rom_sha256": "eb6689f62b1d7e0cc2609eab6c836c78a52ec78a02a9ea1a228fb09311cc1294",
+  "mapper": "F6 4x4096",
+  "rom_bytes": 16384,
+  "status": "BUILD_PASS + BOUNDED_STELLA_REPLAY",
+  "limitation": "PCM differs",
+  "dasm_sha256": "cfb23732297a4fe1c8d4a78d44206037d97733aedb2772503bbf029a4aa91291"
+}
