@@ -1,0 +1,40 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: health_lab_verify_TEST_MATRIX.csv>
+index,test_id,test_description,actual_observation,classification,evidence_relative_path
+0,I01,Reference & specimen native build parity,"4 builds, 2/ROM, exact 16K+bank hashes",PASS,BUILD/
+1,I02,Original HEALTH ZIP CRC and 1299 SHA256 entries,"1300 members, 1299 payloads",PASS,PROVENANCE/
+2,S01,GitHub exact source diff,"only main.asm, inlined DecodeKey, six NOP; +2 ROM bytes",PASS,ANALYSIS/EXACT_SOURCE_AND_ROM_DIFF.json
+3,S02,Instruction relocation,1381 mapped same-semantic instructions; one changed branch,PASS_CONDITIONAL,ANALYSIS/RELOCATION_LEDGER.csv
+4,S03,Complete indexed page-cross domain audit,"58 changes; 3 new in source-valid domains, other 55 outside",PASS_CONDITIONAL,ANALYSIS/RELOCATION_DOMAIN_AUDIT.csv
+5,S04,Natural taken BCS OwlTryNext variant reachability,prefix reached PC; taken branch not witnessed,INCONCLUSIVE,EVIDENCE/OWL_BRANCH/
+6,T01,Title 64 actual TIA bus-write time shifts,64 +3 color clocks on 16 rows; 408 accesses per ROM,PASS_BOUNDED,ANALYSIS/TITLE_64_TIA_REAL_BUS_DEADLINES.json
+7,T02,Title right PF0/1/2 real segment deadlines,37/32/43 clock margins; no missed deadline,PASS_BOUNDED,EVIDENCE/TITLE/
+8,T03,Title real Stella 160x228 frame pixels,8 checkpoint frames ×3 fresh processes; 0 differing pixels,PASS_BOUNDED,EVIDENCE/TITLE/STELLA_1X_PIXEL/
+9,T04,Gopher x9 HUD negative-control sensitivity,"RC1/LAB 262, PR47/late BCS 263",PASS_BOUNDED,EVIDENCE/NATURAL_X9/
+10,T05,Room-index page crossings on real 6507,GeoMapHi X1/2 and RoomStoneY X4/5 4→5 cycles,PASS_BOUNDED,EVIDENCE/ROOM_LOAD/
+11,T06,Stem13 ordinary valid sprite indexes,"Y 0..7 table no new cross, 75/76 CPU cycles",PASS_CONDITIONAL,ANALYSIS/RELOCATION_DOMAIN_AUDIT.json
+12,T07,Presence/echo/phase/terminal/hud TIA bus cases,five A/B cases meaningful writes same; WSYNC ignored data differed,PASS_BOUNDED,ANALYSIS/FOCUSED_TIA_BUS_WSYNC_VALUE_ADJUDICATION.json
+13,T08,Same-row stone/polarity four rooms,"16 native Gopher runs, all 262, 377 bus positions/pair",PASS_BOUNDED,EVIDENCE/SAME_ROW/
+14,T09,All reachable-path TIA write deadlines,No full state-aware proof of every valid simultaneous state,INCONCLUSIVE,REPORTS/INDEPENDENT_LAB_VERIFICATION_REPORT.md
+15,K01,Independent call stack CFG,RC1 2541 states max5; LAB 2565 max4 JSR,PASS_CONDITIONAL,ANALYSIS/CFG_LAB_BEST.json
+16,K02,Natural deepest stack CPU bus in I01 frame124,"RC1 01F7/01F6 writes, LAB no writes; SP F7 at inline",PASS_BOUNDED,EVIDENCE/STACK_BUS/
+17,K03,Eight real native DecodeKey border key differential,"0,4,5,9,10,34,35,39; register/flags/scratch/cycle parity",PASS_BOUNDED,EVIDENCE/DECODER/
+18,F01,F6 score bank return probes,"bank0 natural, 2 bank1 diagnostic, bank2 diagnostic; original stackbytes restored",PASS_BOUNDED,EVIDENCE/F6/
+19,F02,All natural bank1 bus-level traces,Full game reaches actII; full instrumented bank1 path not run,NOT_RUN,EVIDENCE/GOPHER_FULL/
+20,G01,Natural Stella full 15 rooms,19652 source-guided frames title→coda→title,PASS_BOUNDED,EVIDENCE/STELLA/LAB_B/
+21,G02,Natural Gopher full 15 rooms,19780 STEP FRAME; 278 TV 262-line inquiries; exit0,PASS_BOUNDED,EVIDENCE/GOPHER_FULL/
+22,G03,Stella A/A2/B full framebuffer parity,19652/19652 raw hashes match each,PASS,EVIDENCE/STELLA/STRICT_COMPARISON.json
+23,A01,Stella original TIA PCM parity,"20594248 int16 samples equal, exact PCM hash",PASS,EVIDENCE/STELLA/STRICT_COMPARISON.json
+24,G04,Candidate 15×36000 idle,"540000, zero passive wins, per-frame check",PASS_BOUNDED,EVIDENCE/LAB_IDLE/summary.json
+25,G05,Candidate 15 causal FIRE omissions,15/15 bounded horizon win+360,PASS_BOUNDED,EVIDENCE/LAB_CAUSAL/
+26,G06,Candidate SELECT-after-natural-win,15/15 no undeserved next room,PASS_BOUNDED,EVIDENCE/LAB_SELECT_WON/summary.json
+27,G07,Candidate alternate FIRE/SELECT/re-win,"15/15; 19140 new Stella frames, introFrames107 reset confirmed",PASS_BOUNDED,EVIDENCE/LAB_RECOVERY/summary.json
+28,G08,Candidate FRI controlled,50010 genuine Stella frames,PASS_BOUNDED,EVIDENCE/LAB_FRI_50000/result.json
+29,G09,Candidate FRI no-SELECT beat wrap,27000 frames; 255→0 at frame18484,PASS_BOUNDED,EVIDENCE/LAB_FRI_WRAP/result.json
+30,C01,U3 mask/frame witnesses natural,12/12 direction×wing,PASS_BOUNDED,EVIDENCE/CANON_NATURAL/witnesses.json
+31,C02,Four natural cursor states including Presence interception,"cold boot 2 processes same III04 frame16637, 0 pixel differences",PASS_BOUNDED,EVIDENCE/CANON_NATURAL/III04_COLD_BOOT/
+32,H01,Invalid same-process Stella marker comparison,REJECTED; fresh process cold boots reproduce correct parity,FAIL_HARNESS_CORRECTED,EVIDENCE/CANON_NATURAL/III04_COLD_BOOT_INVALID_SAMEPROCESS/
+33,H02,Invalid SELECT one-frame callback test,"REJECTED; two frames required, full matrix rerun",FAIL_HARNESS_CORRECTED,EVIDENCE/LAB_RECOVERY/
+34,H03,WSYNC write-byte false register parity warning,5 raw differences to WSYNC data ignored by hardware,PASS_BOUNDED,ANALYSIS/FOCUSED_TIA_BUS_WSYNC_VALUE_ADJUDICATION.json
+35,X01,Physical original Atari 2600/RetroN77,No actual hardware test,NOT_RUN,REPORTS/INDEPENDENT_LAB_VERIFICATION_REPORT.md
+36,X02,"Human first-play, human subjective audio/art",No real human test,NOT_RUN,REPORTS/INDEPENDENT_LAB_VERIFICATION_REPORT.md
