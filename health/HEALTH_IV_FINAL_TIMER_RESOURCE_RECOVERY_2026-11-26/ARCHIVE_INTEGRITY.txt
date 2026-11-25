@@ -1,0 +1,3 @@
+HEALTH IV package integrity
+
+MANIFEST.json lists every regular payload file except itself, SHA256SUMS.txt, and this integrity note. SHA256SUMS.txt covers every regular file except itself (including MANIFEST.json and this note). The outer ZIP is separately identified by SHA-256, byte size, entry count, and `unzip -t` result in the delivery report.
