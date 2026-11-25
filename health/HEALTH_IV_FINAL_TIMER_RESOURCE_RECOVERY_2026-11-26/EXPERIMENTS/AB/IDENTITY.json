@@ -1,0 +1,13 @@
+{
+  "experiment": "AB",
+  "baseline": "LAB_STACK_INLINE_PADDED_B",
+  "baseline_rom_sha256": "8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b",
+  "baseline_main_sha256": "3246d67a40470454eb56c38f2f4c32fb34ccb4ff38ed796ccb10cf00a647d53e",
+  "variant_main_sha256": "2190fc842945b171648101d2d4a2938b4002a123a464849c32f654dfd66f7c4d",
+  "rom_sha256": null,
+  "mapper": null,
+  "rom_bytes": null,
+  "status": "BUILD_FAIL",
+  "limitation": "$FF97 exceeds $FF90 by 7 B",
+  "dasm_sha256": "cfb23732297a4fe1c8d4a78d44206037d97733aedb2772503bbf029a4aa91291"
+}
