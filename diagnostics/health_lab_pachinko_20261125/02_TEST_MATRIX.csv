@@ -1,0 +1,25 @@
+test_family,planned,executed,status,evidence_and_caveat
+LAB exact 16KiB SHA and four bank hashes,2,2,PASS,Fresh byte checks for both LAB and RC1 ROM
+HEALTH archive CRC and SHA manifest,1299,1299,PASS,Real downloaded Drive original archive
+VERIFICATION archive CRC and SHA manifest,1047,1047,PASS,Real downloaded Drive original archive
+Own clean native DASM LAB build and same bytes,1,1,PASS,Fresh assembler listings symbols bank bins
+Stella risk-guided controller stress per ROM,105,105,PASS_BOUNDED,105 cases EACH ROM x720 frames equals 151200 genuine emulator frames
+Stella matching pixel+normalised game checkpoints,3255,3255,PASS_BOUNDED,0 mismatches; 15 rooms all 7 profiles
+Natural OwlTryNext taken Gopher BCS,2,2,PASS_BOUNDED,FR2142 carry1 RC1 PCF4FC 4 cycles LAB F4FE 3 cycles
+Natural OwlTryNext non-taken Gopher BCS,14,14,PASS_BOUNDED,Seven additional sampled carry0 visits each ROM cost2 cycles
+Natural GeoMapHi room index1,2,2,PASS_BOUNDED,FR964 RC1 4 LAB 5
+Natural GeoMapHi room index2,2,2,PASS_BOUNDED,FR2497 RC1 4 LAB 5
+Natural RoomStoneY room index4,2,2,PASS_BOUNDED,FR4483 RC1 4 LAB 5
+Natural RoomStoneY room index5,2,2,PASS_BOUNDED,FR5872 RC1 4 LAB 5
+Gopher HUD x9 RC1 LAB,2,2,PASS_BOUNDED,Both262/262 same natural controller
+Gopher HUD x9 original PR47 negative control,1,1,PASS,PR47 263/263 validates oracle
+Natural whole bank1 sound trampoline and stack bus,2,0,INCONCLUSIVE,Two 210sec environment timeouts not ROM defect
+Own maximum dynamic stack highwater over full game,1,0,NOT_RUN,Local Owl SP F9 only
+Global all-reachable paths 76-cycle TIA beam proof,1,0,INCONCLUSIVE,Selected 262 line cases cannot prove full beam deadline
+Stella 2400-frame campaign PCM AB equality,1,1,PASS_BOUNDED,Authentic TIA WAV and pixel checkpoints identical
+Stella 2400-frame FRI PCM AB strict parity,1,1,INCONCLUSIVE,Three repeated same-ROM WAV captures each differ even with same input states and core
+Stella same-ROM audio determinism control LAB,3,3,PASS,Three exact executions proved PCM variability; not product failure
+Stella same-ROM audio determinism control RC1,3,3,PASS,Three exact executions proved PCM variability; not product failure
+Stella natural FRI Owl-boundary search,4,4,PASS_BOUNDED,Four natural start frames x4300 real video callbacks
+Physical Atari and RetroN77,2,0,NOT_RUN,No physical device used
+Separate timer RC2 merge tag release,0,0,NOT_RUN,Explicitly outside diagnostics mandate
