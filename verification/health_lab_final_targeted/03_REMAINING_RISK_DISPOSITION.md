@@ -1,0 +1,13 @@
+# Kvarstående risker – MELLANRUM HEALTH LAB slutlig riktad VERIFICATION
+
+| Risk | Ny evidens | Disposition | Användarbeslut |
+|---|---|---|---|
+| Naturligt bank1-anrop | Komplett LAB+RC1, frame5880, true FFF7/FFF9 CPU BUS, 10-byte snapshots, matchad return-PC och 262 | PASS_BOUNDED för 1 actII normalfall; andra distinkta naturliga ljud-/eko-tillstånd NOT_RUN | Inget konkret bankfel motiverar produktpatch |
+| Två nya stackreservebyte | Prior oberoende CFG 5→4 och natural frame124; ny bank1 minSP F9, inga F5..F7 stack writes | PASS_CONDITIONAL för giltigt programflöde, ingen ny 4-deep global empirisk uttömning | Behandla F6/F7 som **reserv**, inte variabler |
+| OwlTryNext −1 CPU-cykel | Ny naturlig FRI frame2142 A/B; verklig ljudregister- och WaitVBlank-bus | PASS_BOUNDED synligt; sex faktiska ljudregisterskrivningar LAB 3 colorclocks tidigare | Informera senare mänsklig ljudacceptans; inget bevisat hörbart fel |
+| GeoMapHi/RoomStoneY giltiga index | Fyra naturliga A/B samt verklig TIM64T/INTIM/WSYNC/VBLANK/PF | PASS_BOUNDED; alla 4 extra cykler absorberas av väntan i utförda fall | Ingen extra generisk rumsfuzzning nödvändig |
+| Terminal x9/Stem13/Top16, Presence/fireX/pending/phase | Ny känslig PR47=263 negativ; LAB/RC1 262; 10 riskfall (9 POKE) inga fel | PASS_BOUNDED; **GLOBAL_ALL_PATH_TIMING_INCONCLUSIVE**, HUD x9 0 cykel marginal | Acceptera öppen, transparent timingrisk eller separat senare **konkret** felvittne, inte ny allmän audit |
+| FRI strikt ljud | Fyra nya Stella-körningar, samma-ROM 694036 resp 752110 olika int16; 258 TIA BUS writes/ROM, endast 6 ändrade positioner | PCM attribution INCONCLUSIVE; verklig 3-colorclock ljudtimer för en naturlig BCS | Mänsklig ljudlyssning/physical remains NOT_RUN |
+| Produkt, canon, fysisk konsol | Förra fullkampanj 15/15, 540k idle, old canon; inga nya produktbytes | tidigare PASS inom mätt scope; hardware/human NOT_RUN | MAIN/användare beslutar baskandidat; senare timerfeasibility separat scope |
+
+**Slutstatus:** `FINAL_TARGETED_VERIFICATION_PASS_BOUNDED / GLOBAL_ALL_PATH_TIMING_INCONCLUSIVE / FRI_RAW_PCM_STRICT_AB_INCONCLUSIVE / HUMAN_AND_PHYSICAL_NOT_RUN`. Ingen ny confirmed releaseblocker. Välj eventuellt *oförändrat* LAB som teknisk experimentbas för en separat, ännu ej auktoriserad framtida tidtagarstudie. RC1 förblir fryst produkt tills användaren beslutar annat. Ingen RC2-integration, implementation eller release startad.
