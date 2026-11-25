@@ -1,0 +1,126 @@
+{
+  "status": "PASS_MODEL_ONLY",
+  "state_domain": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "transition_checks": 16,
+  "preserves_unmodified_edge": true,
+  "actual_ROM_emulator_transition_test": "NOT_RUN: C2 native build exceeds fixed bank3 origin by 15 bytes",
+  "cases": [
+    {
+      "from": 0,
+      "action": "fire_press",
+      "to": 1,
+      "fire": 1,
+      "select": 0
+    },
+    {
+      "from": 0,
+      "action": "fire_release",
+      "to": 0,
+      "fire": 0,
+      "select": 0
+    },
+    {
+      "from": 0,
+      "action": "select_press",
+      "to": 2,
+      "fire": 0,
+      "select": 1
+    },
+    {
+      "from": 0,
+      "action": "select_release",
+      "to": 0,
+      "fire": 0,
+      "select": 0
+    },
+    {
+      "from": 1,
+      "action": "fire_press",
+      "to": 1,
+      "fire": 1,
+      "select": 0
+    },
+    {
+      "from": 1,
+      "action": "fire_release",
+      "to": 0,
+      "fire": 0,
+      "select": 0
+    },
+    {
+      "from": 1,
+      "action": "select_press",
+      "to": 3,
+      "fire": 1,
+      "select": 1
+    },
+    {
+      "from": 1,
+      "action": "select_release",
+      "to": 1,
+      "fire": 1,
+      "select": 0
+    },
+    {
+      "from": 2,
+      "action": "fire_press",
+      "to": 3,
+      "fire": 1,
+      "select": 1
+    },
+    {
+      "from": 2,
+      "action": "fire_release",
+      "to": 2,
+      "fire": 0,
+      "select": 1
+    },
+    {
+      "from": 2,
+      "action": "select_press",
+      "to": 2,
+      "fire": 0,
+      "select": 1
+    },
+    {
+      "from": 2,
+      "action": "select_release",
+      "to": 0,
+      "fire": 0,
+      "select": 0
+    },
+    {
+      "from": 3,
+      "action": "fire_press",
+      "to": 3,
+      "fire": 1,
+      "select": 1
+    },
+    {
+      "from": 3,
+      "action": "fire_release",
+      "to": 2,
+      "fire": 0,
+      "select": 1
+    },
+    {
+      "from": 3,
+      "action": "select_press",
+      "to": 3,
+      "fire": 1,
+      "select": 1
+    },
+    {
+      "from": 3,
+      "action": "select_release",
+      "to": 1,
+      "fire": 1,
+      "select": 0
+    }
+  ]
+}
