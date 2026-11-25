@@ -1,0 +1,17 @@
+# MELLANRUM – oberoende VERIFICATION, HEALTH LAB_BEST
+**2026-11-25 | Rapport till MAIN IV | EXPERIMENT_ONLY**
+
+**Disposition: `LAB_INDEPENDENT_DELTA_PASS_BOUNDED`; separat `GLOBAL_ALL_PATH_TIMING_INCONCLUSIVE`.** Ingen ny verifierad releaseblockerande produktdefekt inom utförda prov. Detta är inte RC2-/merge-/releasebeslut. RC1 förblir fryst PR49.
+
+- RC1 exakt SHA256 `456005ed691860b32c44b79f2a71666f622b005f5a798eadf9b549c59cff13bd`, PR49 HEAD `d013a0f82621d46ad12674a4a8e944bf005cd9c3`, produktcommit `7b400ad8678e8341a26f65cc757b1eb762654c83`.
+- Verifierat oförändrat experiment `LAB_STACK_INLINE_PADDED_B` SHA256 `8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b`. HEALTH ZIP exakt SHA `f8950badc9fed8495a7dfa5fbd7849dd8b5b252cfe9dfba125b041fe7e1289f1`. Dokumentationsgren ≠ produktkällcommit.
+- 4/4 egna rena native DASM-byggen (2 per ROM) byteidentiska; 118 RAM-variabelbyte och alla tre scorebanker oförändrade. Endast `main.asm` ändras, DecodeKey inline + 6 NOP, +2 ROM-byte i bank3.
+- Oberoende statisk kontrollflödesmodell: 5→4 nästlade JSR, 10→8 stackbyte, **två bytes ny faktisk reserv** `$F6..$F7` i giltigt anropsflöde. Verklig controller-fångst och 6507 CPU-buss bekräftar att femte JSR i RC1 skrev `$01F7/$01F6` och att experimentet undviker detta.
+- Fullständig omplaceringsanalys: 1 branch tappar en cykel när tagen, 58 index-sidgränsförändringar där tre tillkommer inom källans giltiga indexdomän: `TitleLeftPF2` Y2/3, `GeoMapHi` X1/2 och `RoomStoneY` X4/5. Samtliga 58 dokumenterade. Titelns 64 busskrivningar flyttas +3 färgklockor men har minst 32 färgklockor till relevant PF-segmentdeadline; 0 skillnader i rå 160×228 Stella-bild.
+- Egen Stella 19 652 ramar, Gopher 19 780 STEP FRAME genom 15/15 rum + coda/titel. Tre nya åtskilda Stella-processer ger **19 652/19 652** pixelidentiska framebuffers och **20 594 248/20 594 248** identiska PCM-int16, inklusive RC1-repetition som orakel. Registerbusstiming är **inte** globalt identisk.
+- Kandidatspecifika kontroller: 15×36 000 idle=540 000 utan auto-vinst, 15/15 FIRE-utelämning, 15/15 SELECT-after-win, 15/15 avvikande handling/SELECT/återlösning (19 140 extra frames), FRI 50 010 frames + 27 000 sammanhängande med 255→0 wrap. Fyra naturliga markörstatus inklusive interception III-04 från två separata kallstarter, 12/12 U3 vittnen och fyra symbolrum × två forcerade polariteter; all observerad raster 262 inom utförda kontroller.
+- Negativ rasterkontroll validerad: PR47 och HEALTH avsiktligt sentiming-experiment ger 263 vid x9, RC1 och LAB_BEST ger 262. För fem direkta busjämförelser skiljer endast databyte till WSYNC (data ignoreras); råskillnader bevaras. Första ofullständiga SELECT- och samma-process-Stella-prov underkända som harnessbuggar och giltigt omkörda.
+
+**Öppet:** full state-aware all-path CPU/TIA/deadlinebevis, full naturlig instrumenterad bank1-busstäckning och vissa samtidigt giltiga tillståndsutfall `INCONCLUSIVE`. Fysisk original-Atari, RetroN 77, mänskligt cold-play/ljud/art `NOT_RUN`.
+
+**Rekommendation:** användaren kan separat auktorisera PACHINKO på **exakt experimentets SHA**, inte en produkt-merge. Behåll RC1 som fryst referens. Ingen ny ROM DEVELOPMENT-/RC2-/releaseorder utan uttryckligt beslut. Se fullrapport, CSV/JSON-ledger och faktiska råloggar i bifogat checksumslåst verifierings-ZIP.
