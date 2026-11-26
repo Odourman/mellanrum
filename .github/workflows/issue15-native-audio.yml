@@ -1,0 +1,63 @@
+name: ISSUE15 native Gopher TIA WAV actual controller sessions
+on:
+  push:
+    branches: [romdev/issue15-complete-u3-s3-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-tia-audio:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y git gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev dasm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+      - name: Verify native game bytes
+        run: |
+          dasm rom/src/main.asm -f3 -obuild-issue15-audio.bin
+          cmp rom/bin/mellanrum_ntsc.bin build-issue15-audio.bin
+          echo '45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7  build-issue15-audio.bin' | sha256sum -c -
+      - name: Build pinned authentic Gopher2600 with only original native audio writer CLI exposed
+        run: |
+          git clone --quiet https://github.com/JetSetIlly/Gopher2600.git gopher-src
+          cd gopher-src
+          git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("gopher2600.go");s=p.read_text()
+          old='flgs.BoolVar(&opts.FpsCap, "fpscap", false, "cap FPS to emulation TV (defaults to false)")'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,old+'\n\tflgs.BoolVar(&opts.Wav, "wav", false, "headless native TIA WAV")'))
+          PY
+          go build -o ../gopher2600_headless_native_wav .
+          cd ..
+          sha256sum gopher2600_headless_native_wav > issue15_gopher_binary.SHA256SUMS
+      - name: Three original-TIA WAV captures with frame-indexed physical input and no POKE
+        run: |
+          python3 tests/issue15/audio_replay.py --emulator gopher2600_headless_native_wav --rom rom/bin/mellanrum_ntsc.bin --out build/issue15_native_audio
+          python3 - <<'PY'
+          import json,pathlib,wave,hashlib
+          root=pathlib.Path("build/issue15_native_audio")
+          for mode in ("TITLE","CAMPAIGN","FRI_SKOG"):
+              j=json.loads((root/mode/"capture.json").read_text())
+              wavs=list((root/mode).glob("*.wav"))
+              assert j["emulator_returncode"]==0 and wavs,(mode,j)
+              v=[]
+              for p in wavs:
+                  with wave.open(str(p),"rb") as w:
+                      assert w.getnframes()>10000
+                      v.append({"file":p.name,"sha256":hashlib.sha256(p.read_bytes()).hexdigest(),"channels":w.getnchannels(),"sample_rate":w.getframerate(),"samples":w.getnframes(),"seconds":w.getnframes()/w.getframerate()})
+              (root/mode/"wav_metrics.json").write_text(json.dumps({"mode":mode,"tracks":v,"human_listening":"NOT_RUN","tia_writer":"ORIGINAL_UPSTREAM_NATIVE"} ,indent=2)+"\n")
+              print(mode,v)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue15-genuine-native-Gopher2600-TIA-WAV-title-campaign-FRI
+          path: |
+            build/issue15_native_audio/
+            issue15_gopher_binary.SHA256SUMS
+          retention-days: 30
