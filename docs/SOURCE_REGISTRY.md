@@ -1,3 +1,12 @@
+# 2026-11-26 — MEL-057 source addendum
+| ID | Source | Integrity / authority |
+|---|---|---|
+| M-V62-CANON | [V6.2 exact archive](https://drive.google.com/file/d/1EWtbfBrpeMB8jUqRZfilsbUv7npJmo9G/view) | 353803 B SHA256 065238bca2251957b256598f6c250d8286bd6bc6287edbf5c1204174b15ae956; approved puzzle canon |
+| M-V62-ORDER | [Issue53](https://github.com/Odourman/mellanrum/issues/53) | MEL-057 explicit user approval and implementation scope; no merge/release |
+| M-V62-MODEL | [MAIN intake](https://github.com/Odourman/mellanrum/issues/52#issuecomment-7200947398) | MODEL_REPRODUCED_PASS_BOUNDED, not new ROM proof |
+| M-V62-BASE | Embedded BASELINE/LAB archive | SHA256 19b76c41694e31e5dd2561ed3836ad7cb42eadda5a0d3e6b5da3d18c92a952b7; exact historical 16384 B ROM 8a59b84eb5151f78d40e6943c854d7e42c166b531aee3d40432182d32dcdf03b; reproducibility start only |
+Historical index below is retained, and earlier entries do not supersede MEL-057.
+
 # Source ID Registry – Mellanrum
 
 ## Auktoritativa ingångar
