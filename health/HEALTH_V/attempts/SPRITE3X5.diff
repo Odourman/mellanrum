@@ -1,0 +1,30 @@
+--- LAB_BASELINE/rom/src/main.asm
++++ health/HEALTH_V/attempts/SPRITE3X5.diff
+@@ -1753,6 +1753,27 @@
+         ; Every bank has the 6507 trampoline at the exact SAME address.
+         ; $FFF6+X selects F6 bank 0..2, then execution falls into the selected
+         ; bank's $FF93: JSR score interpreter; $FFF9 returns bank3 and RTS.
++
++; HEALTH V method B footprint probe only (not a playable implementation).
++; Temporary P0/P1 requires a mode hook, one/two-digit row masks, top HUD
++; placement, restoration before the 20-line cell kernel and five glyph rows.
++RoomNumberSprite_FootprintProbe:
++        ldx room
++        inx
++        lda RoomNumberSprite_RowData,x
++        sta GRP0
++        sta GRP1
++        lda #0
++        sta GRP0
++        sta GRP1
++        rts
++RoomNumberSprite_RowData:
++        dc.b $07,$05,$05,$05,$07, $02,$06,$02,$02,$07
++        dc.b $07,$01,$07,$04,$07, $07,$01,$07,$01,$07
++        dc.b $05,$05,$07,$01,$01, $07,$04,$07,$01,$07
++        dc.b $07,$04,$07,$05,$07, $07,$01,$01,$01,$01
++        dc.b $07,$05,$07,$05,$07, $07,$05,$07,$01,$07
++
+         ORG $FF90
+ F6ScoreTrampoline:
+         lda $FFF6,x
