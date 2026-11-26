@@ -1,7 +1,7 @@
-; MELLANRUM: SKOGEN SOM LYSSNAR - ISSUE #15 USER-AUTHORIZED CANDIDATE
+; MELLANRUM: SKOGEN SOM LYSSNAR - MEL-057 V6.2 FIELD2 candidate
 ; Atari 2600 / 6507 / DASM 2.20+, F6 16 KiB NTSC bank 3 (runtime kernel).
 ; Issue26: bank0/1/2 are ACT I/II/III score engines + 5x768 live soundtrack bytes each.
-; Full 15-room reference-derived rule set. Hardware/playability is UNVERIFIED.
+; FIELD2 campaign; legacy FRI engine and 3 original score banks. Hardware unverified.
         processor 6502
 VSYNC   = $00
 VBLANK  = $01
@@ -69,7 +69,7 @@ moveDir     ds 1
 moveWait    ds 1
 prevFire    ds 1
 prevSelect  ds 1
-pending     ds 1        ; 0 none 1 tree 2 stone
+pending     ds 1        ; campaign 0 none 1 tree 2 stone 3 WAIT
 pendingKey  ds 1        ; reflected group index, 0..39
 usedFire    ds 1        ; one accepted FIRE/beat
 ackFrames   ds 1        ; cursor feedback timer
@@ -79,8 +79,8 @@ slot0Due    ds 1
 slot1Key    ds 1
 slot1Due    ds 1
 presence    ds 1        ; 0 normal,1 warning,2 active,3 release
-presenceEnd ds 1        ; no recurrence on tick byte overflow
-intercepted ds 1
+presenceEnd ds 1        ; campaign n=0 dormant / 1 warning / 2 complete
+intercepted ds 1        ; campaign field-active visual pulse, FRI unused
 candidateX  ds 1
 candidateY  ds 1
 candidateD  ds 1
@@ -186,6 +186,13 @@ ReadInput:
         lda #0
         sta mode
         sta pending
+        lda INPT4
+        bmi ResetReleased
+        lda #1
+        bne ResetLatch
+ResetReleased:
+        lda #0
+ResetLatch:
         sta prevFire
         rts
 NotReset:
@@ -197,11 +204,20 @@ NotReset:
         lda #1
         sta prevSelect
         lda mode
-        beq AfterSelect     ; SELECT on title has no mode effect
+        beq SelectPollLatch ; SELECT priority also on title/coda
         cmp #3
-        beq AfterSelect
-        jsr SelectReload   ; rewind completed or active campaign room; preserve FRI mode
-        jmp AfterSelect
+        beq SelectPollLatch
+        jsr SelectReload
+SelectPollLatch:
+        lda INPT4
+        bmi SelectFireUp
+        lda #1
+        bne SelectLatch
+SelectFireUp:
+        lda #0
+SelectLatch:
+        sta prevFire
+        rts
 SelectReleased:
         lda #0
         sta prevSelect
@@ -215,14 +231,18 @@ AfterSelect:
         lda mode
         beq StartMode
         cmp #2
-        beq AdvanceRoom
+        beq InputDone
         cmp #3
-        beq ReadMovement
+        beq InputDone
         cmp #4
         beq FreeForestFire
+        lda introFrames
+        bne InputDone
         jsr LatchFire
         ; FIRE selects the cursor that was on-screen BEFORE this input poll.
         ; A simultaneous direction may move only on a later video frame.
+        rts
+InputDone:
         rts
 FreeForestFire:
         ; Distinct free installation: FIRE modulates shadow and TIA score,
@@ -242,8 +262,8 @@ FireReleased:
         jmp ReadMovement
 StartMode:
         lda SWCHB
-        and #$40           ; LEFT Difficulty A (1) = campaign, B (0) = free forest
-        bne StartCampaign  ; read ONCE at FIRE; game mode is latched
+        and #$40           ; LEFT Difficulty B (0) = campaign, A (1) = free forest
+        beq StartCampaign  ; read ONCE at FIRE; game mode is latched
         lda #4
         sta mode
         lda soundStep
@@ -261,8 +281,6 @@ StartCampaign:
         jsr LoadRoom
         rts                 ; title FIRE is not also a move command
 AdvanceRoom:
-        lda waitFrames
-        bne ReadMovement
         lda room
         cmp #14
         beq StartCoda
@@ -270,7 +288,7 @@ AdvanceRoom:
         lda #1
         sta mode
         jsr LoadRoom
-        jmp ReadMovement
+        rts
 StartCoda:
         lda #0
         sta presenceEnd
@@ -280,12 +298,17 @@ StartCoda:
         sta codaLo
         lda #2
         sta codaHi
+        rts
 
 ; Joystick input: UP > LEFT > DOWN > RIGHT, no diagonal.
 ReadMovement:
         lda mode
         cmp #1
+        bne CheckFreeMovement
+        lda introFrames
+        bne InputDone
         beq ReadStick
+CheckFreeMovement:
         cmp #4
         beq ReadStick
         rts
@@ -330,7 +353,12 @@ StickActive:
         cmp moveDir
         beq StickHeld
         sta moveDir
-        lda #12            ; 200ms initial delay
+        lda #7             ; campaign repeat 8 frames
+        ldx mode
+        cpx #4
+        bne SaveRepeat
+        lda #12
+SaveRepeat:
         sta moveWait
         jmp DoCursorMove
 StickHeld:
@@ -339,7 +367,12 @@ StickHeld:
         dec moveWait
         rts
 StickRepeat:
-        lda #6             ; 100ms sustained repeat
+        lda #7
+        ldx mode
+        cpx #4
+        bne SaveHeldRepeat
+        lda #6
+SaveHeldRepeat:
         sta moveWait
 DoCursorMove:
         ldx moveDir
@@ -362,55 +395,55 @@ MoveDone:
 ; Input edge is latched with the cursor location from the actual video frame.
 ; One latch maximum per owl step; processing is BEFORE echoes/phase/motion.
 LatchFire:
-        lda pending
-        bne FireDenied
-        lda usedFire
-        bne FireDenied
-        ; Snapshot the exact grid cell shown last frame. Only accepted
-        ; targets are subsequently committed; moving cannot retarget them.
         lda cursorX
         sta fireX
+        beq FireDenied
+        cmp #9
+        beq FireDenied
         lda cursorY
         sta fireY
+        beq FireDenied
+        cmp #7
+        beq FireDenied
+        cmp stoneY
+        bne V6NotStone
         lda cursorX
         cmp stoneX
-        bne TryEditable
-        lda cursorY
-        cmp stoneY
-        bne TryEditable
-        lda #2
-        sta pending
-        rts
-TryEditable:
+        beq V6Stone
+V6NotStone:
         lda cursorX
-        cmp #5
-        bcc AtLeftX
-        eor #$FF
-        clc
-        adc #10
-AtLeftX:
+        cmp exitX
+        bne V6NotExit
+        lda cursorY
+        cmp exitY
+        beq FireDenied
+V6NotExit:
+        lda cursorX
+        cmp owlX
+        bne V6Classify
+        lda cursorY
+        cmp owlY
+        beq FireDenied
+V6Classify:
+        ldx cursorX
+        lda MirrorX,x
         tax
-        lda BitMask,x
-        sta moveTemp
         ldy cursorY
         lda (mapPtr),y
-        and moveTemp
-        beq FireDenied
-        ; cursorX >=5 must be mirrored before group-index formation.
-        ldx cursorX
-        cpx #5
-        bcc UseXDirect
-        txa
-        eor #$FF
-        clc
-        adc #10
-        tax
-UseXDirect:
+        and BitMask,x
+        beq V6Wait
         txa
         clc
         adc GroupBase,y
         sta pendingKey
         lda #1
+        bne V6Pending
+V6Stone:
+        lda #2
+        bne V6Pending
+V6Wait:
+        lda #3
+V6Pending:
         sta pending
         rts
 FireDenied:
@@ -450,28 +483,40 @@ CodaNoFlip:
         bne GameFrameDone
         lda #0
         sta mode
-        jmp GameFrameDone
+        rts
 NotCoda:
         cmp #2
         bne NotSolved
-        lda waitFrames
-        beq GameFrameDone
         dec waitFrames
-        jmp GameFrameDone
+        bne GameFrameDone
+        jmp AdvanceRoom
 NotSolved:
         cmp #1
-        beq ActiveFrame
+        bne CheckLegacyMode
+        lda introFrames
+        beq V6Ready
+        dec introFrames
+        dec beatFrames
+        lda introFrames
+        bne GameFrameDone
+        jmp CampaignVisualEnd
+        nop
+        nop
+V6Ready:
+        lda pending
+        beq GameFrameDone
+        jmp CampaignTurn
+CheckLegacyMode:
         cmp #4
         bne GameFrameDone
-ActiveFrame:
         lda introFrames
         beq CountBeat
         dec introFrames
         bne GameFrameDone
-        jsr BeatTick         ; the first logical tick after the 108-frame preparation
+        jsr BeatTick
         lda #72
         sta beatFrames
-        jmp GameFrameDone
+        rts
 CountBeat:
         dec beatFrames
         bne GameFrameDone
@@ -481,7 +526,6 @@ CountBeat:
 GameFrameDone:
         rts
 
-; Original game state initialization: all 15 metadata entries and 5 true geoms.
 LoadRoom:
         lda #0
         sta phase
@@ -490,26 +534,35 @@ LoadRoom:
         sta pending
         sta usedFire
         sta ackFrames
-        sta waitFrames      ; active-room stone encounter evidence, cleared on load
+        sta waitFrames
         sta ackType
         sta presence
         sta presenceEnd
         sta intercepted
         sta moveWait
-        lda #1
-        sta prevFire
+        sta slot0Due
+        sta introFrames
+        sta beatFrames
         lda #$FF
         sta slot0Key
         sta slot1Key
         sta moveDir
+        ldx room
+        lda mode
+        cmp #4
+        bne LoadMeta
         lda #108
         sta introFrames
         lda #72
         sta beatFrames
-        ldx room
+        txa
+        clc
+        adc #5
+        tax
+LoadMeta:
         lda RoomAct,x
         sta act
-        lda #1            ; all fifteen approved starting columns are 1
+        lda #1
         sta owlX
         sta cursorX
         lda RoomOwlY,x
@@ -518,29 +571,24 @@ LoadRoom:
         lda RoomOwlDir,x
         sta owlDir
         sta renderDir
-        lda #4            ; all fifteen stone columns are 4
+        lda #4
         sta stoneX
         lda RoomStoneY,x
         sta stoneY
-        lda #8            ; all fifteen exit columns are 8
+        lda #8
         sta exitX
         lda RoomExitY,x
         sta exitY
         lda RoomPolarity,x
         sta polarity
+        lda RoomPresence,x
+        sta presenceEnd
         lda GeoMapLo,x
         sta mapPtr
         lda GeoMapHi,x
         sta mapPtr+1
-        lda GeoPFLo,x
-        sta pfPtr
-        lda GeoPFHi,x
-        sta pfPtr+1
         ldy #7
 CopyMap:
-        ; 15*8 ROM bytes recovered: source blocked masks were exactly
-        ; source tree bits OR 1 in interior, $1F on border rows.
-        ; Keep mutable collision byte-for-byte identical to prior ROM.
         lda (mapPtr),y
         ora #1
         cpy #0
@@ -553,70 +601,287 @@ CopyMapStore:
         sta mapRows,y
         dey
         bpl CopyMap
-        ; Original top six PF bytes are identical in all 15 room tables.
-        ; Reconstruct exact 48-byte pfbuf from 36 room bytes + shared top/bottom.
-        ldy #35
+        ldy #13
+        sty pfIndex
+        ldx #36
 CopyPF:
-        lda (pfPtr),y
-        sta pfbuf+6,y
-        dey
-        bpl CopyPF
+        lda (mapPtr),y
+        tay
+        lda #$F0
+        sta pfbuf,x
+        lda PFPattern0,y
+        sta pfbuf+1,x
+        lda PFPattern1,y
+        sta pfbuf+2,x
+        lda #$60
+        sta pfbuf+3,x
+        lda PFPattern2,y
+        sta pfbuf+4,x
+        lda PFPattern3,y
+        sta pfbuf+5,x
+        txa
+        sec
+        sbc #6
+        tax
+        ; row index from destination offset: 36->13 etc; scratch counter
+        dec pfIndex
+        ldy pfIndex
+        cpx #0
+        bne CopyPF
         ldy #5
 CopyPFTop:
         lda CommonTopPF,y
         sta pfbuf,y
-        sta pfbuf+42,y    ; shared bottom row, identical in all 15 rooms
+        sta pfbuf+42,y
         dey
         bpl CopyPFTop
         rts
 
-; Discrete logical owl beat. Strict ordering: FIRE, autonomous Presence,
-; due echoes (slot 0 then 1), phase, owl move, stone arrival, victory.
-BeatTick:
+; x/y -> original mirrored key. Call depth <=4. A=key.
+OwlKey:
+        ldx owlX
+        lda MirrorX,x
+        ldy owlY
+        clc
+        adc GroupBase,y
+        rts
+CampaignTurn:
+        lda pending
+        cmp #1
+        bne V6OtherAction
+        jsr OwlKey
+        cmp slot0Key
+        bne V6Restore
         lda #0
-        sta intercepted
-        jsr UpdatePresence
-        jsr CommitFire
-        lda presence
+        sta pending
+        jmp FireDenied
+V6Restore:
+        lda slot0Key
+        cmp #$FF
+        beq V6Open
+        sta workKey
+        jsr ToggleTree
+        lda #$FF
+        sta slot0Key
+        lda #0
+        sta slot0Due
+        lda workKey
+        cmp pendingKey
+        beq V6ActionDone
+V6Open:
+        lda pendingKey
+        sta slot0Key
+        sta workKey
+        jsr ToggleTree
+        lda act
+        cmp #1
+        beq V6ActionDone
+        lda #3
+        sta slot0Due
+        bne V6ActionDone
+V6OtherAction:
         cmp #2
-        bne NoAutoTurn
-        lda room
-        cmp #12
-        bcc NoAutoTurn
-        tax
-        lda RoomActive,x
-        cmp beat
-        bne NoAutoTurn
-        lda intercepted
-        bne NoAutoTurn
+        bne V6ActionDone
         lda polarity
         eor #1
         sta polarity
-NoAutoTurn:
+V6ActionDone:
+        lda #0
+        sta pending
+        sta presence
+        lda #1
+        sta ackType
+        lda #18
+        sta ackFrames
+        lda #12
+        sta introFrames
+        lda #72
+        sta beatFrames
+        lda presenceEnd
+        cmp #1
+        bne V6TryMove
+        inc presenceEnd
+        lda #2
+        sta presence
+        lda #3
+        sta ackType
+        lda polarity
+        eor #1
+        sta polarity
+V6TryMove:
+        jsr FieldMove
+        lda owlX
+        cmp exitX
+        bne V6NotWon
+        lda owlY
+        cmp exitY
+        bne V6NotWon
+        lda #2
+        sta mode
+        lda #36
+        sta waitFrames
+        rts
+V6NotWon:
+        lda presenceEnd
+        bne V6Echo
+        lda owlX
+        cmp stoneX
+        bne V6Echo
+        lda owlY
+        cmp stoneY
+        bne V6Echo
+        inc presenceEnd
+        lda #1
+        sta presence
+V6Echo:
+        lda act
+        cmp #1
+        beq V6TurnDone
         lda slot0Key
         cmp #$FF
-        beq NoEcho0
+        beq V6TurnDone
         lda slot0Due
-        cmp beat
-        bne NoEcho0
+        beq V6Regrow
+        dec slot0Due
+        bne V6TurnDone
+V6Regrow:
+        jsr OwlKey
+        cmp slot0Key
+        beq V6TurnDone
         lda slot0Key
         sta workKey
         jsr ToggleTree
         lda #$FF
         sta slot0Key
-NoEcho0:
-        lda slot1Key
-        cmp #$FF
-        beq NoEcho1
-        lda slot1Due
-        cmp beat
-        bne NoEcho1
-        lda slot1Key
+V6TurnDone:
+        jmp CampaignHUD
+
+; pre-move Manhattan sign mask. slot1Due is campaign scratch only.
+FieldMove:
+        lda #0
+        sta attempt
+        sta slot1Due
         sta workKey
-        jsr ToggleTree
-        lda #$FF
-        sta slot1Key
-NoEcho1:
+        sta intercepted
+        lda owlX
+        sec
+        sbc #4
+        beq FieldY
+        bpl FieldWest
+        eor #$FF
+        clc
+        adc #1
+        ldx #1
+        bne FieldXDone
+FieldWest:
+        ldx #4
+FieldXDone:
+        stx slot1Due
+        sta workKey
+FieldY:
+        lda owlY
+        sec
+        sbc stoneY
+        beq FieldDistance
+        bpl FieldNorth
+        eor #$FF
+        clc
+        adc #1
+        ldx #2
+        bne FieldYDone
+FieldNorth:
+        ldx #8
+FieldYDone:
+        pha
+        txa
+        ora slot1Due
+        sta slot1Due
+        pla
+FieldDistance:
+        clc
+        adc workKey
+        beq FieldContact
+        cmp #3
+        bcs FieldOrdinary
+        inc intercepted
+        lda polarity
+        beq FieldLoop
+        lda slot1Due
+        eor #15
+        sta slot1Due
+        bne FieldLoop
+FieldOrdinary:
+        lda #15
+        sta slot1Due
+        bne FieldLoop
+FieldContact:
+        inc intercepted
+        lda polarity
+        asl
+        clc
+        adc #1
+        adc owlDir
+        and #3
+        tax
+        lda BitMask,x
+        sta slot1Due
+        lda #$80
+        sta workKey
+FieldLoop:
+        lda attempt
+        and #3
+        tax
+        lda owlDir
+        clc
+        adc TurnOffset,x
+        and #3
+        sta candidateD
+        tax
+        lda BitMask,x
+        and slot1Due
+        beq FieldNext
+        lda owlX
+        clc
+        adc DeltaX,x
+        sta candidateX
+        lda owlY
+        clc
+        adc DeltaY,x
+        sta candidateY
+        ; border is permanently blocked, current cell always interior.
+        ldx candidateX
+        lda MirrorX,x
+        tax
+        ldy candidateY
+        lda mapRows,y
+        and BitMask,x
+        bne FieldNext
+        lda candidateX
+        sta owlX
+        lda candidateY
+        sta owlY
+        lda candidateD
+        sta owlDir
+        sta renderDir
+        rts
+FieldNext:
+        inc attempt
+        lda attempt
+        cmp #4
+        bne FieldCheckEnd
+        lda workKey
+        bmi FieldDone
+        lda slot1Due
+        eor #15
+        sta slot1Due
+FieldCheckEnd:
+        lda attempt
+        cmp #8
+        bcc FieldLoop
+FieldDone:
+        rts
+
+BeatTick:
         lda act
         cmp #3
         bne NoPhaseTick
@@ -642,173 +907,24 @@ NoPhaseTick:
         lda #0
         sta usedFire
         inc beat
-        jsr UpdatePresence
         rts
 
-; State is always inferred, not random and not a fourth moving sprite.
-UpdatePresence:
-        lda #0
-        sta presence
-        lda mode
-        cmp #4
-        beq PresenceDone
-        lda presenceEnd
-        bne PresenceDone
-        lda beat
-        cmp #8
-        bcc PresenceWindowEarly
-        lda #1
-        sta presenceEnd
-        rts
-PresenceWindowEarly:
-        ldx room
-        lda RoomWarning,x
-        cmp beat
-        bne CheckActive
-        lda #1
-        sta presence
-        rts
-CheckActive:
-        cpx #12
-        bcc PresenceDone
-        lda beat
-        sec
-        sbc RoomActive,x
-        cmp #2
-        bcc IsActive
-        cmp #2
-        bne PresenceDone
-        lda #3
-        sta presence
-        rts
-IsActive:
-        lda #2
-        sta presence
-PresenceDone:
-        rts
-
-CommitFire:
-        lda pending
-        bne FireActionPresent
-        rts
-FireActionPresent:
-        cmp #2
-        bne FireTree
-        lda polarity
-        eor #1
-        sta polarity
-        jmp FireAccepted
-FireTree:
-        lda pendingKey
-        sta workKey
-        ; Issue26: RECALL THE FUTURE. Touching an echo-queued tree
-        ; again CANCELS its coming reversal, without another tree toggle.
-        ; The cancelled memory flips stone polarity: a second strategic path.
-        cmp slot0Key
-        bne TryRecallSlot1
-        lda #$FF
-        sta slot0Key
-        jmp RecallEcho
-TryRecallSlot1:
-        cmp slot1Key
-        bne NewTreeGesture
-        lda #$FF
-        sta slot1Key
-RecallEcho:
-        lda polarity
-        eor #1
-        sta polarity
-        jmp FireAccepted
-NewTreeGesture:
-        lda act
-        cmp #1
-        beq TreeCapacityOkay
-        lda slot0Key
-        cmp #$FF
-        beq TreeCapacityOkay
-        lda slot1Key
-        cmp #$FF
-        bne InvalidFire
-TreeCapacityOkay:
-        lda presence
-        cmp #2
-        bne RealTreeEdit
-        lda polarity
-        eor #1
-        sta polarity
-        lda #1
-        sta intercepted
-        lda #3
-        sta ackType
-        jmp FinishFireAccepted
-RealTreeEdit:
-        jsr ToggleTree
-        lda act
-        cmp #1
-        beq FireAccepted
-        lda polarity
-        beq DueThree
-        lda #5
-        bne HaveDueOffset
-DueThree:
-        lda #3
-HaveDueOffset:
-        clc
-        adc beat
-        sta moveTemp
-        lda slot0Key
-        cmp #$FF
-        bne FillSlotOne
-        lda workKey
-        sta slot0Key
-        lda moveTemp
-        sta slot0Due
-        jmp FireAccepted
-FillSlotOne:
-        lda workKey
-        sta slot1Key
-        lda moveTemp
-        sta slot1Due
-FireAccepted:
-        lda #1
-        sta ackType
-FinishFireAccepted:
-        lda #18
-        sta ackFrames
-        lda #1
-        sta usedFire
-        jmp FinishFire
-InvalidFire:
-        lda #2
-        sta ackType
-        lda #18
-        sta ackFrames
-FinishFire:
-        lda #0
-        sta pending
-NoFireAction:
-        rts
-
-; Convert 0..39 reflected cell key to x=0..4 / y=0..7.
-DecodeKey:
+ToggleTree:
+; Inline DecodeKey to remove one live JSR frame. Six NOPs replace the
+; original JSR+RTS 12-cycle envelope so downstream TIA/audio timing matches.
+DecodeKeyInline:
         lda workKey
         ldx #0
-DecodeLoop:
+DecodeLoopInline:
         cmp #5
-        bcc DecodedKey
+        bcc DecodedKeyInline
         sec
         sbc #5
         inx
-        bne DecodeLoop
-DecodedKey:
+        bne DecodeLoopInline
+DecodedKeyInline:
         sta workX
         stx workY
-        rts
-
-; Toggle true collision bit and both reflected PF 6/14-band bytes.
-; Masks are the exact T <-> t XOR according to GRAPHICS V5.1 cell table.
-ToggleTree:
-        jsr DecodeKey
         ldy workY
         ldx workX
         lda mapRows,y
@@ -820,7 +936,7 @@ ToggleTree:
         adc UpperPFOffset,x
         tay
         lda pfbuf,y
-        eor UpperToggle,x
+        jsr V6ToggleCrown
         sta pfbuf,y
         ldy workY
         lda PFBase,y
@@ -874,10 +990,10 @@ UpdateOwlCell:
         sta renderDir
         lda owlX
         cmp stoneX
-        bne OwlVictoryCheck
+        bne OwlNoExit
         lda owlY
         cmp stoneY
-        bne OwlVictoryCheck
+        bne OwlNoExit
         lda #1
         sta waitFrames      ; real owl has encountered the stone
         lda polarity
@@ -887,13 +1003,13 @@ UpdateOwlCell:
         adc #3
         and #3
         sta owlDir
-        jmp OwlVictoryCheck
+        jmp OwlNoExit
 RotateClockwise:
         inc owlDir
         lda owlDir
         and #3
         sta owlDir
-        jmp OwlVictoryCheck
+        jmp OwlNoExit
 AlreadyOnStone:
         lda candidateX
         sta owlX
@@ -902,7 +1018,7 @@ AlreadyOnStone:
         lda candidateD
         sta owlDir
         sta renderDir
-        jmp OwlVictoryCheck
+        jmp OwlNoExit
 OwlTryNext:
         inc attempt
         lda attempt
@@ -911,80 +1027,6 @@ OwlTryNext:
         jmp TryOwlDirection
 OwlNoExit:
         rts
-OwlVictoryCheck:
-        lda mode
-        cmp #4
-        beq OwlMoved
-        lda owlX
-        cmp exitX
-        bne OwlMoved
-        lda owlY
-        cmp exitY
-        bne OwlMoved
-        ldx room
-        lda RoomGate,x
-        beq ExitResonates
-        cmp #1
-        beq GateStoneVisit
-        cmp #2
-        beq GatePolarityOne
-        cmp #3
-        beq GatePolarityZero
-        cmp #4
-        beq GateEchoEmpty
-        cmp #5
-        beq GatePhaseOne
-        ; Gate7 needs at least one unsettled echo at the exit.
-        lda slot0Key
-        cmp #$FF
-        bne ExitResonates
-        lda slot1Key
-        cmp #$FF
-        bne ExitResonates
-        beq ExitDissonance
-GateStoneVisit:
-        lda waitFrames
-        bne ExitResonates
-        beq ExitDissonance
-GatePolarityOne:
-        lda polarity
-        bne ExitResonates
-        beq ExitDissonance
-GatePolarityZero:
-        lda polarity
-        beq ExitResonates
-        bne ExitDissonance
-GateEchoEmpty:
-        lda slot0Key
-        cmp #$FF
-        bne ExitDissonance
-        lda slot1Key
-        cmp #$FF
-        beq ExitResonates
-        bne ExitDissonance
-GatePhaseOne:
-        lda phase
-        bne ExitResonates
-        beq ExitDissonance
-ExitDissonance:
-        ; Visible and reversible wrong guess, not a mandatory FIRE counter.
-        lda #2
-        sta ackType
-        lda #18
-        sta ackFrames
-        rts
-ExitResonates:
-        ; Multi-causal resonance: an exit may require a memory, stone visit
-        ; or polarity beyond its original gate, never a FIRE count.
-        jsr CheckExitExtras
-        bcc ExitDissonance
-        lda #2
-        sta mode
-        lda #48
-        sta waitFrames
-OwlMoved:
-        rts
-; Candidate coordinates already range-checked; carry 1 => can move.
 PassableCandidate:
         lda candidateX
         cmp stoneX
@@ -1686,8 +1728,9 @@ StonePaletteTail:
         beq StoneUsesAmber
         lda #$46
 StoneUsesAmber:
-        sta attempt
-        jmp PlayScore
+        jmp FieldPulse
+        nop
+        nop
 CodaSoundTail:
         lda #$0C
         sta AUDC0
@@ -1746,6 +1789,48 @@ HUDCoarseEnd:
         rts
 HUDCoarseDelayEnd:
 
+; V6.2 exact room crown-mask toggle, preserves the original crown families.
+V6ToggleCrown:
+        sta pfPtr
+        lda room
+        asl
+        asl
+        clc
+        adc workX
+        tax
+        lda pfPtr
+        eor RoomCrownMasks-1,x
+        ldx workX
+        rts
+CampaignHUD:
+        lda #$FF
+        ldx slot0Due
+        cpx #1
+        bne CampaignHUDStore
+        lda #0
+CampaignHUDStore:
+        sta slot1Key
+        jmp V6CosmeticPhase
+CampaignVisualEnd:
+        lda #0
+        sta beatFrames
+        ldx presence
+        cpx #2
+        bne CampaignVisualDone
+        sta presence
+CampaignVisualDone:
+        rts
+SpriteRowIndex:
+        ; For 9 lower-kernel lines, indices x=9..2 draw all eight U3/S3 rows,
+        ; x=1 remains blank for the cycle-safe last-row fast exit.
+        dc.b $08,$08,$00,$01,$02,$03,$04,$05,$06,$07
+RoomCrownMasks:
+        dc.b $E0,$0E,$07,$70,$E0,$06,$03,$30,$E0,$06,$03,$70
+        dc.b $E0,$0E,$07,$30,$E0,$06,$03,$60,$E0,$0E,$07,$70
+        dc.b $60,$06,$03,$30,$E0,$06,$03,$70,$60,$0E,$07,$30
+        dc.b $E0,$06,$03,$60,$E0,$0E,$07,$70,$E0,$06,$03,$30
+        dc.b $E0,$06,$03,$70,$60,$0E,$07,$30,$C0,$0E,$03,$60
+
         ; Every bank has the 6507 trampoline at the exact SAME address.
         ; $FFF6+X selects F6 bank 0..2, then execution falls into the selected
         ; bank's $FF93: JSR score interpreter; $FFF9 returns bank3 and RTS.
@@ -1768,44 +1853,48 @@ F6BankReset:
         ; Bank3-only routines in the free pre-vector area.
         ; F6 reset/trampoline code remains byte-for-byte at $FF90/$FF9A.
         ORG $FFA0
-CheckExitExtras:
-        ldx room
-        lda RoomExtra,x
-        and #1
-        beq ExtraPolarity
-        lda waitFrames
-        beq ExtraNo
-ExtraPolarity:
-        lda RoomExtra,x
-        and #2
-        beq ExtraEcho
+; Preserve stone hue and exit amber; a brief luminance pulse marks field/contact use.
+; The HUD polarity slash is independent of color and remains visible on overlap.
+FieldPulse:
+        ldx mode
+        cpx #1
+        bne FieldPulseStore
+        ldx intercepted
+        beq FieldPulseStore
+        ldx introFrames
+        beq FieldPulseStore
+        eor #2
+FieldPulseStore:
+        sta attempt
+        jmp PlayScore
+; Original phase palette/score cadence retained as cosmetic valid-turn effect in act III.
+; FIELD2 collision never reads phase.
+V6CosmeticPhase:
+        lda act
+        cmp #3
+        bne V6PhaseDone
+        inc phaseAge
         lda polarity
-        beq ExtraNo
-ExtraEcho:
-        lda RoomExtra,x
-        and #4
-        beq ExtraPolZero
-        lda slot0Key
-        cmp #$FF
-        bne ExtraPolZero
-        lda slot1Key
-        cmp #$FF
-        beq ExtraNo
-ExtraPolZero:
-        lda RoomExtra,x
-        and #8
-        beq ExtraYes
-        lda polarity
-        bne ExtraNo
-ExtraYes:
-        sec
+        beq V6PhaseFour
+        lda #6
+        bne V6PhaseCheck
+V6PhaseFour:
+        lda #4
+V6PhaseCheck:
+        cmp phaseAge
+        bcc V6PhaseFlip
+        bne V6PhaseDone
+V6PhaseFlip:
+        lda #0
+        sta phaseAge
+        lda phase
+        eor #1
+        sta phase
+V6PhaseDone:
         rts
-ExtraNo:
-        clc
-        rts
-
 ; A three-stage coda: the forest darkens and finally disappears.
 ; U3 vanishes late while the glowing S3 stone is still readable.
+        ORG $FFDA
 CodaPalette:
         ; Compact: never execute from F6 bank-switch hotspots $FFF6-$FFF9.
         ldx #$86
