@@ -1,3 +1,6 @@
+# 2026-11-26 — LIVE AUTHORITY ADDENDUM (MEL-057)
+V6.2 FIELD2 approved by user; [Issue53](https://github.com/Odourman/mellanrum/issues/53) complete implementation and developer testing AUTHORIZED, NOT STARTED in MAIN. Old V6.1 and PR49 frozen. Source hash 065238bca2251957b256598f6c250d8286bd6bc6287edbf5c1204174b15ae956. Read MEL-057 in DECISIONS and issue53 for current scope. Model PASS bounded, actual native V6.2/emulator/independent/human/physical NOT_RUN. No merge/release. The historical snapshot below is retained for provenance and is NOT the current gate.
+
 # Mellanrum: aktuellt projektläge
 
 **Updated:** 2026-11-23 (MEL-056: user expressly authorizes NEW self-directed full 16KiB F6 game implementation after genuine video review; new Issue32 published; PR27 immutable; release blocked).
