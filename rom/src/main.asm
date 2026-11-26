@@ -1152,20 +1152,7 @@ MarkerStyleChosen:
         sta HMOVE
 NoObjects:
         rts
-PositionOne:
-        sta WSYNC
-        sec
-Position15:
-        sbc #15
-        bcs Position15
-        eor #7
-        asl
-        asl
-        asl
-        asl
-        sta HMP0,x
-        sta RESP0,x
-        rts
+        ds 18,$EA ; preserve layout; position routine relocated to page-safe area
 
 ; Issue32: eight evolving 256-frame pages = 34.1-second aural envelope.
 ; codaHi is free until actual mode 3 and reused for the coda countdown.
@@ -1834,6 +1821,22 @@ RoomCrownMasks:
         ; Every bank has the 6507 trampoline at the exact SAME address.
         ; $FFF6+X selects F6 bank 0..2, then execution falls into the selected
         ; bank's $FF93: JSR score interpreter; $FFF9 returns bank3 and RTS.
+; Keep subtract loop and branch in the same page (no extra color clocks).
+PositionOne:
+        sta WSYNC
+        sec
+Position15:
+        sbc #15
+        bcs Position15
+        eor #7
+        asl
+        asl
+        asl
+        asl
+        sta HMP0,x
+        sta RESP0,x
+        rts
+
         ORG $FF90
 F6ScoreTrampoline:
         lda $FFF6,x
