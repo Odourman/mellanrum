@@ -1,0 +1,7 @@
+Native assembler: project tool bundle `audit/extract_developer_evidence/TOOLS/dasm`
+DASM executable SHA-256: cfb23732297a4fe1c8d4a78d44206037d97733aedb2772503bbf029a4aa91291
+The project build script invokes native DASM with `-f3`, creates bank .bin/.lst/.sym outputs, and validates 4 x 4096 bytes plus F6 trampoline/reset/vector invariants.
+
+Stella candidate run: NOT_RUN (no candidate ROM).
+Gopher2600 candidate run: NOT_RUN (no candidate ROM).
+Candidate SHA-256: NONE.
