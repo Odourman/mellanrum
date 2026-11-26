@@ -1,0 +1,26 @@
+--- LAB_BASELINE/rom/src/main.asm
++++ health/HEALTH_V/attempts/PF3X5.diff
+@@ -1753,6 +1753,23 @@
+         ; Every bank has the 6507 trampoline at the exact SAME address.
+         ; $FFF6+X selects F6 bank 0..2, then execution falls into the selected
+         ; bank's $FF93: JSR score interpreter; $FFF9 returns bank3 and RTS.
++
++; HEALTH V method A footprint probe only (not a playable implementation).
++; A compact PF2 right-half 3x5 decimal renderer needs a frame hook, row
++; glyph lookup and five row encodings for ten digits, with mode gating.
++RoomNumberPF_FootprintProbe:
++        ldx room
++        inx
++        lda RoomNumberPF_RowData,x
++        sta PF2
++        rts
++RoomNumberPF_RowData:
++        dc.b $07,$05,$05,$05,$07, $02,$06,$02,$02,$07
++        dc.b $07,$01,$07,$04,$07, $07,$01,$07,$01,$07
++        dc.b $05,$05,$07,$01,$01, $07,$04,$07,$01,$07
++        dc.b $07,$04,$07,$05,$07, $07,$01,$01,$01,$01
++        dc.b $07,$05,$07,$05,$07, $07,$05,$07,$01,$07
++
+         ORG $FF90
+ F6ScoreTrampoline:
+         lda $FFF6,x
