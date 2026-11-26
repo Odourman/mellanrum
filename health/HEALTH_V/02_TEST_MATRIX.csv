@@ -1,0 +1,15 @@
+area,test,status,evidence_or_reason
+baseline,Drive source and ROM SHA verification,PASS,Exact hashes are recorded in baseline and package manifest
+baseline,native DASM build of all four F6 banks,PASS,ROM_16K_BUILD.json; output hash matches prescribed LAB ROM
+method A,PF2 3x5 footprint assembly,FAIL,DASM Origin Reverse-indexed; source reaches $FFCA before fixed $FF90 origin
+method B,P0/P1 sprite footprint assembly,FAIL,DASM Origin Reverse-indexed; source reaches $FFD2 before fixed $FF90 origin
+function,room values 1-15 and transition 9 to 10,NOT_RUN,No candidate ROM
+function,act transitions and SELECT/RESET/win/coda/title/FRI,NOT_RUN,No candidate ROM
+emulator,Stella candidate gameplay,NOT_RUN,No candidate ROM; historical LAB evidence not counted
+emulator,Gopher2600 candidate gameplay,NOT_RUN,No candidate ROM; historical LAB evidence not counted
+graphics,15 authentic candidate screenshots and video,NOT_RUN,No candidate ROM
+graphics,ROI-masked image comparison and palette/Presence states,NOT_RUN,No candidate ROM
+timing,262 scanlines/TIA writes/WSYNC/HUD x9/Stem13/terminal paths,NOT_RUN,No candidate ROM
+timing,RIOT/VBLANK/F6/stack reserve/audio registers and PCM,NOT_RUN,No candidate ROM
+negative control,PR47 263-line control,NOT_RUN,No candidate ROM; not run in footprint-only experiments
+regression,full 15-room controller replay,NOT_RUN,No candidate ROM
