@@ -1,0 +1,26 @@
+name: GLOBAL HOLD autonomous native F6 exact candidate
+on:
+  push:
+    branches: [romdev/global-hold-autonomous-20261127]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          for i in 1 2 3; do sudo apt-get update && sudo apt-get install -y dasm && break; done
+          command -v dasm
+      - working-directory: experiments/global_hold_autonomous
+        run: |
+          python3 rom/f6/build_f6.py --out build1
+          python3 rom/f6/build_f6.py --out build2
+          cmp build1/MELLANRUM_16K_NTSC_F6.bin build2/MELLANRUM_16K_NTSC_F6.bin
+          cmp build1/MELLANRUM_16K_NTSC_F6.bin rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          echo '47a4d379a050c50bd4c2781c4b82ffcb90e175f8f3e670393ac2a0b2473b701e  build1/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
+      - uses: actions/upload-artifact@v4
+        with:
+          name: autonomous-native
+          path: experiments/global_hold_autonomous/build1/
