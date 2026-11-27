@@ -130,3 +130,10 @@ Pre-AB `a953...` and original `ec791...` remain historical checks and are NOT a 
 | M-SRC-011 | [ROM DEV cross-emulator scanline diagnosis Issue #12](https://github.com/Odourman/mellanrum/issues/12) | No production edits; reproduce 261 against known 262 controls and independent Stella true beam | DIAGNOSIS_ONLY_ORDER / NOT_IMPLEMENTATION |
 
 | M-CAND-034 | [MAIN uploaded PACHINKO report reconciliation](MAIN_PACHINKO_UPLOAD_RECONCILIATION_2026-11-22.md) | User report source and original GitHub evidence, 8/15 long matrix shards CI success, actual FRI 50k; Gopher official v0.57.2 95/95 =261; graphic readability open | PARTIAL_DIAGNOSTIC / PROD_SHA_UNCHANGED / RELEASE_BLOCKED |
+
+
+## 2026-11-27 — MAIN V current navigation
+- [MAIN IV→MAIN V handoff](MAIN_IV_TO_MAIN_V_HANDOFF_2026-11-27.md); [verified matching Drive text](https://docs.google.com/document/d/1kWJSrDJCvhngC0VbXvl5AEisCu8H0DT6ULIsmE7kQ24/edit). Dated status receipt only, not new canon.
+- [GH15 final design](https://drive.google.com/file/d/1jqErWVComaW7a1buSkJ3vgBDGdOkib0o/view) SHA256 3e2bb2221ef6248d08d6eb6b2031a53c5ee64a210e33ce6921e1152d80c8fb46; turn-based, historical model evidence only.
+- [PR58](https://github.com/Odourman/mellanrum/pull/58) c4ca55d6a2ed8e6dc6f7790b0e5ced998011e28a; GH ROM 4d14a6c8a886962f0ab5def14e69309676bc5dacb805c7aeca2ab1ff225cf7d5; frozen four-room comparison.
+- [PR59 current full campaign](https://github.com/Odourman/mellanrum/pull/59) 57f95a7ab48ad981dd5f1d5eeaf3d5a07f61b28d; [ROM](https://drive.google.com/file/d/1nb6Lqo4oXS4wg8Yoo0rcIzX-rZpAFazd/view) SHA256 47a4d379a050c50bd4c2781c4b82ffcb90e175f8f3e670393ac2a0b2473b701e; [native CI](https://github.com/Odourman/mellanrum/actions/runs/46045851798) artifact 15222346441; [developer handoff](https://github.com/Odourman/mellanrum/issues/57#issuecomment-7225154893); [evidence ZIP](https://drive.google.com/file/d/1BGT_NUIL1z8B-RqRKT8iGXpUHobIYaob/view) SHA256 5b12b94a274351f25d2a45b64b29be3c432e57e1026739f4c02e9ad2b21fb13e. Exact scope and caveats in handoff. No release; independent and human/physical pending.
