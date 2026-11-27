@@ -1,0 +1,31 @@
+# PACHINKO STRESS TEST → MAIN IV: PR59 AUTONOMOUS FLIGHT, 2026-11-27
+
+**PACHINKO_DIAGNOSTIC_PARTIAL / FRI_STRICT_PIXEL_AND_PCM_REGRESSION_CONFIRMED / P0_GLOBAL_STACK_BANK_TIMING_INCONCLUSIVE / NO_RELEASE.** No changes to any production source/ROM, project canon, PR58, PR59, merge, tag or release.
+
+## Immutable exact target
+
+- Draft PR59 source commit `57f95a7ab48ad981dd5f1d5eeaf3d5a07f61b28d`.
+- PR59 16,384-byte F6/NTSC ROM SHA-256 `47a4d379a050c50bd4c2781c4b82ffcb90e175f8f3e670393ac2a0b2473b701e`, Git blob `ccb1d3b311c1ca176f98fdfed94efec9eb934113`.
+- Parent PR58 GLOBAL HOLD SHA-256 `4d14a6c8a886962f0ab5def14e69309676bc5dacb805c7aeca2ab1ff225cf7d5`, source `c4ca55d6a2ed8e6dc6f7790b0e5ced998011e28a`.
+- Real Drive exact ROM, native CI artifact 15222346441 (run 46045851798) and **new independent native DASM build** have byte-identical ROM, checksum and four bank hashes; last bank3 hash `96cec4367f3884af818579f5c57158998e5306b5fbe6bb7bbbeca614130851ee`. Original 39,929,112-byte developer ZIP SHA `5b12b94a274351f25d2a45b64b29be3c432e57e1026739f4c02e9ad2b21fb13e`, ZIP CRC and 893/893 payload hashes recomputed PASS.
+- Stella core SHA `2130ed1153cef66ef3f34bf9063f675f1f3342bc18320eb9ae5101743e3042df`; Gopher ELF SHA `7b12dff57fcb73154122d2477f35d9c8ae8b344649bc0faa8ff6f5663c70470b`; native DASM ELF SHA `cfb23732297a4fe1c8d4a78d44206037d97733aedb2772503bbf029a4aa91291`.
+
+## Independent authentic emulator results
+
+- 15 original game rooms reached via actual controller **SOURCE_GUIDED transport** to new saved starts (16,450 genuine Stella frames, no POKE); new experimental rums-fuzz is separate **STATE_GUIDED_STRESS**, not blind 15/15 victory.
+- **15 × 10,000 real Stella frames no input + 15 × 3 × 1,200 seeded controller frames = 204,000**, no unexpected no-input room wins or monitored state-invariant violations; 60 canonical scenarios, 15 rooms.
+- **Three 216,000-frame consecutive idle checks:** I-04, II-05, III-01, **648,000** real Stella frames in 27 SHA-chained 24k chunks; no passive win. The other 12 long idles are **NOT_RUN**, although all 15 had 10k each.
+- **135 real multi-edit controller scenarios**, 132 distinct parameter settings and three reruns; 15 rooms with 6/7 fire pulse parity, held FIRE, open/close trees, change paired trees, after natural auto flight; 15 high-risk boundary offset cases in I-04/II-05/III-05. All measured per-case invariants PASS_BOUNDED. Repetition of same logical target does not prove exhaustive all-state graph.
+- **20 original same-start counterfactual recovery tests** in 5 rooms, none/stone/tree/both, 121,408 real Stella frames, no SELECT. III-01 owl remained in one cell with none or stone alone, visited 2 cells with tree, 8 with stone+tree; natural evidence that a seemingly stuck owl can be freed, not all softlocks globally excluded.
+- **Gopher2600:** five independent native debugger SCRIPT sequences, **1,563/1,563 complete NTSC frames exactly 262 scanlines**, five partial boot frames correctly excluded. One x9 trace contains **4,771** genuine CPU instruction-boundary samples, lowest observed SP `$F9` (6 used stack bytes), not worst-case proof. Targeted Act I F6 hotspot replay: `$FFF6` 240 and matching `$FFF9` 240; bank1/2 and all RIOT-mirror stackbus proof NOT_RUN.
+- **FRI strict regression independently reproduced on all four original variants** from real cold Stella runs, PR59 vs PR58: **7,034/7,034** comparable after-FRI framebuffer hashes differ; **2,772,646/7,541,408** int16 TIA PCM samples differ, despite identical sampled logic/RAM/maps. **New first divergence localized to absolute framebuffer frame31**, first FRI mode frame, in an independent frame0–79 A/B trace. One repeat on same PR59 ROM changes 2/1,760 pixel hashes and some PCM, so exact single-sample audio comparator has a nondeterminism caveat. Audible/visual human severity NOT_RUN; original PR58-vs-59 strict regression **FAIL** as a numerical test. Actual TIA bus cause not verified; do not claim diagnosis proven.
+- A tested near-beat FIRE may select a different owl movement path despite same final polarity, consistent with legal event timing and 1-frame input latching; no independent verified unintended bug just from sensitivity.
+- Rumsvis 10k sampled owl cell recurrence and five-room recovery available as CSV. Full emulator-state cycle, recurrent human winning opportunity, all room alternative puzzles and cold human gameplay remain NOT_EXHAUSTIVE/NOT_RUN.
+
+## Open release gate
+All-path 76 CPU-cycles/scanline + actual TIA bus write deadlines, complete F6 bank0–3 return matching under adversarial stress, RIOT mirrored stack access and real max 8-byte worst-case, true vertical/horizontal interpolation visual+logical collision, 12 remaining one-hour idle scenarios, complete L2 audio priority, original Atari / RetroN77, user artistic acceptances **INCONCLUSIVE or NOT_RUN**. Selected 262-line tests are not all-path safety proof.
+
+## Complete evidence and independent readback
+[Full ZIP on project Google Drive](https://drive.google.com/file/d/1_D4YDhN55FoXc7WFatBFgKEgBIzUfNNI/view), **22,971,059 B, SHA-256 `cf321ec3c82f747b3ef9fc21da867416a902602237daaae939a30e734362d6d8`**, 721 ZIP entries, CRC PASS and **720/720 per-file SHA-256** checked; downloaded back and rechecked. Contains both full original ROMs, independent DASM build/listings/maps, pinned genuine Stella/Gopher/DASM binaries, original source snapshot, 15 real room starts and full transport controller RLE, new scripts, all 60 room profiles, 27 independent long-idle chunks, 135 multi-edit cases, 20 recovery cases, Gopher CPU/raster scripts, all four original 1× FRI PNG pair screenshots, true TIA WAV/JSON from both ROMs, first divergent frame31, all reports, full SHA manifest and reproduce instructions.
+
+**Recommendation:** Keep Draft PR59 frozen; prioritize independent Verification of the FRI presentation regression, especially first TIA write divergence around global frame31, plus independent stack/F6/76-cycle timing. Do not ask ROM DEVELOPMENT to patch without separate user authorization. No merge/tag/release.
