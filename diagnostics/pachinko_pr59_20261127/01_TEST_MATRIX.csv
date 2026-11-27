@@ -1,0 +1,13 @@
+family,planned,completed,status,notes
+native_dasm,1,1,PASS,Four bank byte-identical ROM
+controller_scenarios,120,115,PASS_BOUNDED,193700 actual Stella frames 15 rooms
+short_idle,3240000,64700,PASS_BOUNDED,all 15 rooms short; long quota NOT_RUN
+multi_edit_windows,9,9,PASS_BOUNDED,three rooms change counts 23/12/24 fixed96 windows
+Gopher_raster,1200,1198,PASS_BOUNDED,2 startup partial20 excluded; 1198/1198 262 lines
+CPU_trace,1,1,PASS_BOUNDED,4765 states min SP F9 locally
+FRI_mode4_strict_parity,4,4,FAIL,4 variants separate OS 960frames each
+FRI_same_ROM_repeat,2,2,PASS,PR59 and PR58 PCM/framebuffer exact within version
+all_path_timing,1,0,INCONCLUSIVE,76cycles per raster unproven
+full_stack_bus_bank,1,0,NOT_RUN,F6 and RIOT stack bus not exhaustively observed
+all_room_recovery_graph,15,0,INCONCLUSIVE,no independent exhaustive search
+physical_human,3,0,NOT_RUN,original Atari RetroN77 human cold play
