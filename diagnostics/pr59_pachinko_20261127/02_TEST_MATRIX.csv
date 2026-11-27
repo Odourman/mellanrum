@@ -1,0 +1,17 @@
+test_family,executed,frames,status,limitation
+Own independent native DASM exact F6 build,1,0,PASS,Byte-identical ROM SHA to Drive native CI Git
+Stella source-guided 15 authentic room-start transport,15,16450,PASS_BOUNDED,Transport not independent 15room win proof
+Stella 15 rooms no input 10000 frames,15,150000,PASS_BOUNDED,Zero passive wins in bounded window
+Stella 15 rooms 3 seeded fuzz profiles x1200,45,54000,PASS_BOUNDED,No monitored state invariants broken
+Stella three rooms consecutive 216000 idle,3,648000,PASS_BOUNDED,27 chained 24000-frame runs; 12 rooms NOT_RUN
+Stella new multi-edit 96-frame clock cases,135,28762,PASS_BOUNDED,132 distinct parameter cases plus 3 reruns
+Stella counterfactual recovery in 5 rooms,20,121408,PASS_BOUNDED,Without SELECT; not all softlocks exhaustively tested
+Stella four FRI variants PR59 vs PR58 1800 each,8,14400,FAIL_STRICT,7034/7034 after-start framehashes and 2772646 PCM samples differ
+Stella same-ROM FRI repeat,2,3600,INCONCLUSIVE_AUDIO_SAMPLE,Two pixel hashes differ even same ROM and input
+Stella independent first FRI difference 80 frames each,2,160,FAIL_STRICT,First divergent framebuffer frame31
+Gopher selected 262-line complete raster samples,1563,0,PASS_BOUNDED,5 initial boot partial frames excluded
+Gopher x9 genuine CPU instruction samples,4771,0,PASS_BOUNDED,Observed SPmin F9 not allpath stack max
+Gopher bank0 and bank3 hotspot matched calls,240,0,PASS_BOUNDED,Replayed same x9 scenario not new unique frames
+Global 76-cycle TIA bus and mirrored stack bank1/2,0,0,INCONCLUSIVE,Not completed
+All 15 one-hour continuous idle,3,648000,PARTIAL,12/15 NOT_RUN
+Human coldplay and physical hardware,0,0,NOT_RUN,Unperformed
