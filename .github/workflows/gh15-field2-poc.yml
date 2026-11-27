@@ -1,0 +1,32 @@
+name: GH15 FIELD2-X PoC native exact F6
+on:
+  push:
+    branches: [romdev/gh15-field2-poc-20261127]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        include:
+          - variant: FIELD2_X
+            sha: 3200e51b65bc57008d8909b62a0069a42f0435b737511b82cf845a7f0cafc844
+          - variant: GH15
+            sha: 4d14a6c8a886962f0ab5def14e69309676bc5dacb805c7aeca2ab1ff225cf7d5
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y dasm
+      - working-directory: experiments/gh15_field2_poc/${{ matrix.variant }}
+        run: |
+          python3 rom/f6/build_f6.py --out build1
+          python3 rom/f6/build_f6.py --out build2
+          cmp build1/MELLANRUM_16K_NTSC_F6.bin build2/MELLANRUM_16K_NTSC_F6.bin
+          cmp build1/MELLANRUM_16K_NTSC_F6.bin rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          echo '${{ matrix.sha }}  build1/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poc-${{ matrix.variant }}
+          path: experiments/gh15_field2_poc/${{ matrix.variant }}/build1/

@@ -1,0 +1,47 @@
+name: MAIN II ART – guarded ROM pin on new isolated branch
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pin-rom-after-real-stella:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Native DASM and actual Stella dependencies
+        run: sudo apt-get update && sudo apt-get install -y dasm curl unzip
+      - name: Build four 4 KiB F6 banks and check source reference
+        run: |
+          python3 rom/f6/build_f6.py --out build/issue32
+          python3 -m unittest discover -s reference -p test_engine.py -v
+          python3 reference/check_rooms.py
+      - name: Run 15-room genuine Stella + ending on newly assembled bytes
+        run: |
+          curl -fsSL --retry 4 --retry-delay 3 -o build/issue32/stella.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue32/stella.zip -d build/issue32
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue32/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/stella_full_campaign.py --core build/issue32/stella_libretro.so --rom build/issue32/MELLANRUM_16K_NTSC_F6.bin --sym build/issue32/bank3.sym --rooms reference/rooms.json --out build/issue32/PIN_CHECK --frames 26000
+      - name: Pin exact successful ROM on own development branch only
+        run: |
+          test "$GITHUB_REF" = 'refs/heads/romdev/mainii-art-final-20261123'
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os
+          raw=Path('build/issue32/MELLANRUM_16K_NTSC_F6.bin').read_bytes()
+          result=json.loads(Path('build/issue32/PIN_CHECK/result.json').read_text())
+          assert len(raw)==16384 and result['win_rooms']==list(range(15)),result
+          assert result['full_coda_first_frame'] is not None and result['back_to_title_frame']-result['full_coda_first_frame']>=700,result
+          sha=hashlib.sha256(raw).hexdigest()
+          assert sha==result['rom_sha256'],(sha,result)
+          Path('rom/bin/MELLANRUM_16K_NTSC_F6.bin').write_bytes(raw)
+          Path('docs/MAINII_ART_PINNED_ROM.md').write_text('# MAIN II ART native F6 ROM\n\nSource build commit: '+os.environ['GITHUB_SHA']+'\n\n16,384-byte MAINII ART standard F6 NTSC ROM SHA-256: '+sha+'\n\nReal Stella 15/15 and coda-to-title PASS; independent Verification/Pachinko, physical/human NOT_RUN. Draft developer candidate, no release.\n')
+          print('NATIVE_F6_PIN_SHA',sha)
+          PY
+          git config user.name "MELLANRUM CI"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rom/bin/MELLANRUM_16K_NTSC_F6.bin docs/MAINII_ART_PINNED_ROM.md
+          if ! git diff --cached --quiet; then
+            git commit -m "MAIN II ART: pin exact real-Stella-validated 16KiB F6 ROM"
+            git push origin HEAD:refs/heads/romdev/mainii-art-final-20261123
+          fi

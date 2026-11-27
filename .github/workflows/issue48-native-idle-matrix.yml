@@ -1,0 +1,51 @@
+name: Issue48 exact-SHA native Stella 15 x 600s idle matrix
+on:
+  push:
+    branches: [romdev/issue48-final-polish-rc1-20261124]
+    paths: ['.github/workflows/issue48-native-idle-matrix.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  idle-each-room:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        room: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover exact native Stella/ROM/control witness
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45450875477
+          name: issue48-rc1-stella-evidence
+          github-token: ${{ github.token }}
+          path: build/issue48evidence
+      - name: Strict exact-SHA and natural controller witness check
+        run: |
+          echo '456005ed691860b32c44b79f2a71666f622b005f5a798eadf9b549c59cff13bd  build/issue48evidence/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          r=Path('build/issue48evidence')
+          obj=json.loads((r/'CAMPAIGN/result.json').read_text())
+          raw=(r/'MELLANRUM_16K_NTSC_F6.bin').read_bytes()
+          assert len(raw)==16384 and obj['rom_sha256']==hashlib.sha256(raw).hexdigest()
+          assert obj['win_rooms']==list(range(15))
+          assert (r/'stella_libretro.so').exists()
+          print('ISSUE43_STELLA_NATIVE_IDLE_INPUT_SHA_PASS',obj['rom_sha256'])
+          PY
+      - name: 36000 NTSC frames genuine Stella no input after reached room
+        run: |
+          python3 tests/issue32/pr38_idle_one_room.py --core build/issue48evidence/stella_libretro.so --rom build/issue48evidence/MELLANRUM_16K_NTSC_F6.bin --events build/issue48evidence/CAMPAIGN/controller_frame_events.json --room ${{ matrix.room }} --out build/issue48-idle-${{ matrix.room }}
+      - name: Archive room-specific actual 36000 frame result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue48-native-Stella-idle-room-${{ matrix.room }}
+          path: build/issue48-idle-${{ matrix.room }}/
+          retention-days: 30

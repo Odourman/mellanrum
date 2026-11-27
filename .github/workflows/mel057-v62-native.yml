@@ -1,0 +1,25 @@
+name: MEL-057 V6.2 native F6 exact ROM
+on:
+  push:
+    branches: [romdev/mel057-v62-field2-20261126]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm
+          python3 rom/f6/build_f6.py --out build/v62
+          python3 rom/f6/build_f6.py --out build/v62-repeat
+          cmp build/v62/MELLANRUM_16K_NTSC_F6.bin build/v62-repeat/MELLANRUM_16K_NTSC_F6.bin
+          cmp build/v62/MELLANRUM_16K_NTSC_F6.bin rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          echo 'abe457fc2e0092f78e77d14c513e830e43509316ef176c58eb71d62c81a6bf28  build/v62/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mel057-v62-native
+          path: build/v62/

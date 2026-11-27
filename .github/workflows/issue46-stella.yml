@@ -1,0 +1,87 @@
+name: Issue46 integrated U3 and arrow - native F6 Stella 15+FRI
+on:
+  push:
+    branches: [romdev/issue46-u3-direction-20261124]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-f6:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install authentic DASM and native Stella core dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm curl unzip
+      - name: BUILD – four real native banks, vectors, hotspots, hashes, no 4K fallback
+        run: |
+          python3 rom/f6/build_f6.py --out build/issue32
+          cmp rom/bin/MELLANRUM_16K_NTSC_F6.bin build/issue32/MELLANRUM_16K_NTSC_F6.bin
+      - name: STRICT source parity & 15 authored rooms
+        run: |
+          python3 -m unittest discover -s reference -p test_engine.py -v
+          python3 reference/check_rooms.py
+      - name: Reject F6 hidden instructions in bank2 hotspot
+        run: |
+          python3 - <<'PY'
+          import pathlib,re
+          s=(pathlib.Path("build/issue32")/"bank2.sym").read_text()
+          m=re.search(r"(?m)^FreeForestEnd\s+([0-9a-fA-F]{4})\b",s)
+          assert m and int(m.group(1),16)<=0xFFF6,("BANK2_F6_HOTSPOT",m.group(1) if m else "MISSING")
+          print("FRI_F6_BANK2_SAFE",m.group(1))
+          PY
+      - name: Download actual Stella emulator core and record its byte SHA
+        run: |
+          mkdir -p build/issue32
+          curl -fsSL --retry 4 --retry-delay 3 -o build/issue32/stella.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue32/stella.zip -d build/issue32
+          sha256sum build/issue32/stella_libretro.so > build/issue32/STELLA_CORE_SHA256SUMS
+      - name: REQUIRED authentic Stella controller-only 15 rooms / coda / title and real stereo TIA WAV
+        run: |
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue32/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/stella_full_campaign.py --core build/issue32/stella_libretro.so --rom build/issue32/MELLANRUM_16K_NTSC_F6.bin --sym build/issue32/bank3.sym --rooms reference/rooms.json --out build/issue32/CAMPAIGN --frames 26000 --audio-frames 26000 --screens
+      - name: Authentic stereo 2 channel FRI sound diagnostic, 1200 frames
+        run: |
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue32/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue32/stella_libretro.so --rom build/issue32/MELLANRUM_16K_NTSC_F6.bin --out build/issue32/FRI_AUDIO --frames 1200 --audio-frames 1200 --left B --profile TILT_STONE --snap-every 300
+      - name: Actual FRI SKOG left-Difficulty B and real audio, 12000 frames
+        run: |
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue32/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue32/stella_libretro.so --rom build/issue32/MELLANRUM_16K_NTSC_F6.bin --out build/issue32/FRI_REAL --frames 12000 --audio-frames 12000 --left B --profile TILT_STONE --snap-every 2000 --sample-every 1000
+      - name: Alternate truly free-mode joystick compositions and safe idle
+        run: |
+          export MELLANRUM_ROM_SHA="$(sha256sum build/issue32/MELLANRUM_16K_NTSC_F6.bin | cut -d ' ' -f1)"
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue32/stella_libretro.so --rom build/issue32/MELLANRUM_16K_NTSC_F6.bin --out build/issue32/FRI_BOG --frames 3000 --audio-frames 3000 --left B --profile BOG --snap-every 600
+          python3 tests/issue15/libretro_stella_capture.py --core build/issue32/stella_libretro.so --rom build/issue32/MELLANRUM_16K_NTSC_F6.bin --out build/issue32/FRI_IDLE --frames 3000 --audio-frames 3000 --left B --profile IDLE --snap-every 600
+      - name: Require byte-exact real gameplay evidence and nonzero audio
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,wave,hashlib
+          p=Path('build/issue32')
+          r=json.loads((p/'CAMPAIGN/result.json').read_text())
+          assert r['status']=='PASS' and r['win_rooms']==list(range(15)) and r['back_to_title_frame'] is not None,r
+          assert r['full_coda_first_frame'] is not None and r['back_to_title_frame']-r['full_coda_first_frame']>=650,r
+          free=json.loads((p/'FRI_REAL/result.json').read_text())
+          assert free['status']=='PASS' and free['emulated_frames']==12000 and free['rom_sha256']==r['rom_sha256'],free
+          for n in ('CAMPAIGN','FRI_AUDIO','FRI_REAL'):
+              with wave.open(str(p/n/'tia_audio.wav'),'rb') as w:
+                  pcm=w.readframes(w.getnframes())
+                  assert len(pcm)>10000 and any(pcm),(n,len(pcm))
+          print("STRICT_ACTUAL_F6_STELLA_GAME_AND_PCM_PASS",json.dumps({'rom_sha256':r['rom_sha256'],'frames':r['emulated_frames'],'rooms':r['win_rooms']}))
+          PY
+      - name: Archive exact source, authored rooms, emulators and test harnesses
+        if: always()
+        run: |
+          mkdir -p build/issue32
+          tar -czf build/issue32/ISSUE26_SOURCE_SNAPSHOT.tar.gz rom/src rom/f6 reference tests scripts docs .github/workflows
+          (cd build/issue32 && sha256sum ISSUE26_SOURCE_SNAPSHOT.tar.gz >> SHA256SUMS)
+      - name: Upload entire exact-ROM and evidence, whether successful or failed
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue46-actual-stella-f6-u3-arrow-evidence
+          path: build/issue32/
+          retention-days: 30
