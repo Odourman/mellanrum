@@ -1,0 +1,44 @@
+name: ISSUE21 pin tested native ROM binary to vNext Draft PR
+on:
+  push:
+    branches: [romdev/issue21-vnext-16k-20261123]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pin-product-rom:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Compile exact Issue21 native ROM
+        run: |
+          sudo apt-get update && sudo apt-get install -y dasm
+          mkdir -p rom/bin build/issue21
+          dasm rom/src/main.asm -f3 -obuild/issue21/new.bin -lbuild/issue21/new.lst -sbuild/issue21/new.sym
+          test "$(wc -c < build/issue21/new.bin)" = 4096
+          echo '63e719a362ae2eb5689484ca7c28c628b495a2843723898ebec3fe6374c43bdc  build/issue21/new.bin' | sha256sum -c -
+          cp build/issue21/new.bin rom/bin/mellanrum_vnext_ntsc.bin
+          sha256sum rom/bin/mellanrum_vnext_ntsc.bin
+      - name: Commit only distinct new ROM file to its own Draft PR branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- rom/bin/mellanrum_vnext_ntsc.bin
+          if git diff --cached --quiet; then
+            echo 'EXACT_PRODUCT_ROM_ALREADY_PRESENT'
+          else
+            git commit -m 'Issue21: pin exact tested native 4KiB vNext ROM 63e719a3'
+            git push origin HEAD:refs/heads/romdev/issue21-vnext-16k-20261123
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue21-native-tested-ROM-63e719a3
+          path: |
+            rom/bin/mellanrum_vnext_ntsc.bin
+            build/issue21/new.lst
+            build/issue21/new.sym
+          retention-days: 30

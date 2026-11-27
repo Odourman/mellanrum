@@ -1,0 +1,61 @@
+name: ISSUE15 complete 15-room REAL Stella core controller replay and PCM WAV
+on:
+  push:
+    branches: [romdev/issue15-complete-u3-s3-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stella-full15:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install real DASM and pinned Stella core download dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm curl unzip
+          mkdir -p build/issue15_stella15
+          dasm rom/src/main.asm -f3 -obuild/issue15_stella15/native.bin -lbuild/issue15_stella15/native.lst -sbuild/issue15_stella15/native.sym
+          cmp build/issue15_stella15/native.bin rom/bin/mellanrum_ntsc.bin
+          echo '45d3422371d41bf896c0ac0076c57d93e600dcf7f4a1e51d4d352312fce8d7a7  build/issue15_stella15/native.bin' | sha256sum -c -
+          curl -fsSL --retry 4 --retry-delay 2 -o build/issue15_stella15/stella_libretro.so.zip https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip
+          unzip -oj build/issue15_stella15/stella_libretro.so.zip -d build/issue15_stella15
+          sha256sum build/issue15_stella15/stella_libretro.so > build/issue15_stella15/CORE_SHA256SUMS
+      - name: TRUE stock Stella/libretro normal-joystick full 15-room campaign + coda + original TIA PCM WAV
+        run: |
+          python3 tests/issue15/stella_full_campaign.py --core build/issue15_stella15/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --sym build/issue15_stella15/native.sym --rooms reference/rooms.json --out build/issue15_stella15/first --frames 16000 --audio-frames 16000 --screens
+      - name: Deterministic second Stella replay from original recorded physical controller events
+        run: |
+          python3 tests/issue15/stella_full_campaign.py --core build/issue15_stella15/stella_libretro.so --rom rom/bin/mellanrum_ntsc.bin --sym build/issue15_stella15/native.sym --rooms reference/rooms.json --out build/issue15_stella15/replay --frames 16000 --replay build/issue15_stella15/first/controller_frame_events.json --screens
+      - name: Verify both real Stella runs, all 15 actual room win frames, PCM audio samples, and replay determinism
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,wave
+          root=Path("build/issue15_stella15")
+          a=json.loads((root/"first/result.json").read_text())
+          b=json.loads((root/"replay/result.json").read_text())
+          for x in (a,b):
+              assert x["status"]=="PASS" and x["win_rooms"]==list(range(15)),x
+              assert x["back_to_title_frame"] is not None and x["video_callbacks"]==x["emulated_frames"],x
+          assert a["win_frames"]==b["win_frames"],(a["win_frames"],b["win_frames"])
+          assert (root/"first/timeline.jsonl").read_bytes()==(root/"replay/timeline.jsonl").read_bytes()
+          wav=root/"first/tia_audio.wav"
+          with wave.open(str(wav),"rb") as w:
+              pcm=w.readframes(w.getnframes())
+              data={"status":"PASS" if w.getnframes()>10000 and any(v!=0 for v in pcm) else "INCONCLUSIVE","sample_rate":w.getframerate(),"channels":w.getnchannels(),"samples":w.getnframes(),"wav_sha256":hashlib.sha256(wav.read_bytes()).hexdigest(),"input":"REAL_STELLA_CONTROLLER_ONLY","human_listening":"NOT_RUN"}
+          (root/"first/audio_metrics.json").write_text(json.dumps(data,indent=2)+"\n")
+          assert data["status"]=="PASS",data
+          print("TWO_STELLA_NATIVE_FULL_CAMPAIGN_REPLAYS_ALL15_WINS_AND_PCM_AUDIO_PASS",data)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue15-real-stella-15room-TIA-audio-and-replay
+          path: |
+            build/issue15_stella15/first/
+            build/issue15_stella15/replay/
+            build/issue15_stella15/native.sym
+            build/issue15_stella15/CORE_SHA256SUMS
+          retention-days: 30

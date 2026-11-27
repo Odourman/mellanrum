@@ -1,0 +1,1 @@
+User-authorized autonomous full 15-room GLOBAL HOLD candidate, separate from frozen PR58. Source and exact native F6 binary. Build with python3 rom/f6/build_f6.py --out build. 96-frame movement clock; FIRE edits real objects only. Development candidate, no release. See delivery report for evidence and remaining limits.

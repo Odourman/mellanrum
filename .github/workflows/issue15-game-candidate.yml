@@ -1,0 +1,173 @@
+name: ISSUE15 new MELLANRUM U3 S3 integrated production candidate
+on:
+  push:
+    branches: [romdev/issue15-complete-u3-s3-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-dasm:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actual DASM
+        run: sudo apt-get update && sudo apt-get install -y dasm
+      - name: Reproduce source overlay against pinned Issue14 diagnostic source
+        run: |
+          python3 build_issue15.py
+          git diff --exit-code -- rom/src/main.asm rom/src/data.inc
+      - name: Native DASM, listings, symbols, SHA and independent local assembler byte agreement
+        run: |
+          mkdir -p build/issue15_native
+          dasm rom/src/main.asm -f3 -obuild/candidate.bin -lbuild/issue15_native/mellanrum.lst -sbuild/issue15_native/mellanrum.sym
+          test $(wc -c < build/candidate.bin) -eq 4096
+          cmp rom/bin/mellanrum_ntsc.bin build/candidate.bin
+          python3 scripts/assemble_check.py rom/src/main.asm -o build/issue15_native/local_subset.bin
+          cmp build/candidate.bin build/issue15_native/local_subset.bin
+          cp build/candidate.bin build/mellanrum_ntsc.bin
+          cp build/issue15_native/local_subset.sym build/mellanrum_ntsc.sym
+          sha256sum build/candidate.bin rom/bin/mellanrum_ntsc.bin
+          (cd build/issue15_native && sha256sum * > SHA256SUMS)
+      - name: Original oracle, game model, title, A/B input and Presence regressions
+        run: |
+          python3 -m unittest discover -s reference -p test_engine.py -v
+          python3 reference/check_rooms.py
+          python3 scripts/check_rom_vs_model.py
+          python3 scripts/check_title_presence.py
+          python3 scripts/check_input.py
+          python3 scripts/check_hardware_ab.py
+          python3 scripts/check_playfield.py
+      - name: Upload actual native DASM artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue15-native-DASM-real-build-and-regression
+          path: |
+            build/candidate.bin
+            build/issue15_native/
+          retention-days: 30
+  gopher-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - run: sudo apt-get update && sudo apt-get install -y git gcc g++ pkg-config libsdl2-dev libgl1-mesa-dev libasound2-dev
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.4'
+      - name: Pinned real upstream Gopher2600 native build
+        run: |
+          git clone --quiet https://github.com/JetSetIlly/Gopher2600.git gopher-src
+          cd gopher-src
+          git checkout --detach 74c544203378c1448a33c29bc8b4586079b050f4
+          git rev-parse HEAD > ../gopher_source.txt
+          go build -o ../gopher2600 .
+          cd ..
+          ./gopher2600 VERSION > gopher_version.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: issue15-pinned-real-gopher2600
+          path: |
+            gopher2600
+            gopher_source.txt
+            gopher_version.txt
+          retention-days: 30
+  gopher-native-matrix:
+    needs: [native-dasm,gopher-build]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64 python3-pil
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue15-native-DASM-real-build-and-regression
+          path: build/downloaded
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue15-pinned-real-gopher2600
+          path: build/gopher
+      - name: Set exact candidate + emulator binary and verify copy
+        run: |
+          cp build/downloaded/candidate.bin build/candidate.bin
+          cmp build/candidate.bin rom/bin/mellanrum_ntsc.bin
+          chmod +x build/gopher/gopher2600
+      - name: Genuine Gopher2600 15-room framebuffer, U3/S3 per-pixel audit, 262-line sequential replay
+        run: |
+          python3 tests/issue15/probe_15.py
+          python3 tests/issue15/pixel_audit.py
+          python3 tests/issue15/raster_transitions.py
+          python3 - <<'PY'
+          import pathlib,json
+          p=pathlib.Path('build/issue15_gopher_15/metadata.json')
+          d=json.loads(p.read_text())
+          assert d['scanline_counts']=={'262':28},d
+          p=pathlib.Path('build/issue15_raster_transitions/result.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='PASS' and d['nonboot_histogram']=={'262':299},d
+          print('ISSUE15_NATIVE_GOPHER_ALL_15_ROOMS_2880_REAL_BITMAP_BITS_AND_262_LINES_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue15-native-Gopher15room-U3-S3-raster-evidence
+          path: |
+            build/issue15_gopher_15/
+            build/issue15_raster_transitions/
+          retention-days: 30
+  actual-controller-campaign:
+    needs: [native-dasm,gopher-build]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        attempt: [1, 2]
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0 libgl1 libasound2t64
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue15-pinned-real-gopher2600
+          path: build/gopher
+      - run: chmod +x build/gopher/gopher2600
+      - name: Full 15 rooms + coda with actual frame-indexed joystick and no POKE
+        run: |
+          python3 pachinko2/campaign_attempt.py --emulator build/gopher/gopher2600 --rom rom/bin/mellanrum_ntsc.bin --rooms reference/rooms.json --out build/issue15_campaign/attempt${{ matrix.attempt }} --attempt ${{ matrix.attempt }}
+          python3 pachinko2/analyze_campaign.py --dir build/issue15_campaign/attempt${{ matrix.attempt }}
+          python3 - <<'PY'
+          import json,pathlib,sys
+          d=json.loads(pathlib.Path('build/issue15_campaign/attempt${{ matrix.attempt }}/campaign_real_result.json').read_text())
+          print('ISSUE15_REAL_CAMPAIGN',d)
+          assert d['status']=='PASS' and d['room_wins_demonstrated']==15,d
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue15-real-input-campaign-attempt-${{ matrix.attempt }}
+          path: build/issue15_campaign/attempt${{ matrix.attempt }}/
+          retention-days: 30
+  native-stella:
+    needs: native-dasm
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y stella xvfb xdotool python3-pil
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue15-native-DASM-real-build-and-regression
+          path: build/downloaded
+      - run: |
+          cp build/downloaded/candidate.bin build/candidate.bin
+          cmp build/candidate.bin rom/bin/mellanrum_ntsc.bin
+      - name: Real stock Stella screenshot, normal title and LEFT-A campaign+both S3 glyphs
+        run: |
+          xvfb-run -a -s '-screen 0 1280x960x24' bash tests/issue15/stella_capture.sh
+          python3 tests/issue15/stella_pixel_check.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue15-native-Stella-U3-S3-title-and-campaign
+          path: build/issue15_stella/
+          retention-days: 30

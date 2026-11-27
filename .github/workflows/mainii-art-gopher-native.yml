@@ -1,0 +1,55 @@
+name: MAIN II native Gopher2600 15-room and raster real controller
+on:
+  push:
+    branches: [romdev/mainii-art-final-20261123]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-gopher:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 42
+    steps:
+      - uses: actions/checkout@v4
+      - name: Native DASM dependencies and real F6 build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm libsdl2-2.0-0 libgl1 libasound2t64
+          python3 rom/f6/build_f6.py --out build/mainii-gopher
+      - name: Download known real Gopher2600 binary from immutable original run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45090981800
+          name: issue15-pinned-real-gopher2600
+          github-token: ${{ github.token }}
+          path: build/mainii-gopher/emulator
+      - name: Real Gopher2600 controller-only all 15 rooms, revised 720f coda, raster
+        run: |
+          chmod +x build/mainii-gopher/emulator/gopher2600
+          build/mainii-gopher/emulator/gopher2600 VERSION
+          python3 tests/issue21/gopher_full_campaign.py --emulator build/mainii-gopher/emulator/gopher2600 --rom build/mainii-gopher/MELLANRUM_16K_NTSC_F6.bin --rooms reference/rooms.json --out build/mainii-gopher/FULL_CAMPAIGN --limit 15
+      - name: Strict test metadata and SHA
+        if: success()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path('build/mainii-gopher')
+          rom=root/'MELLANRUM_16K_NTSC_F6.bin'
+          d=json.loads((root/'FULL_CAMPAIGN/result.json').read_text())
+          sha=hashlib.sha256(rom.read_bytes()).hexdigest()
+          assert d['status']=='PASS' and d['rom_sha256']==sha and d['rooms_won']==list(range(15)),d
+          assert d['coda_title'] and d['scanlines_checked']>=15 and d['all_262'],d
+          print('MAINII_REAL_GOPHER_FULL15_PASS',sha,'RASTER_SAMPLES',d['scanlines_checked'])
+          PY
+      - name: Always upload exact ROM and native Gopher evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mainii-art-Gopher2600-15room-raster-evidence
+          path: |
+            build/mainii-gopher/FULL_CAMPAIGN/
+            build/mainii-gopher/ROM_16K_BUILD.json
+            build/mainii-gopher/SHA256SUMS
+          retention-days: 30
