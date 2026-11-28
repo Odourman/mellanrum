@@ -1,0 +1,20 @@
+{
+  "tag": "GRAPHICS_PR61_MODEL_CORRECTED_V2_20261128",
+  "pr61_source": "cc549ee106be4fe1ec801eedeb00c677ec5c37e1",
+  "pr61_rom_sha256": "ef23e846b6b5ed9ba120ffbced01670d1bd29cf7b8cb2d0dcce841820bb81bf8",
+  "zip_sha256": "622bb6b1644633033ebbead5c89c6f0d69df4761d69f6779333c3be09ddbd1c2",
+  "zip_bytes": 2431265,
+  "zip_members": 185,
+  "sha_entries": 184,
+  "v2_changed_pixels_160x160x15": 308007,
+  "v2_A_B_changed_pixels": 31376,
+  "rooms_before_after_pass": 15,
+  "rooms_A_B_pass": 15,
+  "phase_pass": 15,
+  "presence_sampled_pass": 5,
+  "distinct_object_pixels_preserved": 2158,
+  "distinct_object_pixels_changed": 0,
+  "orientation_match_min": 0.815817,
+  "status": "SOURCE_ONLY_SYNTHETIC_MODEL_FIX_PASS",
+  "new_rom_test": "NOT_RUN"
+}
