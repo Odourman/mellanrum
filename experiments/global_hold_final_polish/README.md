@@ -1,0 +1,1 @@
+Final polish development candidate. PR59 preserved. Selective raster phase correction and ordinary FRI score dispatch timing restoration. Full 15 rooms, unchanged movement rules. FRI PCM and full parity remain open. No release. Build: python3 rom/f6/build_f6.py --out build.

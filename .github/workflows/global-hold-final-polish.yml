@@ -1,0 +1,26 @@
+name: GLOBAL HOLD final polish native F6
+on:
+  push:
+    branches: [romdev/pr59-final-polish-20261128]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          for i in 1 2 3; do sudo apt-get update && sudo apt-get install -y dasm && break; done
+          command -v dasm
+      - working-directory: experiments/global_hold_final_polish
+        run: |
+          python3 rom/f6/build_f6.py --out build1
+          python3 rom/f6/build_f6.py --out build2
+          cmp build1/MELLANRUM_16K_NTSC_F6.bin build2/MELLANRUM_16K_NTSC_F6.bin
+          cmp build1/MELLANRUM_16K_NTSC_F6.bin rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          echo 'ef23e846b6b5ed9ba120ffbced01670d1bd29cf7b8cb2d0dcce841820bb81bf8  build1/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c
+      - uses: actions/upload-artifact@v4
+        with:
+          name: final-polish-native
+          path: experiments/global_hold_final_polish/build1/
