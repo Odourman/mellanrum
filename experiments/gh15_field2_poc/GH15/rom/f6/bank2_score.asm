@@ -1,0 +1,438 @@
+; MELLANRUM ISSUE26 – REAL F6 BANK 2 – ACT 3.
+; Each of five rooms has THREE fully consumed 256-frame streams (768 bytes).
+; Every video frame reads and applies all three stream bytes to true TIA registers.
+; These live audio scores and background breaths differ in actual emulation.
+; This is source, not an audio sample/coprocessor.
+        processor 6502
+AUDC0=$15
+AUDC1=$16
+AUDF0=$17
+AUDF1=$18
+AUDV0=$19
+AUDV1=$1A
+COLUBK=$09
+M_mode=$B8
+M_room=$B9
+M_presence=$DB
+M_soundStep=$F0
+M_workX=$E3
+M_workY=$E4
+        SEG score
+        ORG $F000
+Act3Room0Voice0:
+        dc.b $1B,$1B,$1B,$1B,$1B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $5D,$5D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$1D
+        dc.b $1E,$1E,$1E,$1B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$1D,$1D
+        dc.b $1E,$1E,$1E,$7E,$7E,$7E,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E
+        dc.b $3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$5B,$5B,$5B,$5B,$5B,$1B,$1B,$1B
+        dc.b $1C,$1C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$1B,$1B,$1B,$1B
+        dc.b $1C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$3B,$3B,$3B,$3B
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$1D,$1D,$1D,$1D,$1D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7B
+Act3Room0Voice1:
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C8,$C8,$C8,$C8,$C8,$C8,$C8,$C8
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44
+Act3Room0Voice2:
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16
+        dc.b $17,$17,$17,$17,$17,$57,$57,$57,$57,$57,$57,$57,$57,$17,$17,$17
+        dc.b $18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18
+        dc.b $19,$19,$19,$19,$79,$79,$79,$79,$79,$79,$19,$19,$19,$19,$19,$19
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$5A
+        dc.b $5B,$5B,$5B,$5B,$5B,$5B,$5B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$79,$79,$79,$79
+        dc.b $7A,$7A,$7A,$7A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $18,$18,$18,$18,$18,$18,$18,$18,$18,$58,$58,$58,$58,$18,$18,$18
+        dc.b $19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$7A,$7A,$7A,$7A,$7A,$7A,$7A,$7A,$1A,$1A
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $1B,$1B,$1B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$1B,$1B,$1B,$1B,$1B
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $76,$76,$76,$76,$76,$76,$76,$76,$16,$16,$16,$16,$16,$16,$16,$16
+        dc.b $17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$77,$77,$57
+Act3Room1Voice0:
+        dc.b $1D,$1D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $7E,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$1E,$1E,$1E,$1E
+        dc.b $1B,$7B,$7B,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7B,$7B,$7B,$7B,$7B,$3C,$3C,$3C,$3C,$3C,$3C,$1C,$1C,$1C,$1C,$1C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$1E,$1E,$1E,$1E,$1E,$5E
+        dc.b $5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$1E,$1E,$1B,$1B,$1B,$5B,$5B
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$7C,$7C,$7C,$7C
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$5C,$5C,$5C
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$1D,$1D,$1D,$1D,$1D,$7D,$7D,$7D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$3B
+Act3Room1Voice1:
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $44,$44,$44,$44,$44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C8,$C8,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C8,$C8,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $44,$44,$44,$44,$44,$44,$44,$44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+Act3Room1Voice2:
+        dc.b $18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$78,$78
+        dc.b $79,$59,$59,$59,$59,$59,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$5A,$1A,$1A,$1A,$1A
+        dc.b $1B,$5B,$5B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$56,$56,$56,$56,$56,$56,$56,$56
+        dc.b $17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17
+        dc.b $18,$18,$18,$18,$18,$78,$58,$58,$58,$58,$58,$58,$58,$18,$18,$18
+        dc.b $19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19
+        dc.b $1B,$1B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$7C
+        dc.b $7C,$7C,$7C,$7C,$7C,$7C,$7C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$56,$56
+        dc.b $76,$76,$76,$76,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16
+        dc.b $17,$17,$17,$17,$17,$17,$17,$17,$17,$57,$57,$57,$57,$77,$77,$77
+        dc.b $78,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18
+        dc.b $19,$19,$19,$19,$19,$19,$79,$79,$79,$79,$79,$79,$79,$79,$19,$19
+Act3Room2Voice0:
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B
+        dc.b $3C,$3C,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$1E,$1E,$1E,$1E,$1E,$5E,$5E
+        dc.b $5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B
+        dc.b $3E,$3E,$3E,$3E,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B,$5B
+        dc.b $5C,$5C,$5C,$5C,$5C,$3B,$3B,$3B,$1B,$1B,$1B,$1B,$1B,$3B,$3B,$3B
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$1E,$1C,$1C,$1C,$1C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$5E,$7B,$7B,$7B,$7B,$7B,$7B
+        dc.b $7C,$7C,$7C,$7C,$7C,$7C,$1C,$1C,$1C,$1C,$1C,$5B,$5B,$5B,$5B,$5B
+        dc.b $3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$7D,$7D,$7D
+        dc.b $3E,$3E,$3E,$3E,$3E,$1E,$1E,$1E,$1E,$1E,$3E,$3E,$3E,$3E,$5C,$5C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+Act3Room2Voice1:
+        dc.b $C8,$C8,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $44,$44,$44,$44,$44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C8,$C8,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+Act3Room2Voice2:
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$7A,$7A,$7A,$7A,$7A,$7A,$7A,$7A,$1A
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $16,$16,$16,$16,$76,$76,$76,$76,$76,$16,$16,$16,$16,$16,$16,$16
+        dc.b $17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17
+        dc.b $18,$58,$58,$58,$78,$78,$78,$78,$78,$18,$18,$18,$18,$18,$18,$18
+        dc.b $19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$59,$59
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$56,$56,$56,$56,$56
+        dc.b $7C,$7C,$7C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$76,$76,$76,$76,$76,$76,$76,$76
+        dc.b $17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17
+        dc.b $18,$18,$18,$18,$18,$58,$18,$18,$18,$18,$18,$78,$78,$18,$18,$18
+        dc.b $18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18
+        dc.b $19,$19,$59,$59,$59,$59,$59,$59,$59,$59,$19,$19,$19,$19,$19,$19
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$5B
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$5C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+Act3Room3Voice0:
+        dc.b $7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $3B,$3B,$3B,$3B,$3B,$3B,$1B,$1B,$1B,$1B,$1B,$3B,$3B,$3B,$3B,$3B
+        dc.b $3C,$3C,$3C,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B
+        dc.b $5B,$5B,$5B,$5B,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C
+        dc.b $7D,$7D,$7D,$7D,$7D,$1D,$1D,$1D,$1D,$1D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B
+        dc.b $7B,$7B,$7B,$7B,$1B,$1B,$1B,$1B,$1B,$7B,$7B,$7B,$7B,$7B,$7B,$7B
+        dc.b $7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$5B,$5B,$5B,$5B,$5B,$5B,$5B
+        dc.b $7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$3D,$3D,$3D,$3D,$3D,$3D
+        dc.b $3E,$3E,$3E,$1E,$1E,$1E,$1E,$1E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B
+        dc.b $3C,$3C,$1C,$1C,$1C,$1C,$1C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$3D,$7C
+Act3Room3Voice1:
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$C4
+Act3Room3Voice2:
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$56,$56,$56
+        dc.b $59,$59,$59,$59,$59,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$7A,$7A,$7A,$7A,$7A,$7A
+        dc.b $5B,$5B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$7C,$7C,$7C,$7C,$7C,$1C
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16
+        dc.b $17,$17,$17,$17,$77,$77,$77,$77,$77,$77,$77,$77,$17,$17,$17,$17
+        dc.b $17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17
+        dc.b $18,$58,$58,$58,$58,$58,$58,$58,$58,$18,$18,$18,$18,$18,$18,$18
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$5A,$5A
+        dc.b $5B,$5B,$5B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$7A,$7A,$7A,$7A,$7A
+        dc.b $7B,$7B,$7B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $17,$17,$17,$17,$17,$17,$17,$17,$77,$77,$77,$77,$77,$77,$77,$77
+        dc.b $18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18
+Act3Room4Voice0:
+        dc.b $3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E,$3E
+        dc.b $3B,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $3B,$3B,$3B,$1B,$1B,$1B,$1B,$1B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $7D,$7D,$7D,$7D,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $5D,$5D,$1D,$1D,$1D,$1D,$1D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D,$5D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C
+        dc.b $5D,$5D,$5D,$5D,$5D,$5D,$5D,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+        dc.b $7D,$1D,$1D,$1D,$1D,$1D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D,$7D
+        dc.b $7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$7E,$7E,$7E,$7E,$7E,$7E
+        dc.b $1B,$1B,$1B,$1B,$1B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B,$7B
+        dc.b $5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$5C,$3E,$3E,$3E,$3E
+        dc.b $3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$7E,$7E,$1E
+        dc.b $1B,$1B,$1B,$1B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B,$3B
+        dc.b $3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C,$3C
+Act3Room4Voice1:
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C8,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $44,$44,$44,$44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C8,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $44,$44,$44,$44,$44,$44,$44,$44,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C8,$C8,$C8,$C8,$C8,$C8,$C8,$C8,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$44,$44,$44,$44,$44,$44,$44,$44
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+        dc.b $C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4,$C4
+Act3Room4Voice2:
+        dc.b $57,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17,$17
+        dc.b $18,$18,$18,$18,$18,$18,$78,$78,$78,$78,$78,$78,$78,$78,$18,$18
+        dc.b $19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19
+        dc.b $1A,$1A,$1A,$7A,$7A,$7A,$7A,$7A,$7A,$7A,$7A,$1A,$1A,$1A,$1A,$1A
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B,$1B
+        dc.b $7C,$7C,$1C,$1C,$1C,$1C,$1C,$7C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$78,$78,$78
+        dc.b $79,$79,$79,$79,$79,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$19
+        dc.b $19,$19,$19,$19,$19,$19,$19,$19,$19,$19,$79,$79,$79,$79,$79,$79
+        dc.b $7A,$7A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A
+        dc.b $1B,$1B,$1B,$1B,$1B,$1B,$1B,$7B,$7B,$7B,$5B,$5B,$5B,$5B,$5B,$1B
+        dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C
+        dc.b $1C,$1C,$1C,$1C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$7C,$1C,$1C,$1C,$1C
+        dc.b $16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16,$16
+        dc.b $17,$17,$17,$17,$57,$57,$57,$57,$57,$17,$17,$17,$17,$17,$17,$17
+        dc.b $18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$18,$58,$58
+
+; TIA runtime: this is banked code at $FF00, not inert lookup data.
+; The shared $FF90 stub switches F6 bank on call and switches back on return.
+        ORG $FF00
+BankScorePlay:
+        lda M_mode
+        beq BankTitle
+        lda M_room
+        jmp BankModFive
+BankTitle:
+        lda #0
+BankModFive:
+        cmp #5
+        bcc BankSlot
+        sec
+        sbc #5
+        bcs BankModFive
+BankSlot:
+        tax
+        lda TrackHigh,x
+        sta M_workY
+        lda #0
+        sta M_workX
+        ldy M_soundStep
+        lda (M_workX),y
+        tax
+        and #$1F
+        sta AUDF0
+        txa
+        lsr
+        lsr
+        lsr
+        lsr
+        lsr
+        sta AUDV0
+        inc M_workY
+        lda (M_workX),y
+        tax
+        and #$0F
+        sta AUDC1
+        txa
+        lsr
+        lsr
+        lsr
+        lsr
+        sta AUDC0
+        inc M_workY
+        lda (M_workX),y
+        tax
+        and #$1F
+        sta AUDF1
+        txa
+        lsr
+        lsr
+        lsr
+        lsr
+        lsr
+        sta AUDV1
+        and #$02
+        ora #$02
+        sta COLUBK
+        lda M_presence
+        beq BankScoreDone
+        cmp #2
+        bne BankWarning
+        lda M_soundStep
+        and #$0F
+        cmp #4
+        bcs BankQuiet
+        lda #$08
+        sta AUDC1
+        lda #$1D
+        sta AUDF1
+        lda #3
+        sta AUDV1
+        rts
+BankQuiet:
+        lda #0
+        sta AUDV1
+        rts
+BankWarning:
+        lda M_soundStep
+        and #$3F
+        bne BankScoreDone
+        lda #8
+        sta AUDC1
+        lda #2
+        sta AUDV1
+BankScoreDone:
+        jmp FreeForestInstrument
+TrackHigh:
+        dc.b $F0,$F3,$F6,$F9,$FC
+
+        ; Shared F6 crossbank execution layout; source bank3 at same PC.
+        ORG $FF90
+F6BankCall:
+        lda $FFF6,x
+        jsr BankScorePlay
+        lda $FFF9
+F6BankReturn:
+        rts
+        ; If reset happens while a score bank is selected, boot game bank3.
+        ORG $FF9A
+F6BankReset:
+        lda $FFF9
+        jmp $F000
+        ; FRI SKOG: instrument-like response to live joystick. Entire routine
+        ; lives in bank 2's unused post-trampoline space, BEFORE F6 hotspots.
+        ; No cartridge RAM, no sampling, only genuine TIA AUDF/AUDC/AUDV.
+        ORG $FFA0
+FreeForestInstrument:
+        lda M_mode
+        cmp #4
+        bne FreeForestExit
+        ldx $0280         ; SWCHA, active-low directions
+        txa
+        and #$10          ; UP: unstable microtone rises over 256 frames
+        bne FreeNoUp
+        lda M_soundStep
+        and #$1F
+        sta AUDF1
+FreeNoUp:
+        txa
+        and #$20          ; DOWN: remove second voice, revealing emptiness
+        bne FreeNoDown
+        lda #0
+        sta AUDV1
+FreeNoDown:
+        txa
+        and #$40          ; LEFT: electrify the drone
+        bne FreeNoLeft
+        lda #8
+        sta AUDC1
+        lda #3
+        sta AUDV1
+FreeNoLeft:
+        txa
+        and #$80          ; RIGHT: return to a stable counter-tone
+        bne FreeNoRight
+        lda #4
+        sta AUDC1
+        lda #$1A
+        sta AUDF1
+FreeNoRight:
+        lda $0C           ; INPT4, active-low FIRE: short hard-edged color
+        bmi FreePalette
+        lda #8
+        sta AUDC0
+FreePalette:
+        lda M_soundStep
+        lsr
+        lsr
+        lsr
+        and #$06
+        ora #$02          ; very dark slowly changing NTSC grey, no strobe
+        sta COLUBK
+FreeForestExit:
+        rts
+FreeForestEnd:
+        ORG $FFFC
+        dc.w F6BankReset
+        dc.w F6BankReset

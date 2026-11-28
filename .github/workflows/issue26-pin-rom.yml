@@ -1,0 +1,43 @@
+name: Issue26 pin exact tested F6 16KiB cartridge to new PR
+on:
+  push:
+    branches: [romdev/issue26-f6-16k-20261123]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish-native-16k:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Native DASM four-bank reproducible exact 16K build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dasm
+          python3 rom/f6/build_f6.py
+          echo '7ce777dc273e1c30d8621843052e941ced41fcf2961bcdf835576a11c9592446  build/issue26/MELLANRUM_16K_NTSC_F6.bin' | sha256sum -c -
+          cp build/issue26/MELLANRUM_16K_NTSC_F6.bin rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          test "$(wc -c < rom/bin/MELLANRUM_16K_NTSC_F6.bin)" = 16384
+      - name: Pin byte-identical 16KiB product ROM without touching PR23/16/4
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- rom/bin/MELLANRUM_16K_NTSC_F6.bin
+          if git diff --cached --quiet; then
+            echo 'EXACT_F6_ROM_ALREADY_IN_BRANCH'
+          else
+            git commit -m 'Issue26: pin native 16384-byte tested F6 game ROM 7ce777dc'
+            git push origin HEAD:refs/heads/romdev/issue26-f6-16k-20261123
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue26-F6-16K-product-ROM-7ce777
+          path: |
+            rom/bin/MELLANRUM_16K_NTSC_F6.bin
+            build/issue26/ROM_16K_BUILD.json
+            build/issue26/SHA256SUMS
+          retention-days: 30

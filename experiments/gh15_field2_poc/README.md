@@ -1,0 +1,1 @@
+Four-room comparison only: 01,02,06,14; separate manual control builds. Frozen root PR54 untouched. No release, no full campaign authorization. Each experiment has standalone rom tree. Build with `python3 rom/f6/build_f6.py --out build` in experiment directory. SHA locked by new native workflow. See MAIN handoff for evidence and limitations.

@@ -1,0 +1,733 @@
+[
+  {
+    "id": "I-01",
+    "act": 1,
+    "title": "Den första gläntan",
+    "path": [
+      [
+        "tree",
+        17
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "stone",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 457,
+    "search_seconds": 0.01,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 0,
+    "completed_at_tick": 11
+  },
+  {
+    "id": "I-02",
+    "act": 1,
+    "title": "Det finns två stammar",
+    "path": [
+      [
+        "tree",
+        12
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 1105,
+    "search_seconds": 0.03,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 0,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "I-03",
+    "act": 1,
+    "title": "Stenen säger vänster",
+    "path": [
+      [
+        "tree",
+        22
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 399,
+    "search_seconds": 0.01,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 0,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "I-04",
+    "act": 1,
+    "title": "En trädstam två sanningar",
+    "path": [
+      [
+        "tree",
+        17
+      ],
+      [
+        "tree",
+        18
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 597,
+    "search_seconds": 0.01,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 0,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "I-05",
+    "act": 1,
+    "title": "Den andra sidan",
+    "path": [
+      [
+        "wait",
+        -1
+      ],
+      [
+        "tree",
+        18
+      ],
+      [
+        "tree",
+        19
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 1416,
+    "search_seconds": 0.04,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 0,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "II-01",
+    "act": 2,
+    "title": "Gårdagens dörr",
+    "path": [
+      [
+        "tree",
+        17
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "stone",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 2908,
+    "search_seconds": 0.12,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 1,
+    "completed_at_tick": 11
+  },
+  {
+    "id": "II-02",
+    "act": 2,
+    "title": "Den långsamma stenen",
+    "path": [
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "tree",
+        18
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 6920,
+    "search_seconds": 0.19,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 1,
+    "completed_at_tick": 9
+  },
+  {
+    "id": "II-03",
+    "act": 2,
+    "title": "En handling som väntar",
+    "path": [
+      [
+        "tree",
+        22
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "tree",
+        22
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 1916,
+    "search_seconds": 0.05,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 1,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "II-04",
+    "act": 2,
+    "title": "Stenen är ett protokoll",
+    "path": [
+      [
+        "tree",
+        17
+      ],
+      [
+        "tree",
+        18
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 2919,
+    "search_seconds": 0.08,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 2,
+    "completed_at_tick": 9
+  },
+  {
+    "id": "II-05",
+    "act": 2,
+    "title": "Skogen minns fel",
+    "path": [
+      [
+        "stone",
+        -1
+      ],
+      [
+        "tree",
+        18
+      ],
+      [
+        "tree",
+        19
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 5604,
+    "search_seconds": 0.16,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 2,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "III-01",
+    "act": 3,
+    "title": "Trädet är ett hål",
+    "path": [
+      [
+        "tree",
+        17
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "tree",
+        23
+      ],
+      [
+        "stone",
+        -1
+      ],
+      [
+        "stone",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "tree",
+        17
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 10277,
+    "search_seconds": 0.28,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 2,
+    "completed_at_tick": 12
+  },
+  {
+    "id": "III-02",
+    "act": 3,
+    "title": "Det tomma är fullt",
+    "path": [
+      [
+        "tree",
+        12
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 5080,
+    "search_seconds": 0.12,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 1,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "III-03",
+    "act": 3,
+    "title": "En uggla är en klocka",
+    "path": [
+      [
+        "tree",
+        22
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 1263,
+    "search_seconds": 0.07,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 1,
+    "completed_at_tick": 7
+  },
+  {
+    "id": "III-04",
+    "act": 3,
+    "title": "Stenen förnekar trädet",
+    "path": [
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "stone",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 26499,
+    "search_seconds": 0.89,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 0,
+    "completed_at_tick": 17
+  },
+  {
+    "id": "III-05",
+    "act": 3,
+    "title": "Det sista trädet",
+    "path": [
+      [
+        "tree",
+        18
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "tree",
+        22
+      ],
+      [
+        "stone",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ],
+      [
+        "wait",
+        -1
+      ]
+    ],
+    "states": 23204,
+    "search_seconds": 0.68,
+    "solved": true,
+    "coarse_cursor_travel_checked": true,
+    "max_queue_load": 2,
+    "completed_at_tick": 9
+  }
+]
