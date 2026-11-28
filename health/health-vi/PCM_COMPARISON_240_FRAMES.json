@@ -1,0 +1,242 @@
+[
+  {
+    "phase": 0,
+    "variants": {
+      "pr58": {
+        "sha256_pcm": "0f5a0b38eeafb9b51c0ad9fa31a82424b9b587aee36efc8a8337ccd5deadcc8d",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 0,
+        "first_diff_index": null,
+        "max_abs_delta": 0,
+        "rms_delta": 0.0
+      },
+      "pr59": {
+        "sha256_pcm": "fdd2b1a5ef19ef9a19ce5254a75249774a2f856da2857b0e871d79bf2154abaa",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 36,
+        "first_diff_index": 31588,
+        "max_abs_delta": 3843,
+        "rms_delta": 33.5849
+      },
+      "read_restore": {
+        "sha256_pcm": "b78d4b6f736e9be2197c7b8430f155a6c6415ae0c66ea7c3a2dbda5fe91f5e07",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 30,
+        "first_diff_index": 31588,
+        "max_abs_delta": 3843,
+        "rms_delta": 32.5058
+      },
+      "schedule_restore": {
+        "sha256_pcm": "0c5547f979039cee70a9f36b6d470fb70e0d489454b35c33d0e230085a806fcd",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 71072,
+        "first_diff_index": 31588,
+        "max_abs_delta": 10922,
+        "rms_delta": 2247.8634
+      },
+      "renderer_restore": {
+        "sha256_pcm": "fdd2b1a5ef19ef9a19ce5254a75249774a2f856da2857b0e871d79bf2154abaa",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 36,
+        "first_diff_index": 31588,
+        "max_abs_delta": 3843,
+        "rms_delta": 33.5849
+      }
+    }
+  },
+  {
+    "phase": 1,
+    "variants": {
+      "pr58": {
+        "sha256_pcm": "280bccfbba986342c7600e6e65064f4ddc748f979df211cbd0dc6ae8f1817f5a",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 0,
+        "first_diff_index": null,
+        "max_abs_delta": 0,
+        "rms_delta": 0.0
+      },
+      "pr59": {
+        "sha256_pcm": "79dcdaad7c3e32e1b9ec53ca87629376b0b61910da3377d75f0b506c6e8e2c8e",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 37702,
+        "first_diff_index": 32658,
+        "max_abs_delta": 10922,
+        "rms_delta": 1945.7633
+      },
+      "read_restore": {
+        "sha256_pcm": "059fee22da69be2b64495708e9580b9a5cfb57943938c1fc555f63b85169df3e",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 37700,
+        "first_diff_index": 32658,
+        "max_abs_delta": 10922,
+        "rms_delta": 1945.7422
+      },
+      "schedule_restore": {
+        "sha256_pcm": "41128039e14f52cdd3e077adf3c496f1985408955db271dcbe90fe004b471c78",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 93690,
+        "first_diff_index": 32658,
+        "max_abs_delta": 10922,
+        "rms_delta": 3084.1701
+      },
+      "renderer_restore": {
+        "sha256_pcm": "79dcdaad7c3e32e1b9ec53ca87629376b0b61910da3377d75f0b506c6e8e2c8e",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 37702,
+        "first_diff_index": 32658,
+        "max_abs_delta": 10922,
+        "rms_delta": 1945.7633
+      }
+    }
+  },
+  {
+    "phase": 2,
+    "variants": {
+      "pr58": {
+        "sha256_pcm": "fba3985a82e610844d0d3b674c036958994e1762c56af8eb5b42ac1df54b254a",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 0,
+        "first_diff_index": null,
+        "max_abs_delta": 0,
+        "rms_delta": 0.0
+      },
+      "pr59": {
+        "sha256_pcm": "671bd14eff94f6cf36d736421172b3f8c7aeb4c162f7532a3d571d03755178a9",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 28406,
+        "first_diff_index": 33698,
+        "max_abs_delta": 10922,
+        "rms_delta": 1660.5596
+      },
+      "read_restore": {
+        "sha256_pcm": "4e957573dee1952bd40c0c85dd85caedadadf190fd1ec4edd2a44f5c6012ce07",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 28404,
+        "first_diff_index": 33698,
+        "max_abs_delta": 10922,
+        "rms_delta": 1660.5199
+      },
+      "schedule_restore": {
+        "sha256_pcm": "a5046eced5555fe90704b23c1c024183f0577d7b96d24b9fc24be770b2199476",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 108710,
+        "first_diff_index": 33698,
+        "max_abs_delta": 10922,
+        "rms_delta": 3306.2678
+      },
+      "renderer_restore": {
+        "sha256_pcm": "671bd14eff94f6cf36d736421172b3f8c7aeb4c162f7532a3d571d03755178a9",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 28406,
+        "first_diff_index": 33698,
+        "max_abs_delta": 10922,
+        "rms_delta": 1660.5596
+      }
+    }
+  },
+  {
+    "phase": 3,
+    "variants": {
+      "pr58": {
+        "sha256_pcm": "ab92e1a2057427fa9245bf9b6da611e0a2cb4ba749acafd2d5642f1a0a691440",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 0,
+        "first_diff_index": null,
+        "max_abs_delta": 0,
+        "rms_delta": 0.0
+      },
+      "pr59": {
+        "sha256_pcm": "57655f1690de044462801c673122f44c3a743ecc95e311532d15ed77d5672c3e",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 17372,
+        "first_diff_index": 34940,
+        "max_abs_delta": 9362,
+        "rms_delta": 1298.4428
+      },
+      "read_restore": {
+        "sha256_pcm": "57655f1690de044462801c673122f44c3a743ecc95e311532d15ed77d5672c3e",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 17372,
+        "first_diff_index": 34940,
+        "max_abs_delta": 9362,
+        "rms_delta": 1298.4428
+      },
+      "schedule_restore": {
+        "sha256_pcm": "50aba3ca84dc728b087511505f590cd466a234797da7d5f65192616b0480764c",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 97264,
+        "first_diff_index": 34940,
+        "max_abs_delta": 10922,
+        "rms_delta": 2829.6042
+      },
+      "renderer_restore": {
+        "sha256_pcm": "57655f1690de044462801c673122f44c3a743ecc95e311532d15ed77d5672c3e",
+        "frames": 125236,
+        "sample_rate": 31440,
+        "channels": 2,
+        "sample_width_bytes": 2,
+        "diff_16bit_values_vs_pr58": 17372,
+        "first_diff_index": 34940,
+        "max_abs_delta": 9362,
+        "rms_delta": 1298.4428
+      }
+    }
+  }
+]

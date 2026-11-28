@@ -1,0 +1,129 @@
+RIOT_address,owner,byte_offset,owner_width,declared_purpose,static_operand_ref_count_lexical,initialization,liveness_scope,status
+$80,pfbuf,0,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$81,pfbuf,1,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$82,pfbuf,2,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$83,pfbuf,3,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$84,pfbuf,4,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$85,pfbuf,5,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$86,pfbuf,6,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$87,pfbuf,7,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$88,pfbuf,8,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$89,pfbuf,9,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$8A,pfbuf,10,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$8B,pfbuf,11,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$8C,pfbuf,12,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$8D,pfbuf,13,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$8E,pfbuf,14,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$8F,pfbuf,15,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$90,pfbuf,16,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$91,pfbuf,17,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$92,pfbuf,18,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$93,pfbuf,19,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$94,pfbuf,20,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$95,pfbuf,21,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$96,pfbuf,22,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$97,pfbuf,23,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$98,pfbuf,24,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$99,pfbuf,25,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$9A,pfbuf,26,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$9B,pfbuf,27,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$9C,pfbuf,28,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$9D,pfbuf,29,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$9E,pfbuf,30,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$9F,pfbuf,31,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A0,pfbuf,32,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A1,pfbuf,33,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A2,pfbuf,34,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A3,pfbuf,35,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A4,pfbuf,36,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A5,pfbuf,37,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A6,pfbuf,38,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A7,pfbuf,39,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A8,pfbuf,40,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$A9,pfbuf,41,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$AA,pfbuf,42,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$AB,pfbuf,43,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$AC,pfbuf,44,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$AD,pfbuf,45,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$AE,pfbuf,46,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$AF,pfbuf,47,48,8 rows x upper/lower x 3 TIA bytes,35,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B0,mapRows,0,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B1,mapRows,1,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B2,mapRows,2,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B3,mapRows,3,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B4,mapRows,4,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B5,mapRows,5,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B6,mapRows,6,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B7,mapRows,7,8,"current collision bits, 5 left-hand columns each",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B8,mode,0,1,"0 title, 1 campaign, 2 room done, 3 coda, 4 free forest",44,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$B9,room,0,1,"0..14, original I-01..III-05",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$BA,act,0,1,,23,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$BB,renderDir,0,1,"last successful owl movement, initialized on LoadRoom",28,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$BC,owlX,0,1,,31,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$BD,owlY,0,1,,33,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$BE,owlDir,0,1,,28,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$BF,stoneX,0,1,,24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C0,stoneY,0,1,,25,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C1,exitX,0,1,,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C2,exitY,0,1,,22,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C3,polarity,0,1,,30,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C4,phase,0,1,,25,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C5,phaseAge,0,1,,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C6,beat,0,1,,19,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C7,beatFrames,0,1,,25,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C8,introFrames,0,1,,30,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$C9,waitFrames,0,1,,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$CA,codaLo,0,1,,25,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$CB,codaHi,0,1,,27,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$CC,cursorX,0,1,,29,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$CD,cursorY,0,1,,27,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$CE,moveDir,0,1,,23,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$CF,moveWait,0,1,,23,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D0,prevFire,0,1,,23,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D1,prevSelect,0,1,,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D2,pending,0,1,campaign 0 none 1 tree 2 stone 3 WAIT,25,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D3,pendingKey,0,1,"reflected group index, 0..39",20,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D4,usedFire,0,1,one accepted FIRE/beat,26,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D5,ackFrames,0,1,cursor feedback timer,27,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D6,ackType,0,1,"0 normal, 1 accepted, 2 denied, 3 intercepted",24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D7,slot0Key,0,1,FF = empty,31,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D8,slot0Due,0,1,,23,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$D9,slot1Key,0,1,,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$DA,slot1Due,0,1,,38,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$DB,presence,0,1,"0 normal,1 warning,2 active,3 release",23,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$DC,presenceEnd,0,1,campaign n=0 dormant / 1 warning / 2 complete,26,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$DD,intercepted,0,1,"campaign field-active visual pulse, FRI unused",21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$DE,candidateX,0,1,,31,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$DF,candidateY,0,1,,28,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E0,candidateD,0,1,,24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E1,attempt,0,1,,31,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E2,workKey,0,1,,24,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E3,workX,0,1,,27,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E4,workY,0,1,,27,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E5,pfIndex,0,1,,30,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E6,rowIndex,0,1,,28,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E7,sprite0Ptr,0,2,,20,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E8,sprite0Ptr,1,2,,20,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$E9,sprite1Ptr,0,2,,19,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$EA,sprite1Ptr,1,2,,19,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$EB,mapPtr,0,2,,18,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$EC,mapPtr,1,2,,18,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$ED,pfPtr,0,2,,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$EE,pfPtr,1,2,,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$EF,moveTemp,0,1,,27,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$F0,soundStep,0,1,,22,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$F1,shadowOn,0,1,render-only: 0 normal / 1 warning / 2 active,25,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$F2,fireX,0,1,visible cursor column captured on FIRE edge,21,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$F3,fireY,0,1,visible cursor row captured on FIRE edge,20,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$F4,markerPtr,0,2,active playfield M0+BL two-stroke glyph pointer,19,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$F5,markerPtr,1,2,active playfield M0+BL two-stroke glyph pointer,19,reset clear at Reset; use-specific init varies,persistent RAM across frames possible,STATIC_DATAFLOW_INCOMPLETE; dynamic R/W frequency not measured
+$F6,RESERVED_CANARY,0,1,protected reserve; not a game variable,0,not initialized as a variable; protected test values retained,never safe to allocate under current contract,RESERVE_PROTECTED
+$F7,RESERVED_CANARY,0,1,protected reserve; not a game variable,0,not initialized as a variable; protected test values retained,never safe to allocate under current contract,RESERVE_PROTECTED
+$F8,6507_STACK,0,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
+$F9,6507_STACK,1,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
+$FA,6507_STACK,2,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
+$FB,6507_STACK,3,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
+$FC,6507_STACK,4,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
+$FD,6507_STACK,5,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
+$FE,6507_STACK,6,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
+$FF,6507_STACK,7,8,hardware stack page; JSR/RTS/interrupt/control-flow use,0,TXS on reset sets SP=$FF,live nested calls; deepest natural witness SP=$F7,STACK_BUDGET_8; C1 liveness N/A
