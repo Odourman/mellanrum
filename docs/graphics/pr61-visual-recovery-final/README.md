@@ -1,3 +1,5 @@
+> **V2 NOTICE (2026-11-28): THIS V1 DOCUMENT'S ORIGINAL SYNTHETIC BEFORE/AFTER AND A/B IMAGE RESULTS ARE INVALID.** MAIN V identified NumPy uint8 integer-indexing in the model; V1 had 0/384000 true game-area pixel differences and 15/15 A/B pairs were identical. Corrected bool-mask pipeline and complete regenerated evidence are in [PR61 MODEL CORRECTION V2](../pr61-model-correction-v2/README.md). The older artistic directions below remain *research only* and do not override the explicit user stop on tree-polishing or any protected visual original.
+
 # MELLANRUM — GRAPHICS PR61 FINAL VISUAL POLISH (MAIN V)
 ## 28 November 2026 | SOURCE_ONLY DESIGN / NO PRODUCT EDIT
 
