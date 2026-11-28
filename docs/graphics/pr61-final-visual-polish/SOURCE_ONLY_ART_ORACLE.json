@@ -1,0 +1,79 @@
+{
+  "role": "GRAPHICS",
+  "date": "2026-11-28",
+  "status": "SOURCE_ONLY",
+  "pr61_commit": "cc549ee106be4fe1ec801eedeb00c677ec5c37e1",
+  "pr61_rom_sha256": "ef23e846b6b5ed9ba120ffbced01670d1bd29cf7b8cb2d0dcce841820bb81bf8",
+  "prior_source": {
+    "palette_bg": [
+      "A0",
+      "A0",
+      "F0",
+      "82",
+      "84"
+    ],
+    "palette_pf": [
+      "B6",
+      "B6",
+      "46",
+      "B4",
+      "B6"
+    ],
+    "palette_owl": [
+      "0E",
+      "0E",
+      "0C",
+      "0E",
+      "0E"
+    ],
+    "palette_glyph": [
+      "3A",
+      "3A",
+      "38",
+      "36",
+      "3A"
+    ],
+    "midcrown_pf1_and": "7D",
+    "midcrown_pf2_and": "3E",
+    "room_xor_and": "06"
+  },
+  "recommended_source_only": {
+    "palette_bg": [
+      "A0",
+      "A0",
+      "F0",
+      "80",
+      "82"
+    ],
+    "palette_pf": [
+      "B6",
+      "B6",
+      "B6",
+      "B4",
+      "B6"
+    ],
+    "midcrown_pf1_and": "78",
+    "midcrown_pf2_and": "3C",
+    "room_xor_and": "00"
+  },
+  "alternate_crown_B": {
+    "pf1_and": "74",
+    "pf2_and": "1E"
+  },
+  "preserved": {
+    "exit_arrow_top_down": [
+      "08",
+      "0C",
+      "0E",
+      "FF",
+      "FF",
+      "0E",
+      "0C",
+      "08"
+    ],
+    "owl": "12 U3 masks sourced from PR61",
+    "stone": "S3-A original",
+    "presence": "three PF2 stages"
+  },
+  "impact": "No extra instruction bytes, RAM or TIA register writes claimed for literal replacements; no emulator test of design."
+}
