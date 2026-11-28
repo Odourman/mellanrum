@@ -1,0 +1,24 @@
+--- a/08_MODELL/generate_all_graphics.py (V1, ZIP source-only)
++++ b/08_MODELL/generate_all_graphics.py (V2, ZIP source-only)
+@@
+ def recolor_model(i,variant='B',phase=0,presence=0,presence_frame=1):
+  base=np.asarray(baseframes[i].copy(),dtype=np.int16)
+  mask,_=source_mask(i,variant,phase,presence,presence_frame)
++ # V2: uint8 data is integer indexing, NOT a boolean pixel mask.
++ mask=mask.astype(bool)
+  data=base[:,:,:3].astype(np.int32)
+@@
+- # outside game, simple per-pixel color remap only (not PF redesign)
+- other=eligible&~usable
+- out[other&(d0<=d1)]=rgbbg
+- out[other&(d1<d0)]=rgbpf
+- return Image.fromarray(np.uint8(np.clip(out,0,255)))
++ # Preserve y>=190 HUD and non-game-source colors; do not recolor
++ # sprites that are distinguishable from the two scene color clusters.
++ # NOTE: pixels with identical RGB to BG/PF cannot be proven protected.
++ rendered=Image.fromarray(np.uint8(np.clip(out,0,255)))
++ d=ImageDraw.Draw(rendered)
++ d.rectangle((0,0,319,15),fill='#101923')
++ d.text((3,3),'SOURCE_ONLY / SYNTHETIC / NOT_STELLA_EVIDENCE',
++        font=font(8,True),fill='#F4DFBA')
++ return rendered
